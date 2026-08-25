@@ -1,0 +1,3063 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Aprenda HTML, CSS e JavaScript de forma interativa e moderna. Tutorial completo para iniciantes com editor de código ao vivo.">
+  <title>Aprenda Web — HTML, CSS & JavaScript</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #050505;
+      --bg-secondary: #0a0a0a;
+      --bg-card: rgba(15, 15, 15, 0.7);
+      --bg-card-hover: rgba(25, 25, 25, 0.85);
+      --bg-editor: #080808;
+      --bg-preview: #ffffff;
+      --text-primary: #f0f0f0;
+      --text-secondary: #a0a0a0;
+      --text-muted: #666666;
+      --accent-1: #bf55ec;
+      /* Lilás Neon */
+      --accent-2: #ff2a9d;
+      /* Rosa Neon */
+      --accent-3: #9b59b6;
+      --accent-4: #ff007f;
+      --gradient-1: linear-gradient(135deg, #bf55ec 0%, #ff2a9d 100%);
+      --gradient-2: linear-gradient(135deg, #ff2a9d 0%, #bf55ec 100%);
+      --gradient-3: linear-gradient(135deg, #bf55ec 0%, #ff2a9d 100%);
+      --gradient-hero: linear-gradient(180deg, #050505 0%, #1a0024 40%, #050505 100%);
+      --border-color: rgba(191, 85, 236, 0.25);
+      --border-glow: rgba(255, 42, 157, 0.4);
+      --shadow-glow: 0 0 40px rgba(255, 42, 157, 0.2);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --font-main: 'Inter', -apple-system, sans-serif;
+      --font-code: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: rgba(124, 92, 252, 0.4);
+      color: #fff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-1);
+      border-radius: 10px;
+    }
+
+    /* ═══════════════════════════════════════════
+       ANIMATED BACKGROUND
+    ═══════════════════════════════════════════ */
+    .bg-orbs {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-orbs .orb-wrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.1s linear;
+    }
+
+    .bg-orbs .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.15;
+      animation: orbFloat 20s ease-in-out infinite;
+    }
+
+    .bg-orbs .orb-wrapper:nth-child(1) .orb {
+      width: 600px;
+      height: 600px;
+      background: var(--accent-1);
+      top: -10%;
+      left: -5%;
+      animation-duration: 25s;
+    }
+
+    .bg-orbs .orb-wrapper:nth-child(2) .orb {
+      width: 500px;
+      height: 500px;
+      background: var(--accent-2);
+      top: 40%;
+      right: -10%;
+      animation-duration: 30s;
+      animation-delay: -5s;
+    }
+
+    .bg-orbs .orb-wrapper:nth-child(3) .orb {
+      width: 400px;
+      height: 400px;
+      background: var(--accent-3);
+      bottom: -5%;
+      left: 30%;
+      animation-duration: 22s;
+      animation-delay: -10s;
+    }
+
+    @keyframes orbFloat {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      33% {
+        transform: translate(50px, -30px) scale(1.1);
+      }
+
+      66% {
+        transform: translate(-30px, 40px) scale(0.95);
+      }
+    }
+
+    .fog-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.7;
+      overflow: hidden;
+    }
+
+    .fog {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(191, 85, 236, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 20% 30%, rgba(255, 42, 157, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(155, 89, 182, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 40% 80%, rgba(255, 0, 127, 0.1) 0%, transparent 40%);
+      filter: blur(40px);
+      animation: fogNebula 45s linear infinite;
+      transform-origin: center;
+    }
+
+    @keyframes fogNebula {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+
+      33% {
+        transform: rotate(120deg) scale(1.1);
+      }
+
+      66% {
+        transform: rotate(240deg) scale(0.9);
+      }
+
+      100% {
+        transform: rotate(360deg) scale(1);
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       CURSOR EFFECTS
+    ═══════════════════════════════════════════ */
+    .cursor-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(191, 85, 236, 0.15) 0%, rgba(191, 85, 236, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s;
+      opacity: 0;
+      will-change: left, top;
+    }
+
+    body:hover .cursor-glow {
+      opacity: 1;
+    }
+
+    .click-burst {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: transparent;
+      border: 2px solid var(--accent-2);
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      animation: burstAnim 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    }
+
+    @keyframes burstAnim {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+        box-shadow: 0 0 10px var(--accent-2), inset 0 0 10px var(--accent-2);
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(4);
+        opacity: 0;
+        box-shadow: 0 0 40px var(--accent-2), inset 0 0 20px var(--accent-2);
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════ */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8, 8, 15, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+
+    .navbar.scrolled {
+      padding: 10px 40px;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .navbar .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .navbar .logo span {
+      font-weight: 400;
+      opacity: 0.7;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #fff;
+      background: rgba(124, 92, 252, 0.15);
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 2px;
+      background: var(--accent-1);
+      border-radius: 2px;
+    }
+
+    .progress-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 1001;
+      background: rgba(124, 92, 252, 0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--gradient-1);
+      width: 0%;
+      transition: width 0.15s linear;
+      border-radius: 0 2px 2px 0;
+      box-shadow: 0 0 10px rgba(124, 92, 252, 0.5);
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      background: var(--gradient-hero);
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 50px;
+      background: rgba(124, 92, 252, 0.1);
+      border: 1px solid rgba(124, 92, 252, 0.25);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent-2);
+      margin-bottom: 32px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .hero-badge .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-4);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+      }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -2px;
+      animation: fadeInUp 0.8s ease-out 0.1s both;
+    }
+
+    .hero h1 .gradient-text {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease-out 0.3s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      font-family: var(--font-main);
+    }
+
+    .btn-primary {
+      background: var(--gradient-1);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(124, 92, 252, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 42, 157, 0.5);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-glow);
+    }
+
+    .btn-outline:hover {
+      background: rgba(124, 92, 252, 0.1);
+      border-color: var(--accent-1);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 64px;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .hero-stats .stat {
+      text-align: center;
+    }
+
+    .hero-stats .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-stats .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       MAIN CONTENT
+    ═══════════════════════════════════════════ */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .section {
+      padding: 100px 0 40px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-tag {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    .tag-html {
+      background: rgba(255, 107, 157, 0.1);
+      color: var(--accent-3);
+      border: 1px solid rgba(255, 107, 157, 0.2);
+    }
+
+    .tag-css {
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent-2);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+    }
+
+    .tag-js {
+      background: rgba(0, 232, 143, 0.1);
+      color: var(--accent-4);
+      border: 1px solid rgba(0, 232, 143, 0.2);
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════════════════════════════
+       LESSON CARDS
+    ═══════════════════════════════════════════ */
+    .lesson {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 40px;
+      margin-bottom: 40px;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lesson::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .lesson.html-lesson::before {
+      background: var(--gradient-2);
+    }
+
+    .lesson.css-lesson::before {
+      background: linear-gradient(90deg, var(--accent-2), #6366f1);
+    }
+
+    .lesson.js-lesson::before {
+      background: var(--gradient-3);
+    }
+
+    .lesson:hover {
+      border-color: var(--border-glow);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .lesson-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .html-lesson .lesson-number {
+      background: rgba(255, 107, 157, 0.15);
+      color: var(--accent-3);
+    }
+
+    .css-lesson .lesson-number {
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent-2);
+    }
+
+    .js-lesson .lesson-number {
+      background: rgba(0, 232, 143, 0.15);
+      color: var(--accent-4);
+    }
+
+    .lesson h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .lesson .explanation {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+      line-height: 1.8;
+    }
+
+    .lesson .explanation code {
+      background: rgba(124, 92, 252, 0.15);
+      color: var(--accent-2);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+    }
+
+    .lesson .explanation strong {
+      color: var(--text-primary);
+    }
+
+    .concept-list {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0;
+    }
+
+    .concept-list li {
+      position: relative;
+      padding: 8px 0 8px 28px;
+      color: var(--text-secondary);
+      font-size: 0.93rem;
+    }
+
+    .concept-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 4px;
+      color: var(--accent-1);
+      font-weight: bold;
+    }
+
+    .tip-box {
+      background: rgba(0, 232, 143, 0.06);
+      border: 1px solid rgba(0, 232, 143, 0.15);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .tip-box .tip-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       CODE PLAYGROUND
+    ═══════════════════════════════════════════ */
+    .playground {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-top: 24px;
+      background: var(--bg-editor);
+    }
+
+    .playground-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(14, 14, 26, 0.9);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .playground-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .playground-tab {
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: var(--font-code);
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      transition: var(--transition);
+    }
+
+    .playground-tab.active {
+      background: rgba(124, 92, 252, 0.2);
+      color: var(--accent-2);
+    }
+
+    .playground-tab:hover:not(.active) {
+      color: var(--text-secondary);
+    }
+
+    .playground-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-run {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: var(--font-main);
+      cursor: pointer;
+      border: none;
+      background: var(--gradient-1);
+      color: #fff;
+      transition: var(--transition);
+    }
+
+    .btn-run:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 15px rgba(255, 42, 157, 0.4);
+    }
+
+    .btn-run:active {
+      transform: scale(0.97);
+      box-shadow: 0 0 20px rgba(255, 42, 157, 0.8);
+    }
+
+    .btn-reset {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: var(--font-main);
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .btn-reset:hover {
+      border-color: var(--accent-3);
+      color: var(--accent-3);
+    }
+
+    .playground-body {
+      display: flex;
+      min-height: 260px;
+    }
+
+    .playground-editor-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .playground-editor-container {
+      display: none;
+      flex: 1;
+    }
+
+    .playground-editor-container.active {
+      display: flex;
+    }
+
+    .line-numbers {
+      padding: 16px 0;
+      width: 44px;
+      text-align: right;
+      font-family: var(--font-code);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      user-select: none;
+      line-height: 1.65;
+      background: rgba(8, 8, 15, 0.5);
+      flex-shrink: 0;
+    }
+
+    .line-numbers span {
+      display: block;
+      padding-right: 12px;
+    }
+
+    .code-editor {
+      flex: 1;
+      width: 100%;
+      resize: none;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      line-height: 1.65;
+      padding: 16px;
+      outline: none;
+      tab-size: 2;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .playground-divider {
+      width: 1px;
+      background: var(--border-color);
+      position: relative;
+    }
+
+    .playground-divider::after {
+      content: '⋮';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-muted);
+      font-size: 1rem;
+      background: var(--bg-editor);
+      padding: 8px 0;
+    }
+
+    .playground-preview {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+    }
+
+    .preview-label {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      z-index: 2;
+      background: rgba(14, 14, 26, 0.8);
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    .preview-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      border: none;
+      background: var(--bg-preview);
+      border-radius: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       SANDBOX SECTION
+    ═══════════════════════════════════════════ */
+    .sandbox-section {
+      padding: 100px 0;
+    }
+
+    .sandbox-playground .playground-body {
+      min-height: 450px;
+    }
+
+    .sandbox-playground .preview-frame {
+      min-height: 450px;
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 60px 24px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer .heart {
+      color: var(--accent-3);
+    }
+
+    /* ═══════════════════════════════════════════
+       ANIMATIONS (scroll reveal)
+    ═══════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 800px) {
+      .navbar {
+        padding: 12px 16px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 100px 20px 60px;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+        letter-spacing: -1px;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .hero-stats {
+        gap: 24px;
+      }
+
+      .hero-stats .stat-number {
+        font-size: 1.5rem;
+      }
+
+      .section-header h2 {
+        font-size: 1.8rem;
+      }
+
+      .lesson {
+        padding: 24px;
+      }
+
+      .playground-body {
+        flex-direction: column;
+      }
+
+      .playground-divider {
+        width: 100%;
+        height: 1px;
+      }
+
+      .playground-divider::after {
+        display: none;
+      }
+
+      .playground-preview {
+        min-height: 200px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Animated background orbs and fog -->
+  <div class="bg-orbs">
+    <div class="orb-wrapper">
+      <div class="orb"></div>
+    </div>
+    <div class="orb-wrapper">
+      <div class="orb"></div>
+    </div>
+    <div class="orb-wrapper">
+      <div class="orb"></div>
+    </div>
+    <div class="fog-container">
+      <div class="fog"></div>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="logo">&lt;/&gt; Aprenda<span>Web</span></div>
+    <ul class="nav-links">
+      <li><a href="#html" class="nav-link">HTML</a></li>
+      <li><a href="#css" class="nav-link">CSS</a></li>
+      <li><a href="#javascript" class="nav-link">JavaScript</a></li>
+      <li><a href="#sandbox" class="nav-link">Sandbox</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Tutorial Interativo — 100% Gratuito
+      </div>
+      <h1>Aprenda a criar<br><span class="gradient-text">para a Web</span></h1>
+      <p>Domine HTML, CSS e JavaScript do zero com lições interativas, editores ao vivo e exemplos práticos. Seu código
+        roda aqui mesmo, em tempo real.</p>
+      <div class="hero-buttons">
+        <a href="#html" class="btn btn-primary">🚀 Começar Agora</a>
+        <a href="#sandbox" class="btn btn-outline">🧪 Abrir Sandbox</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-number">18</div>
+          <div class="stat-label">Lições</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Tecnologias</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Prática</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- ═══════════════════════════════════════
+       HTML SECTION
+  ═══════════════════════════════════════ -->
+    <section class="section" id="html">
+      <div class="section-header reveal">
+        <span class="section-tag tag-html">Módulo 1</span>
+        <h2>HTML — A Estrutura</h2>
+        <p>HTML é o esqueleto de toda página web. Ele define o que aparece na tela: textos, imagens, links, formulários
+          e muito mais.</p>
+      </div>
+
+      <!-- Lesson 1 -->
+      <div class="lesson html-lesson reveal" id="html-1">
+        <div class="lesson-number">01</div>
+        <h3>Estrutura Básica do HTML</h3>
+        <div class="explanation">
+          <p>Todo documento HTML começa com uma <strong>estrutura básica</strong>. Pense nela como o "esqueleto" da
+            página:</p>
+          <ul class="concept-list">
+            <li><code>&lt;!DOCTYPE html&gt;</code> — Diz ao navegador que é um documento HTML5</li>
+            <li><code>&lt;html&gt;</code> — O elemento raiz que envolve tudo</li>
+            <li><code>&lt;head&gt;</code> — Informações sobre a página (título, charset, etc.)</li>
+            <li><code>&lt;body&gt;</code> — O conteúdo visível da página</li>
+          </ul>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span>Toda tag que abre precisa fechar! Por exemplo: <code>&lt;p&gt;texto&lt;/p&gt;</code>. As tags são como
+              parênteses — sempre em pares.</span>
+          </div>
+        </div>
+        <div class="playground" data-id="html1">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('html1')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('html1')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Minha Primeira Página</title>
+</head>
+<body>
+  <h1>Olá, Mundo! 🌍</h1>
+  <p>Esta é minha primeira página web.</p>
+  <p>Tente mudar o texto acima!</p>
+</body>
+</html></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson 2 -->
+      <div class="lesson html-lesson reveal" id="html-2">
+        <div class="lesson-number">02</div>
+        <h3>Títulos, Parágrafos e Formatação</h3>
+        <div class="explanation">
+          <p>O HTML tem <strong>6 níveis de títulos</strong> (<code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code>) e tags
+            para formatar texto:</p>
+          <ul class="concept-list">
+            <li><code>&lt;h1&gt;</code> — Título principal (o maior e mais importante)</li>
+            <li><code>&lt;h2&gt;</code> a <code>&lt;h6&gt;</code> — Subtítulos em ordem decrescente</li>
+            <li><code>&lt;p&gt;</code> — Parágrafo de texto</li>
+            <li><code>&lt;strong&gt;</code> — Texto em <strong>negrito</strong></li>
+            <li><code>&lt;em&gt;</code> — Texto em <em>itálico</em></li>
+            <li><code>&lt;br&gt;</code> — Quebra de linha (não precisa fechar!)</li>
+          </ul>
+        </div>
+        <div class="playground" data-id="html2">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('html2')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('html2')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><h1>Título Principal</h1>
+<h2>Subtítulo</h2>
+<h3>Seção menor</h3>
+
+<p>Este é um parágrafo normal.</p>
+<p>Este tem <strong>texto em negrito</strong> 
+e <em>texto em itálico</em>.</p>
+
+<p>Linha 1<br>Linha 2 (com quebra)</p>
+
+<hr>
+<p>A tag &lt;hr&gt; acima cria uma linha divisória!</p></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson 3 -->
+      <div class="lesson html-lesson reveal" id="html-3">
+        <div class="lesson-number">03</div>
+        <h3>Links, Imagens e Listas</h3>
+        <div class="explanation">
+          <p>Conecte páginas com <strong>links</strong>, adicione <strong>imagens</strong> e organize informações com
+            <strong>listas</strong>:</p>
+          <ul class="concept-list">
+            <li><code>&lt;a href="url"&gt;</code> — Cria um link clicável</li>
+            <li><code>&lt;img src="url" alt="desc"&gt;</code> — Insere uma imagem</li>
+            <li><code>&lt;ul&gt;</code> / <code>&lt;ol&gt;</code> — Lista não-ordenada (•) / ordenada (1, 2, 3…)</li>
+            <li><code>&lt;li&gt;</code> — Cada item dentro da lista</li>
+          </ul>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span>O atributo <code>alt</code> na imagem é essencial para acessibilidade — ele descreve a imagem para
+              leitores de tela.</span>
+          </div>
+        </div>
+        <div class="playground" data-id="html3">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('html3')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('html3')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><h2>🔗 Links</h2>
+<p>Visite o <a href="https://google.com" target="_blank">Google</a></p>
+
+<h2>🖼️ Imagens</h2>
+<img src="https://picsum.photos/300/150" alt="Foto aleatória" width="300">
+
+<h2>📋 Lista Não-Ordenada</h2>
+<ul>
+  <li>HTML - Estrutura</li>
+  <li>CSS - Estilo</li>
+  <li>JavaScript - Interação</li>
+</ul>
+
+<h2>📝 Lista Ordenada</h2>
+<ol>
+  <li>Primeiro aprenda HTML</li>
+  <li>Depois CSS</li>
+  <li>Por último JavaScript</li>
+</ol></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson 4 -->
+      <div class="lesson html-lesson reveal" id="html-4">
+        <div class="lesson-number">04</div>
+        <h3>Formulários e Inputs</h3>
+        <div class="explanation">
+          <p>Formulários permitem que o usuário <strong>interaja e envie dados</strong>. São a base de login, cadastro,
+            pesquisas, etc:</p>
+          <ul class="concept-list">
+            <li><code>&lt;form&gt;</code> — Agrupa todos os campos do formulário</li>
+            <li><code>&lt;input&gt;</code> — Campo de entrada (texto, email, senha, etc.)</li>
+            <li><code>&lt;label&gt;</code> — Rótulo para o campo (melhora acessibilidade)</li>
+            <li><code>&lt;select&gt;</code> — Menu dropdown de opções</li>
+            <li><code>&lt;textarea&gt;</code> — Campo de texto longo</li>
+            <li><code>&lt;button&gt;</code> — Botão clicável</li>
+          </ul>
+        </div>
+        <div class="playground" data-id="html4">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('html4')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('html4')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><h2>📝 Cadastro</h2>
+<form>
+  <label for="nome">Nome:</label><br>
+  <input type="text" id="nome" placeholder="Seu nome"><br><br>
+  
+  <label for="email">Email:</label><br>
+  <input type="email" id="email" placeholder="seu@email.com"><br><br>
+  
+  <label for="senha">Senha:</label><br>
+  <input type="password" id="senha" placeholder="••••••"><br><br>
+
+  <label for="cor">Cor favorita:</label><br>
+  <select id="cor">
+    <option>Azul</option>
+    <option>Verde</option>
+    <option>Roxo</option>
+  </select><br><br>
+
+  <label>
+    <input type="checkbox"> Aceito os termos
+  </label><br><br>
+
+  <button type="button">Cadastrar ✅</button>
+</form></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson 5 -->
+      <div class="lesson html-lesson reveal" id="html-5">
+        <div class="lesson-number">05</div>
+        <h3>Tabelas e Semântica</h3>
+        <div class="explanation">
+          <p>Organize dados em <strong>tabelas</strong> e use <strong>tags semânticas</strong> para dar significado ao
+            conteúdo:</p>
+          <ul class="concept-list">
+            <li><code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;th&gt;</code>, <code>&lt;td&gt;</code> —
+              Tabela, linha, cabeçalho e célula</li>
+            <li><code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code> — Estrutura
+              semântica da página</li>
+            <li><code>&lt;nav&gt;</code> — Área de navegação</li>
+            <li><code>&lt;section&gt;</code> / <code>&lt;article&gt;</code> — Seções e artigos do conteúdo</li>
+          </ul>
+        </div>
+        <div class="playground" data-id="html5">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('html5')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('html5')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><h2>📊 Notas dos Alunos</h2>
+<table border="1" cellpadding="8" cellspacing="0">
+  <tr>
+    <th>Nome</th>
+    <th>HTML</th>
+    <th>CSS</th>
+    <th>JS</th>
+  </tr>
+  <tr>
+    <td>Ana</td>
+    <td>9.5</td>
+    <td>8.0</td>
+    <td>7.5</td>
+  </tr>
+  <tr>
+    <td>Carlos</td>
+    <td>10.0</td>
+    <td>9.0</td>
+    <td>8.5</td>
+  </tr>
+  <tr>
+    <td>Julia</td>
+    <td>8.5</td>
+    <td>9.5</td>
+    <td>10.0</td>
+  </tr>
+</table>
+
+<br>
+<header style="background:#eee; padding:10px;">
+  <nav>🏠 Início | 📖 Sobre | ✉️ Contato</nav>
+</header>
+<main style="padding:10px;">
+  <article>
+    <h3>Sobre Tags Semânticas</h3>
+    <p>Tags semânticas ajudam o Google a 
+    entender o conteúdo da sua página!</p>
+  </article>
+</main>
+<footer style="background:#eee; padding:10px; text-align:center;">
+  © 2025 Meu Site
+</footer></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+       CSS SECTION
+  ═══════════════════════════════════════ -->
+    <section class="section" id="css">
+      <div class="section-header reveal">
+        <span class="section-tag tag-css">Módulo 2</span>
+        <h2>CSS — O Estilo</h2>
+        <p>CSS transforma páginas simples em experiências visuais incríveis. Ele controla cores, fontes, espaçamentos,
+          layouts e animações.</p>
+      </div>
+
+      <!-- CSS Lesson 1 -->
+      <div class="lesson css-lesson reveal" id="css-1">
+        <div class="lesson-number">06</div>
+        <h3>Introdução ao CSS e Seletores</h3>
+        <div class="explanation">
+          <p>CSS significa <strong>Cascading Style Sheets</strong>. Ele aplica estilos ao HTML usando
+            <strong>seletores</strong>:</p>
+          <ul class="concept-list">
+            <li><strong>Seletor de tag</strong>: <code>p { ... }</code> — estiliza todos os <code>&lt;p&gt;</code></li>
+            <li><strong>Seletor de classe</strong>: <code>.destaque { ... }</code> — estiliza elementos com
+              <code>class="destaque"</code></li>
+            <li><strong>Seletor de ID</strong>: <code>#titulo { ... }</code> — estiliza o elemento com
+              <code>id="titulo"</code></li>
+            <li><strong>Propriedades comuns</strong>: <code>color</code>, <code>background</code>,
+              <code>font-size</code>, <code>margin</code>, <code>padding</code></li>
+          </ul>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span>Use a tag <code>&lt;style&gt;</code> dentro do <code>&lt;head&gt;</code> para escrever CSS diretamente
+              no HTML. Em projetos reais, usamos arquivos <code>.css</code> separados.</span>
+          </div>
+        </div>
+        <div class="playground" data-id="css1">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + CSS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('css1')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('css1')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  /* Seletor de TAG */
+  h1 {
+    color: #6c5ce7;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Seletor de CLASSE */
+  .destaque {
+    background-color: #ffeaa7;
+    padding: 10px;
+    border-radius: 8px;
+    color: #2d3436;
+  }
+  
+  /* Seletor de ID */
+  #especial {
+    color: #e17055;
+    font-size: 20px;
+    font-style: italic;
+  }
+
+  p { line-height: 1.6; }
+</style>
+
+<h1>Aprendendo Seletores CSS</h1>
+<p>Este parágrafo usa o seletor de tag.</p>
+<p class="destaque">Este usa o seletor de classe!</p>
+<p id="especial">E este usa o seletor de ID!</p></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS Lesson 2 -->
+      <div class="lesson css-lesson reveal" id="css-2">
+        <div class="lesson-number">07</div>
+        <h3>Box Model: Margin, Padding e Border</h3>
+        <div class="explanation">
+          <p>Todo elemento HTML é uma <strong>caixa</strong>. O Box Model define como ela ocupa espaço:</p>
+          <ul class="concept-list">
+            <li><code>content</code> — O conteúdo do elemento (texto, imagem, etc.)</li>
+            <li><code>padding</code> — Espaço <strong>interno</strong> (entre conteúdo e borda)</li>
+            <li><code>border</code> — A borda ao redor do elemento</li>
+            <li><code>margin</code> — Espaço <strong>externo</strong> (entre o elemento e outros)</li>
+          </ul>
+        </div>
+        <div class="playground" data-id="css2">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + CSS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('css2')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('css2')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  
+  .caixa {
+    /* CONTENT */
+    width: 250px;
+    
+    /* PADDING - espaço interno */
+    padding: 20px;
+    
+    /* BORDER - borda */
+    border: 3px solid #6c5ce7;
+    
+    /* MARGIN - espaço externo */
+    margin: 20px;
+    
+    background: #dfe6e9;
+    border-radius: 12px;
+    text-align: center;
+  }
+  
+  .sem-padding {
+    padding: 0;
+    background: #fab1a0;
+    border-color: #e17055;
+  }
+  
+  .muito-padding {
+    padding: 40px;
+    background: #55efc4;
+    border-color: #00b894;
+  }
+</style>
+
+<div class="caixa">
+  📦 Padding: 20px<br>
+  Margin: 20px<br>
+  Border: 3px
+</div>
+
+<div class="caixa sem-padding">
+  📦 Sem padding!<br>
+  Note como o texto fica colado.
+</div>
+
+<div class="caixa muito-padding">
+  📦 Padding: 40px<br>
+  Muito espaço interno!
+</div></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS Lesson 3 -->
+      <div class="lesson css-lesson reveal" id="css-3">
+        <div class="lesson-number">08</div>
+        <h3>Flexbox — Layouts Modernos</h3>
+        <div class="explanation">
+          <p><strong>Flexbox</strong> é a forma mais prática de criar layouts. Ele alinha e distribui elementos
+            automaticamente:</p>
+          <ul class="concept-list">
+            <li><code>display: flex</code> — Ativa o Flexbox no container</li>
+            <li><code>justify-content</code> — Alinha no eixo horizontal (center, space-between, etc.)</li>
+            <li><code>align-items</code> — Alinha no eixo vertical</li>
+            <li><code>gap</code> — Espaço entre os itens</li>
+            <li><code>flex-direction: column</code> — Muda a direção para vertical</li>
+          </ul>
+        </div>
+        <div class="playground" data-id="css3">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + CSS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('css3')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('css3')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  body { font-family: Arial; padding: 20px; }
+  h3 { color: #2d3436; margin: 16px 0 8px; }
+  
+  .container {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: #dfe6e9;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .item {
+    background: #6c5ce7;
+    color: white;
+    padding: 20px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .centro {
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .espaco {
+    justify-content: space-between;
+  }
+  
+  .vertical {
+    flex-direction: column;
+    align-items: center;
+  }
+</style>
+
+<h3>🔹 Centralizado</h3>
+<div class="container centro">
+  <div class="item">A</div>
+  <div class="item">B</div>
+  <div class="item">C</div>
+</div>
+
+<h3>🔹 Space Between</h3>
+<div class="container espaco">
+  <div class="item">←</div>
+  <div class="item">Centro</div>
+  <div class="item">→</div>
+</div>
+
+<h3>🔹 Vertical (column)</h3>
+<div class="container vertical">
+  <div class="item">Topo</div>
+  <div class="item">Meio</div>
+  <div class="item">Base</div>
+</div></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS Lesson 4 -->
+      <div class="lesson css-lesson reveal" id="css-4">
+        <div class="lesson-number">09</div>
+        <h3>Cores, Gradientes e Sombras</h3>
+        <div class="explanation">
+          <p>CSS oferece muitas formas de trabalhar com <strong>cores</strong> e <strong>efeitos visuais</strong>:</p>
+          <ul class="concept-list">
+            <li><strong>Cores nomeadas</strong>: <code>red</code>, <code>blue</code>, <code>coral</code>, etc.</li>
+            <li><strong>Hexadecimal</strong>: <code>#ff6b6b</code>, <code>#6c5ce7</code></li>
+            <li><strong>RGB/RGBA</strong>: <code>rgba(108, 92, 231, 0.5)</code> — com transparência!</li>
+            <li><strong>Gradientes</strong>: <code>linear-gradient()</code> — mistura de cores</li>
+            <li><strong>Sombras</strong>: <code>box-shadow</code> e <code>text-shadow</code></li>
+          </ul>
+        </div>
+        <div class="playground" data-id="css4">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + CSS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('css4')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('css4')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  body { font-family: Arial; padding: 20px; background: #2d3436; }
+  
+  .card {
+    padding: 24px;
+    border-radius: 16px;
+    color: white;
+    margin-bottom: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .gradiente1 {
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.4);
+  }
+  
+  .gradiente2 {
+    background: linear-gradient(135deg, #fd79a8, #e17055);
+    box-shadow: 0 8px 32px rgba(253, 121, 168, 0.4);
+  }
+  
+  .gradiente3 {
+    background: linear-gradient(135deg, #00cec9, #0984e3);
+    box-shadow: 0 8px 32px rgba(0, 206, 201, 0.4);
+  }
+  
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  .titulo-sombra {
+    font-size: 28px;
+    color: white;
+    text-shadow: 0 0 20px rgba(108, 92, 231, 0.8),
+                 0 0 40px rgba(108, 92, 231, 0.4);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+</style>
+
+<p class="titulo-sombra">✨ Efeitos Visuais</p>
+
+<div class="card gradiente1">
+  🟣 Gradiente Roxo com Sombra
+</div>
+<div class="card gradiente2">
+  🔴 Gradiente Rosa com Sombra
+</div>
+<div class="card gradiente3">
+  🔵 Gradiente Azul com Sombra
+</div>
+<div class="card glass">
+  🪟 Efeito Glassmorphism
+</div></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS Lesson 5 -->
+      <div class="lesson css-lesson reveal" id="css-5">
+        <div class="lesson-number">10</div>
+        <h3>Transições e Animações</h3>
+        <div class="explanation">
+          <p>Dê vida às suas páginas com <strong>transições suaves</strong> e <strong>animações CSS</strong>:</p>
+          <ul class="concept-list">
+            <li><code>transition</code> — Anima mudanças de propriedade (hover, click, etc.)</li>
+            <li><code>transform</code> — Move, gira, escala ou inclina elementos</li>
+            <li><code>@keyframes</code> — Define animações personalizadas frame a frame</li>
+            <li><code>animation</code> — Aplica a animação ao elemento</li>
+          </ul>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span>Passe o mouse sobre os elementos no resultado para ver as transições em ação!</span>
+          </div>
+        </div>
+        <div class="playground" data-id="css5">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + CSS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('css5')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('css5')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  body { 
+    font-family: Arial; 
+    padding: 20px; 
+    background: #2d3436;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  p { color: #dfe6e9; margin-bottom: 8px; text-align: center; }
+  
+  /* TRANSIÇÃO no hover */
+  .botao {
+    padding: 14px 32px;
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .botao:hover {
+    background: #a29bfe;
+    transform: scale(1.1);
+    box-shadow: 0 10px 30px rgba(108,92,231,0.5);
+  }
+  
+  /* ANIMAÇÃO contínua */
+  @keyframes flutuar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  .flutuante {
+    font-size: 48px;
+    animation: flutuar 2s ease-in-out infinite;
+  }
+  
+  /* ANIMAÇÃO de rotação */
+  @keyframes girar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .girando {
+    width: 60px; height: 60px;
+    border: 4px solid transparent;
+    border-top: 4px solid #fd79a8;
+    border-right: 4px solid #6c5ce7;
+    border-radius: 50%;
+    animation: girar 1s linear infinite;
+  }
+  
+  /* PULSE */
+  @keyframes pulsar {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+  }
+  .pulsando {
+    width: 50px; height: 50px;
+    background: #e17055;
+    border-radius: 50%;
+    animation: pulsar 1.5s ease-in-out infinite;
+  }
+</style>
+
+<p>👇 Passe o mouse no botão</p>
+<button class="botao">Hover em mim!</button>
+
+<p>Animações contínuas:</p>
+<div class="flutuante">🚀</div>
+<div class="girando"></div>
+<div class="pulsando"></div></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS Lesson 6 -->
+      <div class="lesson css-lesson reveal" id="css-6">
+        <div class="lesson-number">11</div>
+        <h3>Design Responsivo</h3>
+        <div class="explanation">
+          <p>Sites precisam funcionar bem em <strong>qualquer tamanho de tela</strong>. Para isso usamos:</p>
+          <ul class="concept-list">
+            <li><code>@media</code> queries — Aplica estilos diferentes para tamanhos de tela diferentes</li>
+            <li>Unidades relativas: <code>%</code>, <code>vw</code>, <code>vh</code>, <code>rem</code>, <code>em</code>
+            </li>
+            <li><code>max-width</code> — Limita a largura máxima</li>
+            <li><code>flex-wrap: wrap</code> — Permite que itens quebrem linha</li>
+          </ul>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span>Redimensione a janela de resultado para ver a media query em ação! Em telas menores, o layout muda
+              automaticamente.</span>
+          </div>
+        </div>
+        <div class="playground" data-id="css6">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + CSS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('css6')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('css6')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  body { font-family: Arial; margin: 0; }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #6c5ce7;
+    color: white;
+  }
+  
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 20px;
+  }
+  
+  .card {
+    flex: 1;
+    min-width: 120px;
+    padding: 24px;
+    background: white;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .card .emoji { font-size: 32px; }
+  .card h4 { color: #2d3436; margin: 8px 0 4px; }
+  .card p { color: #636e72; font-size: 13px; }
+  
+  /* MEDIA QUERY */
+  @media (max-width: 400px) {
+    .navbar { flex-direction: column; gap: 8px; }
+    .card { min-width: 100%; }
+  }
+</style>
+
+<div class="navbar">
+  <strong>📱 MeuApp</strong>
+  <span>Menu ☰</span>
+</div>
+
+<div class="cards">
+  <div class="card">
+    <div class="emoji">📊</div>
+    <h4>Analytics</h4>
+    <p>Veja seus dados</p>
+  </div>
+  <div class="card">
+    <div class="emoji">💬</div>
+    <h4>Mensagens</h4>
+    <p>12 novas</p>
+  </div>
+  <div class="card">
+    <div class="emoji">⚙️</div>
+    <h4>Config</h4>
+    <p>Personalize</p>
+  </div>
+</div></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+       JAVASCRIPT SECTION
+  ═══════════════════════════════════════ -->
+    <section class="section" id="javascript">
+      <div class="section-header reveal">
+        <span class="section-tag tag-js">Módulo 3</span>
+        <h2>JavaScript — A Interação</h2>
+        <p>JavaScript torna a página interativa. Ele responde a cliques, muda conteúdo, calcula valores e muito mais —
+          tudo em tempo real.</p>
+      </div>
+
+      <!-- JS Lesson 1 -->
+      <div class="lesson js-lesson reveal" id="js-1">
+        <div class="lesson-number">12</div>
+        <h3>Variáveis e Tipos de Dados</h3>
+        <div class="explanation">
+          <p><strong>Variáveis</strong> armazenam valores que o programa usa. Pense nelas como "caixas com nome":</p>
+          <ul class="concept-list">
+            <li><code>let</code> — Declara uma variável que pode mudar</li>
+            <li><code>const</code> — Declara uma constante (não muda)</li>
+            <li><strong>String</strong>: texto entre aspas → <code>"Olá"</code></li>
+            <li><strong>Number</strong>: números → <code>42</code>, <code>3.14</code></li>
+            <li><strong>Boolean</strong>: verdadeiro ou falso → <code>true</code>, <code>false</code></li>
+            <li><strong>Array</strong>: lista de valores → <code>[1, 2, 3]</code></li>
+          </ul>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span>Usamos <code>document.write()</code> nos exemplos para mostrar texto na página. Em projetos reais,
+              preferimos manipular o DOM (próximas lições!).</span>
+          </div>
+        </div>
+        <div class="playground" data-id="js1">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + JS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('js1')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('js1')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><h2>📦 Variáveis e Tipos</h2>
+<div id="saida" style="font-family: monospace; line-height: 2;"></div>
+
+<script>
+  const saida = document.getElementById('saida');
+  function escrever(texto) {
+    saida.innerHTML += texto + '<br>';
+  }
+
+  // STRING - texto
+  let nome = "Ana";
+  escrever("Nome: " + nome);
+
+  // NUMBER - número
+  let idade = 25;
+  escrever("Idade: " + idade);
+
+  // BOOLEAN - verdadeiro/falso
+  let estudante = true;
+  escrever("É estudante? " + estudante);
+
+  // ARRAY - lista
+  let cores = ["azul", "verde", "roxo"];
+  escrever("Cores: " + cores.join(", "));
+
+  // OPERAÇÕES
+  let soma = 10 + 5;
+  let texto = "Olá, " + nome + "!";
+  escrever("10 + 5 = " + soma);
+  escrever(texto);
+
+  // TEMPLATE LITERALS (crase)
+  let msg = `${nome} tem ${idade} anos`;
+  escrever("✨ " + msg);
+</script></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JS Lesson 2 -->
+      <div class="lesson js-lesson reveal" id="js-2">
+        <div class="lesson-number">13</div>
+        <h3>Condicionais e Loops</h3>
+        <div class="explanation">
+          <p><strong>Condicionais</strong> permitem tomar decisões. <strong>Loops</strong> repetem ações:</p>
+          <ul class="concept-list">
+            <li><code>if / else if / else</code> — "Se... senão se... senão"</li>
+            <li><code>for</code> — Repete um bloco um número definido de vezes</li>
+            <li><code>while</code> — Repete enquanto uma condição for verdadeira</li>
+            <li><strong>Comparações</strong>: <code>===</code> (igual), <code>!==</code> (diferente), <code>&gt;</code>,
+              <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></li>
+          </ul>
+        </div>
+        <div class="playground" data-id="js2">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + JS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('js2')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('js2')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><div id="saida" style="font-family: monospace; line-height: 2;"></div>
+
+<script>
+  const saida = document.getElementById('saida');
+  function escrever(texto) {
+    saida.innerHTML += texto + '<br>';
+  }
+
+  // ═══ IF / ELSE ═══
+  let hora = new Date().getHours();
+  escrever("🕐 Agora são " + hora + "h");
+
+  if (hora < 12) {
+    escrever("☀️ Bom dia!");
+  } else if (hora < 18) {
+    escrever("🌤️ Boa tarde!");
+  } else {
+    escrever("🌙 Boa noite!");
+  }
+
+  escrever("---");
+
+  // ═══ FOR LOOP ═══
+  escrever("📋 Contando de 1 a 5:");
+  for (let i = 1; i <= 5; i++) {
+    escrever("  → Número: " + i);
+  }
+
+  escrever("---");
+
+  // ═══ LOOP COM ARRAY ═══
+  let frutas = ["🍎 Maçã", "🍌 Banana", "🍇 Uva", "🍊 Laranja"];
+  escrever("🛒 Lista de compras:");
+  for (let fruta of frutas) {
+    escrever("  ✓ " + fruta);
+  }
+</script></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JS Lesson 3 -->
+      <div class="lesson js-lesson reveal" id="js-3">
+        <div class="lesson-number">14</div>
+        <h3>Funções</h3>
+        <div class="explanation">
+          <p><strong>Funções</strong> são blocos de código reutilizáveis. Elas recebem dados, processam e retornam
+            resultados:</p>
+          <ul class="concept-list">
+            <li><code>function nome(params) { }</code> — Declara uma função</li>
+            <li><code>return</code> — Retorna um valor da função</li>
+            <li><strong>Arrow function</strong>: <code>const soma = (a, b) => a + b</code> — Sintaxe moderna e curta
+            </li>
+            <li>Funções podem ser passadas como argumento para outras funções!</li>
+          </ul>
+        </div>
+        <div class="playground" data-id="js3">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + JS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('js3')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('js3')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><div id="saida" style="font-family: monospace; line-height: 2;"></div>
+
+<script>
+  const saida = document.getElementById('saida');
+  function escrever(t) {
+    saida.innerHTML += t + '<br>';
+  }
+
+  // ═══ FUNÇÃO BÁSICA ═══
+  function saudacao(nome) {
+    return "Olá, " + nome + "! 👋";
+  }
+  escrever(saudacao("Ana"));
+  escrever(saudacao("Carlos"));
+
+  escrever("---");
+
+  // ═══ FUNÇÃO COM CÁLCULO ═══
+  function calcularIMC(peso, altura) {
+    let imc = peso / (altura * altura);
+    return imc.toFixed(1);
+  }
+  let imc = calcularIMC(70, 1.75);
+  escrever(`📏 IMC: ${imc}`);
+
+  escrever("---");
+
+  // ═══ ARROW FUNCTION ═══
+  const dobro = (n) => n * 2;
+  const ehPar = (n) => n % 2 === 0;
+
+  escrever("Dobro de 7: " + dobro(7));
+  escrever("8 é par? " + ehPar(8));
+  escrever("5 é par? " + ehPar(5));
+
+  escrever("---");
+
+  // ═══ ARRAY + FUNÇÃO ═══
+  let numeros = [1, 2, 3, 4, 5];
+  let dobrados = numeros.map(n => n * 2);
+  escrever("Original: " + numeros);
+  escrever("Dobrados: " + dobrados);
+</script></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JS Lesson 4 -->
+      <div class="lesson js-lesson reveal" id="js-4">
+        <div class="lesson-number">15</div>
+        <h3>Eventos e Interatividade</h3>
+        <div class="explanation">
+          <p><strong>Eventos</strong> são ações do usuário (clique, digitação, hover) que o JavaScript pode detectar e
+            responder:</p>
+          <ul class="concept-list">
+            <li><code>onclick</code> — Quando o usuário clica</li>
+            <li><code>oninput</code> — Quando digita em um campo</li>
+            <li><code>onmouseover</code> / <code>onmouseout</code> — Hover do mouse</li>
+            <li><code>addEventListener()</code> — Forma moderna de ouvir eventos</li>
+          </ul>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span>Clique nos botões e interaja com os campos no resultado para ver os eventos em ação!</span>
+          </div>
+        </div>
+        <div class="playground" data-id="js4">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + JS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('js4')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('js4')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  body { font-family: Arial; padding: 20px; }
+  button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.2s;
+  }
+  button:hover { transform: scale(1.05); }
+  .azul { background: #74b9ff; color: #2d3436; }
+  .verde { background: #55efc4; color: #2d3436; }
+  .rosa { background: #fd79a8; color: white; }
+  #contador { font-size: 48px; text-align: center; margin: 20px; }
+  #nome-display { color: #6c5ce7; font-size: 24px; font-weight: bold; margin: 10px 0; }
+  input { padding: 8px 12px; font-size: 14px; border: 2px solid #dfe6e9; border-radius: 8px; width: 200px; }
+</style>
+
+<h3>🖱️ Eventos de Clique</h3>
+<div id="contador">0</div>
+<button class="azul" onclick="mudarContador(1)">➕ Adicionar</button>
+<button class="rosa" onclick="mudarContador(-1)">➖ Subtrair</button>
+<button class="verde" onclick="resetarContador()">🔄 Resetar</button>
+
+<hr style="margin: 20px 0;">
+
+<h3>⌨️ Evento de Digitação</h3>
+<input type="text" id="nomeInput" placeholder="Digite seu nome..." oninput="atualizarNome()">
+<div id="nome-display">👋 Olá, ...</div>
+
+<hr style="margin: 20px 0;">
+
+<h3>🎨 Evento de Hover</h3>
+<div id="caixa-hover" style="width:150px;height:150px;background:#dfe6e9;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all 0.3s;cursor:pointer;" onmouseover="hoverIn(this)" onmouseout="hoverOut(this)">
+  Passe aqui!
+</div>
+
+<script>
+  let count = 0;
+
+  function mudarContador(valor) {
+    count += valor;
+    document.getElementById('contador').textContent = count;
+  }
+
+  function resetarContador() {
+    count = 0;
+    document.getElementById('contador').textContent = 0;
+  }
+
+  function atualizarNome() {
+    let nome = document.getElementById('nomeInput').value;
+    let display = document.getElementById('nome-display');
+    display.textContent = nome ? `👋 Olá, ${nome}!` : '👋 Olá, ...';
+  }
+
+  function hoverIn(el) {
+    el.style.background = '#6c5ce7';
+    el.style.color = 'white';
+    el.style.transform = 'scale(1.1) rotate(5deg)';
+    el.textContent = '🎉 Hover!';
+  }
+
+  function hoverOut(el) {
+    el.style.background = '#dfe6e9';
+    el.style.color = '#2d3436';
+    el.style.transform = 'scale(1) rotate(0)';
+    el.textContent = 'Passe aqui!';
+  }
+</script></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JS Lesson 5 -->
+      <div class="lesson js-lesson reveal" id="js-5">
+        <div class="lesson-number">16</div>
+        <h3>Manipulação do DOM</h3>
+        <div class="explanation">
+          <p>O <strong>DOM</strong> (Document Object Model) é a representação da página HTML como objetos JavaScript.
+            Você pode <strong>criar, modificar e remover</strong> elementos dinamicamente:</p>
+          <ul class="concept-list">
+            <li><code>document.getElementById()</code> — Busca um elemento pelo ID</li>
+            <li><code>document.querySelector()</code> — Busca com seletor CSS</li>
+            <li><code>.textContent</code> / <code>.innerHTML</code> — Muda o conteúdo</li>
+            <li><code>.style</code> — Muda o estilo CSS via JS</li>
+            <li><code>document.createElement()</code> — Cria um novo elemento</li>
+            <li><code>.appendChild()</code> — Adiciona um elemento filho</li>
+          </ul>
+        </div>
+        <div class="playground" data-id="js5">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + JS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('js5')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('js5')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  body { font-family: Arial; padding: 20px; }
+  button { padding: 8px 16px; margin: 4px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
+  .add { background: #55efc4; }
+  .color { background: #74b9ff; }
+  .remove { background: #fd79a8; color: white; }
+  #lista { margin: 16px 0; }
+  .item {
+    padding: 10px 16px;
+    margin: 6px 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #6c5ce7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+  }
+  .item:hover { background: #e8e8ff; transform: translateX(5px); }
+  input { padding: 8px 12px; border: 2px solid #dfe6e9; border-radius: 8px; width: 200px; }
+  #titulo { transition: all 0.3s; }
+</style>
+
+<h2 id="titulo">📝 Lista de Tarefas</h2>
+
+<input type="text" id="novaTarefa" placeholder="Nova tarefa...">
+<button class="add" onclick="adicionarTarefa()">➕ Adicionar</button>
+<button class="color" onclick="mudarCorTitulo()">🎨 Mudar Cor</button>
+
+<div id="lista"></div>
+<p id="status" style="color: #636e72; font-size: 14px;"></p>
+
+<script>
+  let tarefas = ["Estudar HTML", "Praticar CSS", "Aprender JavaScript"];
+  const cores = ['#6c5ce7', '#e17055', '#00b894', '#0984e3', '#fdcb6e'];
+  let corIndex = 0;
+
+  function renderizar() {
+    let lista = document.getElementById('lista');
+    lista.innerHTML = '';
+
+    tarefas.forEach((tarefa, i) => {
+      let div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <span>${tarefa}</span>
+        <button class="remove" onclick="remover(${i})">✕</button>
+      `;
+      lista.appendChild(div);
+    });
+
+    document.getElementById('status').textContent =
+      `${tarefas.length} tarefa(s) na lista`;
+  }
+
+  function adicionarTarefa() {
+    let input = document.getElementById('novaTarefa');
+    if (input.value.trim()) {
+      tarefas.push(input.value);
+      input.value = '';
+      renderizar();
+    }
+  }
+
+  function remover(index) {
+    tarefas.splice(index, 1);
+    renderizar();
+  }
+
+  function mudarCorTitulo() {
+    corIndex = (corIndex + 1) % cores.length;
+    document.getElementById('titulo').style.color = cores[corIndex];
+  }
+
+  // Permitir Enter no input
+  document.getElementById('novaTarefa')
+    .addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') adicionarTarefa();
+    });
+
+  renderizar();
+</script></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JS Lesson 6 -->
+      <div class="lesson js-lesson reveal" id="js-6">
+        <div class="lesson-number">17</div>
+        <h3>Objetos e JSON</h3>
+        <div class="explanation">
+          <p><strong>Objetos</strong> agrupam dados relacionados em uma única estrutura. <strong>JSON</strong> é o
+            formato padrão para trocar dados na web:</p>
+          <ul class="concept-list">
+            <li><code>{ chave: valor }</code> — Sintaxe de objetos em JS</li>
+            <li><code>objeto.propriedade</code> — Acessa um valor</li>
+            <li><code>JSON.stringify()</code> — Converte objeto para texto JSON</li>
+            <li><code>JSON.parse()</code> — Converte texto JSON para objeto</li>
+          </ul>
+        </div>
+        <div class="playground" data-id="js6">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + JS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('js6')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('js6')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  body { font-family: Arial; padding: 20px; }
+  .perfil {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 24px;
+    border-radius: 16px;
+    margin: 10px 0;
+    box-shadow: 0 8px 24px rgba(102,126,234,0.3);
+  }
+  .perfil h3 { margin-bottom: 8px; }
+  .perfil .info { opacity: 0.85; font-size: 14px; }
+  pre {
+    background: #2d3436;
+    color: #55efc4;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    overflow-x: auto;
+  }
+</style>
+
+<h2>🧩 Objetos e JSON</h2>
+<div id="saida"></div>
+
+<script>
+  const saida = document.getElementById('saida');
+
+  // ═══ OBJETO ═══
+  const pessoa = {
+    nome: "Ana Silva",
+    idade: 28,
+    profissao: "Desenvolvedora",
+    habilidades: ["HTML", "CSS", "JavaScript"],
+    endereco: {
+      cidade: "São Paulo",
+      estado: "SP"
+    }
+  };
+
+  // Criando um card visual com dados do objeto
+  saida.innerHTML += `
+    <div class="perfil">
+      <h3>👤 ${pessoa.nome}</h3>
+      <div class="info">
+        📍 ${pessoa.endereco.cidade} - ${pessoa.endereco.estado}<br>
+        💼 ${pessoa.profissao}<br>
+        🎂 ${pessoa.idade} anos<br>
+        🛠️ ${pessoa.habilidades.join(', ')}
+      </div>
+    </div>
+  `;
+
+  // ═══ JSON ═══
+  let json = JSON.stringify(pessoa, null, 2);
+  saida.innerHTML += `
+    <h3>📄 Objeto como JSON:</h3>
+    <pre>${json}</pre>
+  `;
+
+  // ═══ ARRAY DE OBJETOS ═══
+  const alunos = [
+    { nome: "Carlos", nota: 9.2 },
+    { nome: "Julia", nota: 8.7 },
+    { nome: "Pedro", nota: 7.5 },
+  ];
+
+  let melhor = alunos.reduce((a, b) =>
+    a.nota > b.nota ? a : b
+  );
+
+  saida.innerHTML += `
+    <p style="margin-top:16px">🏆 Melhor nota: <strong>${melhor.nome}</strong> com ${melhor.nota}!</p>
+  `;
+</script></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JS Lesson 7 (Project) -->
+      <div class="lesson js-lesson reveal" id="js-7">
+        <div class="lesson-number">18</div>
+        <h3>🎯 Projeto Final: Mini App Completo</h3>
+        <div class="explanation">
+          <p>Vamos juntar <strong>tudo o que aprendemos</strong> em um mini projeto! Uma calculadora estilizada com HTML
+            + CSS + JavaScript:</p>
+          <div class="tip-box">
+            <span class="tip-icon">🏆</span>
+            <span>Este é o desafio final! Analise o código, entenda cada parte e tente fazer modificações. Que tal
+              adicionar uma operação de potência (x²)?</span>
+          </div>
+        </div>
+        <div class="playground" data-id="js7">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + CSS + JS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('js7')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('js7')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0c0c1d, #1a0a2e);
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  .calc {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 24px;
+    width: 280px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .display {
+    background: rgba(0,0,0,0.3);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: right;
+    margin-bottom: 16px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .display .anterior {
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+    min-height: 20px;
+  }
+  .display .atual {
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
+    word-break: break-all;
+  }
+  .botoes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .botoes button {
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.08);
+    color: white;
+  }
+  .botoes button:hover {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+  }
+  .botoes button:active { transform: scale(0.95); }
+  .botoes .op {
+    background: rgba(124,92,252,0.3);
+    color: #b8a9ff;
+  }
+  .botoes .op:hover { background: rgba(124,92,252,0.5); }
+  .botoes .igual {
+    background: linear-gradient(135deg, #7c5cfc, #00d4ff);
+    color: white;
+    grid-column: span 2;
+  }
+  .botoes .igual:hover { box-shadow: 0 4px 20px rgba(124,92,252,0.4); }
+  .botoes .limpar {
+    background: rgba(255,107,157,0.2);
+    color: #ff6b9d;
+  }
+</style>
+
+<div class="calc">
+  <div class="display">
+    <div class="anterior" id="anterior"></div>
+    <div class="atual" id="atual">0</div>
+  </div>
+  <div class="botoes">
+    <button class="limpar" onclick="limpar()">C</button>
+    <button class="op" onclick="apagar()">⌫</button>
+    <button class="op" onclick="operacao('%')">%</button>
+    <button class="op" onclick="operacao('/')">÷</button>
+    <button onclick="digito('7')">7</button>
+    <button onclick="digito('8')">8</button>
+    <button onclick="digito('9')">9</button>
+    <button class="op" onclick="operacao('*')">×</button>
+    <button onclick="digito('4')">4</button>
+    <button onclick="digito('5')">5</button>
+    <button onclick="digito('6')">6</button>
+    <button class="op" onclick="operacao('-')">−</button>
+    <button onclick="digito('1')">1</button>
+    <button onclick="digito('2')">2</button>
+    <button onclick="digito('3')">3</button>
+    <button class="op" onclick="operacao('+')">+</button>
+    <button onclick="digito('0')">0</button>
+    <button onclick="digito('.')">.</button>
+    <button class="igual" onclick="calcular()">=</button>
+  </div>
+</div>
+
+<script>
+  let displayAtual = '0';
+  let displayAnterior = '';
+  let op = '';
+  let resetar = false;
+
+  function atualizar() {
+    document.getElementById('atual').textContent = displayAtual;
+    document.getElementById('anterior').textContent = displayAnterior;
+  }
+
+  function digito(d) {
+    if (resetar) { displayAtual = ''; resetar = false; }
+    if (d === '.' && displayAtual.includes('.')) return;
+    if (displayAtual === '0' && d !== '.') displayAtual = d;
+    else displayAtual += d;
+    atualizar();
+  }
+
+  function operacao(o) {
+    if (op) calcular();
+    displayAnterior = displayAtual + ' ' + o;
+    op = o;
+    resetar = true;
+    atualizar();
+  }
+
+  function calcular() {
+    if (!op) return;
+    let a = parseFloat(displayAnterior);
+    let b = parseFloat(displayAtual);
+    let r = 0;
+    if (op === '+') r = a + b;
+    if (op === '-') r = a - b;
+    if (op === '*') r = a * b;
+    if (op === '/') r = b !== 0 ? a / b : 'Erro';
+    if (op === '%') r = a % b;
+    displayAnterior = '';
+    displayAtual = r.toString();
+    op = '';
+    resetar = true;
+    atualizar();
+  }
+
+  function limpar() {
+    displayAtual = '0';
+    displayAnterior = '';
+    op = '';
+    atualizar();
+  }
+
+  function apagar() {
+    displayAtual = displayAtual.slice(0, -1) || '0';
+    atualizar();
+  }
+</script></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+       SANDBOX SECTION
+  ═══════════════════════════════════════ -->
+    <section class="sandbox-section" id="sandbox">
+      <div class="section-header reveal">
+        <span class="section-tag"
+          style="background: rgba(124, 92, 252, 0.1); color: var(--accent-1); border: 1px solid rgba(124, 92, 252, 0.2);">Playground</span>
+        <h2>🧪 Sandbox Livre</h2>
+        <p>Escreva o que quiser! Combine HTML, CSS e JavaScript livremente. Seu laboratório pessoal para experimentar.
+        </p>
+      </div>
+
+      <div class="lesson reveal"
+        style="border-image: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3)) 1; border-width: 1px; border-style: solid; background: var(--bg-card);">
+        <div class="playground sandbox-playground" data-id="sandbox">
+          <div class="playground-toolbar">
+            <div class="playground-tabs">
+              <button class="playground-tab active" data-tab="html">HTML + CSS + JS</button>
+            </div>
+            <div class="playground-actions">
+              <button class="btn-reset" onclick="resetPlayground('sandbox')">↻ Resetar</button>
+              <button class="btn-run" onclick="runPlayground('sandbox')">▶ Executar</button>
+            </div>
+          </div>
+          <div class="playground-body">
+            <div class="playground-editor-wrap">
+              <div class="playground-editor-container active" data-tab="html">
+                <div class="line-numbers"></div>
+                <textarea class="code-editor" data-lang="html" spellcheck="false"><!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* Escreva seu CSS aqui! */
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+  }
+  h1 {
+    font-size: 48px;
+    margin-bottom: 16px;
+    animation: bounce 1s ease infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  p { font-size: 18px; opacity: 0.8; }
+  button {
+    margin-top: 20px;
+    padding: 12px 32px;
+    font-size: 16px;
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  button:hover {
+    background: white;
+    color: #764ba2;
+  }
+</style>
+</head>
+<body>
+  <h1>🚀 Sua vez!</h1>
+  <p>Modifique este código livremente.</p>
+  <button onclick="alert('Parabéns! Você completou o tutorial! 🎉')">
+    Clique aqui!
+  </button>
+</body>
+</html></textarea>
+              </div>
+            </div>
+            <div class="playground-divider"></div>
+            <div class="playground-preview">
+              <span class="preview-label">Resultado</span>
+              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Feito com <span class="heart">♥</span> por Jennifer Ribeiro — Aprenda Web 2026</p>
+    <p style="margin-top: 8px; font-size: 0.75rem;">HTML • CSS • JavaScript — Tudo o que você precisa para começar.</p>
+  </footer>
+
+  <script>
+    // ═══════════════════════════════════════════
+    // PLAYGROUND ENGINE
+    // ═══════════════════════════════════════════
+
+    // Store original code for reset
+    const originalCode = {};
+
+    function initPlaygrounds() {
+      document.querySelectorAll('.playground').forEach(pg => {
+        const id = pg.dataset.id;
+        const editor = pg.querySelector('.code-editor');
+
+        // Store original code
+        originalCode[id] = editor.value;
+
+        // Line numbers
+        updateLineNumbers(editor);
+        editor.addEventListener('input', () => updateLineNumbers(editor));
+        editor.addEventListener('scroll', function () {
+          const lineNums = this.closest('.playground-editor-container').querySelector('.line-numbers');
+          lineNums.scrollTop = this.scrollTop;
+        });
+
+        // Tab key support
+        editor.addEventListener('keydown', function (e) {
+          if (e.key === 'Tab') {
+            e.preventDefault();
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+            this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+            this.selectionStart = this.selectionEnd = start + 2;
+          }
+          // Ctrl+Enter to run
+          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            runPlayground(id);
+          }
+        });
+
+        // Auto-run on load
+        runPlayground(id);
+      });
+    }
+
+    function updateLineNumbers(editor) {
+      const lines = editor.value.split('\n').length;
+      const lineNums = editor.closest('.playground-editor-container').querySelector('.line-numbers');
+      lineNums.innerHTML = Array.from({ length: lines }, (_, i) => `<span>${i + 1}</span>`).join('');
+    }
+
+    function runPlayground(id) {
+      const pg = document.querySelector(`.playground[data-id="${id}"]`);
+      const editor = pg.querySelector('.code-editor');
+      const frame = pg.querySelector('.preview-frame');
+
+      const code = editor.value;
+
+      if (frame.dataset.objectUrl) {
+        URL.revokeObjectURL(frame.dataset.objectUrl);
+      }
+      const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      frame.dataset.objectUrl = url;
+      frame.src = url;
+
+      // Flash effect on run button
+      const btn = pg.querySelector('.btn-run');
+      if (btn) {
+        btn.style.transform = 'scale(0.95)';
+        setTimeout(() => btn.style.transform = '', 150);
+      }
+    }
+
+    function resetPlayground(id) {
+      const pg = document.querySelector(`.playground[data-id="${id}"]`);
+      const editor = pg.querySelector('.code-editor');
+      editor.value = originalCode[id];
+      updateLineNumbers(editor);
+      runPlayground(id);
+    }
+
+    // ═══════════════════════════════════════════
+    // SCROLL PROGRESS
+    // ═══════════════════════════════════════════
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+
+      // Navbar effect
+      document.getElementById('navbar').classList.toggle('scrolled', scrollTop > 50);
+    });
+
+    // ═══════════════════════════════════════════
+    // NEON CURSOR & CLICK EFFECTS
+    // ═══════════════════════════════════════════
+    const cursorGlow = document.createElement('div');
+    cursorGlow.className = 'cursor-glow';
+    document.body.appendChild(cursorGlow);
+
+    document.addEventListener('mousemove', (e) => {
+      // Offset slightly for performance/smoothness, handled by will-change in CSS
+      cursorGlow.style.left = e.clientX + 'px';
+      cursorGlow.style.top = e.clientY + 'px';
+    });
+
+    document.addEventListener('click', (e) => {
+      const burst = document.createElement('div');
+      burst.className = 'click-burst';
+      burst.style.left = e.clientX + 'px';
+      burst.style.top = e.clientY + 'px';
+      document.body.appendChild(burst);
+
+      // Clean up animation element
+      setTimeout(() => burst.remove(), 500);
+    });
+
+    // ═══════════════════════════════════════════
+    // SCROLL REVEAL
+    // ═══════════════════════════════════════════
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target); // Stop observing once visible
+        }
+      });
+    }, { threshold: 0, rootMargin: '50px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ═══════════════════════════════════════════
+    // ACTIVE NAV LINK
+    // ═══════════════════════════════════════════
+    const sections = document.querySelectorAll('section[id]');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 200) {
+          current = sec.id;
+        }
+      });
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+      });
+    });
+
+    // ═══════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', initPlaygrounds);
+  </script>
+
+</body>
+
+</html>
