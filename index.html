@@ -1,1046 +1,1675 @@
 <!DOCTYPE html>
+<!-- Declaração do tipo de documento: informa ao navegador que a página utiliza o padrão moderno HTML5 -->
 <html lang="pt-BR">
 
 <head>
+  <!-- Define a codificação de caracteres como UTF-8 (suporte completo a acentos, pontuação e emojis) -->
   <meta charset="UTF-8">
+  <!-- Meta tag de viewport essencial para design responsivo: ajusta a largura da página à tela do dispositivo e define o nível de zoom inicial -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Descrição do site para mecanismos de busca (SEO) e compartilhamento em redes sociais -->
   <meta name="description"
     content="Aprenda HTML, CSS e JavaScript de forma interativa e moderna. Tutorial completo para iniciantes com editor de código ao vivo.">
-  <title>Aprenda Web — HTML, CSS & JavaScript</title>
+  <!-- Título exibido na aba do navegador e nos resultados de busca -->
+  <title>Aprenda Web — HTML, CSS &amp; JavaScript</title>
+  <!-- Importação de fontes modernas do Google Fonts: Inter (para textos) e JetBrains Mono (para código-fonte) -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
   <style>
-    /* ═══════════════════════════════════════════
-       RESET & BASE
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       RESET E ESTILOS BASE
+       Padroniza o comportamento de todos os elementos nos diferentes navegadores
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Seleciona todos os elementos do documento e seus pseudoelementos ::before e ::after */
     *,
     *::before,
     *::after {
+      /* Inclui padding e bordas no cálculo da largura e altura total dos elementos */
       box-sizing: border-box;
+      /* Remove margens externas padrão aplicadas pelos navegadores */
       margin: 0;
+      /* Remove preenchimentos internos padrão aplicados pelos navegadores */
       padding: 0;
     }
 
+    /* ═══════════════════════════════════════════════════════════════════════════
+       VARIÁVEIS DE TEMA (DESIGN TOKENS)
+       Armazena cores, gradientes, bordas e fontes para facilitar manutenção
+    ═══════════════════════════════════════════════════════════════════════════ */
     :root {
+      /* Cor de fundo principal da página (tom de preto profundo moderno) */
       --bg-primary: #050505;
+      /* Cor de fundo secundária para contraste sutil */
       --bg-secondary: #0a0a0a;
+      /* Cor de fundo translúcida para os cards de lição (efeito vidro escuro) */
       --bg-card: rgba(15, 15, 15, 0.7);
+      /* Cor de fundo dos cards ao passar o mouse */
       --bg-card-hover: rgba(25, 25, 25, 0.85);
+      /* Cor de fundo da área de edição de código */
       --bg-editor: #080808;
+      /* Cor de fundo da área de pré-visualização (branco limpo como navegador) */
       --bg-preview: #ffffff;
+      /* Cor do texto principal em tom claro de alta legibilidade */
       --text-primary: #f0f0f0;
+      /* Cor do texto secundário para explicações e subtítulos */
       --text-secondary: #a0a0a0;
+      /* Cor do texto atenuado para notas, ícones e rodapé */
       --text-muted: #666666;
+      /* Lilás neon: cor de destaque primária da identidade visual */
       --accent-1: #bf55ec;
-      /* Lilás Neon */
+      /* Rosa neon: cor de destaque secundária para botões e gradientes */
       --accent-2: #ff2a9d;
-      /* Rosa Neon */
+      /* Roxo violeta para badges e acentos sutis */
       --accent-3: #9b59b6;
+      /* Rosa magenta para pontos de animação e detalhes pulsantes */
       --accent-4: #ff007f;
+      /* Gradiente linear 1: transição diagonal de lilás neon para rosa neon */
       --gradient-1: linear-gradient(135deg, #bf55ec 0%, #ff2a9d 100%);
+      /* Gradiente linear 2: transição diagonal inversa de rosa para lilás */
       --gradient-2: linear-gradient(135deg, #ff2a9d 0%, #bf55ec 100%);
+      /* Gradiente linear 3: gradiente de apoio para o módulo JavaScript */
       --gradient-3: linear-gradient(135deg, #bf55ec 0%, #ff2a9d 100%);
+      /* Gradiente vertical de fundo da seção de abertura (Hero) */
       --gradient-hero: linear-gradient(180deg, #050505 0%, #1a0024 40%, #050505 100%);
+      /* Borda sutil translúcida lilás para elementos de interface */
       --border-color: rgba(191, 85, 236, 0.25);
+      /* Borda com brilho rosa mais intenso para foco e estados ativos */
       --border-glow: rgba(255, 42, 157, 0.4);
+      /* Sombra projetada com efeito de iluminação neon (glow) */
       --shadow-glow: 0 0 40px rgba(255, 42, 157, 0.2);
+      /* Raio de arredondamento padrão para os cards principais (16px) */
       --radius: 16px;
+      /* Raio de arredondamento menor para botões e caixas auxiliares (10px) */
       --radius-sm: 10px;
+      /* Curva de transição suave e moderna para todas as interações */
       --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      --font-main: 'Inter', -apple-system, sans-serif;
-      --font-code: 'JetBrains Mono', 'Fira Code', monospace;
+      /* Família tipográfica primária: Inter com fallbacks para sistemas nativos */
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      /* Família tipográfica monoespaçada para editores e códigos: JetBrains Mono */
+      --font-code: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
     }
 
+    /* ═══════════════════════════════════════════════════════════════════════════
+       CONFIGURAÇÕES DA PÁGINA (HTML E BODY)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Configuração da raiz do documento */
     html {
+      /* Ativa a rolagem suave ao navegar por links âncora (#) */
       scroll-behavior: smooth;
     }
 
+    /* Configuração do corpo da página */
     body {
+      /* Aplica a fonte principal Inter */
       font-family: var(--font-main);
+      /* Define a cor de fundo ultra escura */
       background: var(--bg-primary);
+      /* Define a cor padrão clara dos textos */
       color: var(--text-primary);
+      /* Altura de linha generosa para leitura agradável */
       line-height: 1.7;
+      /* Previne barras de rolagem horizontais em qualquer resolução */
       overflow-x: hidden;
+      /* Garante largura total sem ultrapassar a janela */
+      width: 100%;
+      /* Posição relativa para contexto de elementos fixos */
+      position: relative;
     }
 
+    /* Estilização da seleção de texto pelo usuário */
     ::selection {
+      /* Fundo roxo translúcido ao selecionar texto */
       background: rgba(124, 92, 252, 0.4);
+      /* Cor branca para o texto selecionado */
       color: #fff;
     }
 
+    /* Estilização da barra de rolagem vertical personalizada (Webkit) */
     ::-webkit-scrollbar {
+      /* Largura estreita e elegante da barra de rolagem */
       width: 8px;
     }
 
+    /* Estilização do trilho da barra de rolagem */
     ::-webkit-scrollbar-track {
+      /* Cor de fundo escura para o trilho */
       background: var(--bg-secondary);
     }
 
+    /* Estilização do cursor que se move na barra de rolagem */
     ::-webkit-scrollbar-thumb {
+      /* Cor lilás neon para o indicador da barra */
       background: var(--accent-1);
+      /* Bordas arredondadas no indicador */
       border-radius: 10px;
     }
 
-    /* ═══════════════════════════════════════════
-       ANIMATED BACKGROUND
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       EFEITOS DE FUNDO ANIMADOS (ORBS E NÉVOA NEON)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Container fixo em tela cheia para as esferas flutuantes */
     .bg-orbs {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
+      position: fixed; /* Fixo durante a rolagem */
+      top: 0; /* Alinhado ao topo */
+      left: 0; /* Alinhado à esquerda */
+      width: 100%; /* Largura total da tela */
+      height: 100%; /* Altura total da tela */
+      pointer-events: none; /* Permite cliques nos elementos abaixo sem bloquear */
+      z-index: 0; /* Camada mais baixa da página */
+      overflow: hidden; /* Oculta partes das esferas que saem da tela */
     }
 
+    /* Envoltório individual de cada esfera luminosa */
     .bg-orbs .orb-wrapper {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.1s linear;
+      position: absolute; /* Posição absoluta dentro do container */
+      width: 100%; /* Ocupa 100% da largura */
+      height: 100%; /* Ocupa 100% da altura */
+      transition: transform 0.1s linear; /* Movimento suave */
     }
 
+    /* Esfera luminosa com desfoque intenso (efeito blur) */
     .bg-orbs .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.15;
-      animation: orbFloat 20s ease-in-out infinite;
+      position: absolute; /* Posição absoluta dentro do wrapper */
+      border-radius: 50%; /* Formato perfeitamente circular */
+      filter: blur(100px); /* Desfoque intenso para criar brilho difuso */
+      opacity: 0.15; /* Opacidade sutil para não ofuscar o conteúdo */
+      animation: orbFloat 20s ease-in-out infinite; /* Animação infinita de flutuação */
     }
 
+    /* Primeira esfera: grande, lilás, no canto superior esquerdo */
     .bg-orbs .orb-wrapper:nth-child(1) .orb {
-      width: 600px;
-      height: 600px;
-      background: var(--accent-1);
-      top: -10%;
-      left: -5%;
-      animation-duration: 25s;
+      width: 600px; /* Largura da esfera */
+      height: 600px; /* Altura da esfera */
+      background: var(--accent-1); /* Cor lilás neon */
+      top: -10%; /* Posicionada levemente acima da borda */
+      left: -5%; /* Posicionada levemente à esquerda da borda */
+      animation-duration: 25s; /* Duração de 25 segundos para ciclo completo */
     }
 
+    /* Segunda esfera: média, rosa, no lado direito */
     .bg-orbs .orb-wrapper:nth-child(2) .orb {
-      width: 500px;
-      height: 500px;
-      background: var(--accent-2);
-      top: 40%;
-      right: -10%;
-      animation-duration: 30s;
-      animation-delay: -5s;
+      width: 500px; /* Largura da esfera */
+      height: 500px; /* Altura da esfera */
+      background: var(--accent-2); /* Cor rosa neon */
+      top: 40%; /* Posicionada na altura média */
+      right: -10%; /* Posicionada na lateral direita */
+      animation-duration: 30s; /* Duração de 30 segundos */
+      animation-delay: -5s; /* Inicia com atraso para dessincronizar */
     }
 
+    /* Terceira esfera: menor, roxa violeta, na parte inferior */
     .bg-orbs .orb-wrapper:nth-child(3) .orb {
-      width: 400px;
-      height: 400px;
-      background: var(--accent-3);
-      bottom: -5%;
-      left: 30%;
-      animation-duration: 22s;
-      animation-delay: -10s;
+      width: 400px; /* Largura da esfera */
+      height: 400px; /* Altura da esfera */
+      background: var(--accent-3); /* Cor roxa */
+      bottom: -5%; /* Posicionada na parte inferior */
+      left: 30%; /* Posicionada a 30% da esquerda */
+      animation-duration: 22s; /* Duração de 22 segundos */
+      animation-delay: -10s; /* Atraso de início */
     }
 
+    /* Animação dos movimentos das esferas (flutuação e pulso) */
     @keyframes orbFloat {
-
-      0%,
-      100% {
-        transform: translate(0, 0) scale(1);
+      0%, 100% {
+        transform: translate(0, 0) scale(1); /* Posição e escala originais */
       }
-
       33% {
-        transform: translate(50px, -30px) scale(1.1);
+        transform: translate(50px, -30px) scale(1.1); /* Desloca para cima e expande */
       }
-
       66% {
-        transform: translate(-30px, 40px) scale(0.95);
+        transform: translate(-30px, 40px) scale(0.95); /* Desloca para baixo e retrai */
       }
     }
 
+    /* Container de névoa radial sobre as esferas */
     .fog-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.7;
-      overflow: hidden;
+      position: fixed; /* Fixo na tela */
+      top: 0; /* Alinhado ao topo */
+      left: 0; /* Alinhado à esquerda */
+      width: 100vw; /* 100% da largura da janela */
+      height: 100vh; /* 100% da altura da janela */
+      pointer-events: none; /* Não bloqueia cliques */
+      z-index: 1; /* Camada logo acima das orbs */
+      opacity: 0.7; /* Opacidade sutil */
+      overflow: hidden; /* Oculta excessos */
     }
 
+    /* Efeito de nebulosa com gradientes radiais em rotação */
     .fog {
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
+      position: absolute; /* Posição absoluta */
+      top: -50%; /* Estende para fora para rotação perfeita */
+      left: -50%; /* Estende para fora à esquerda */
+      width: 200%; /* Dobro da largura da tela */
+      height: 200%; /* Dobro da altura da tela */
       background:
         radial-gradient(circle at 50% 50%, rgba(191, 85, 236, 0.15) 0%, transparent 40%),
         radial-gradient(circle at 20% 30%, rgba(255, 42, 157, 0.12) 0%, transparent 50%),
         radial-gradient(circle at 80% 70%, rgba(155, 89, 182, 0.15) 0%, transparent 45%),
         radial-gradient(circle at 40% 80%, rgba(255, 0, 127, 0.1) 0%, transparent 40%);
-      filter: blur(40px);
-      animation: fogNebula 45s linear infinite;
-      transform-origin: center;
+      filter: blur(40px); /* Desfoque difuso */
+      animation: fogNebula 45s linear infinite; /* Rotação lenta contínua */
+      transform-origin: center; /* Ponto de rotação no centro */
     }
 
+    /* Animação de rotação em 360 graus da névoa */
     @keyframes fogNebula {
       0% {
-        transform: rotate(0deg) scale(1);
+        transform: rotate(0deg) scale(1); /* Início sem rotação */
       }
-
       33% {
-        transform: rotate(120deg) scale(1.1);
+        transform: rotate(120deg) scale(1.1); /* 120 graus levemente ampliado */
       }
-
       66% {
-        transform: rotate(240deg) scale(0.9);
+        transform: rotate(240deg) scale(0.9); /* 240 graus levemente reduzido */
       }
-
       100% {
-        transform: rotate(360deg) scale(1);
+        transform: rotate(360deg) scale(1); /* Ciclo completo de 360 graus */
       }
     }
 
-    /* ═══════════════════════════════════════════
-       CURSOR EFFECTS
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       EFEITOS DE CURSOR PERSONALIZADO (DESKTOP)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Círculo luminoso que segue o ponteiro do mouse */
     .cursor-glow {
-      position: fixed;
-      width: 300px;
-      height: 300px;
+      position: fixed; /* Fixo na janela */
+      width: 300px; /* Diâmetro de 300px */
+      height: 300px; /* Altura de 300px */
       background: radial-gradient(circle, rgba(191, 85, 236, 0.15) 0%, rgba(191, 85, 236, 0) 70%);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.3s;
-      opacity: 0;
-      will-change: left, top;
+      border-radius: 50%; /* Círculo perfeito */
+      pointer-events: none; /* Não interfere com elementos clicáveis */
+      z-index: 9999; /* Fica acima de quase tudo */
+      transform: translate(-50%, -50%); /* Centraliza exatamente no ponteiro */
+      transition: opacity 0.3s; /* Transição suave de visibilidade */
+      opacity: 0; /* Invisível até o primeiro movimento */
+      will-change: left, top; /* Otimização de GPU para renderização de posição */
     }
 
+    /* Torna o brilho visível quando o mouse passa sobre o body */
     body:hover .cursor-glow {
-      opacity: 1;
+      opacity: 1; /* Exibe o brilho */
     }
 
+    /* Onda de choque gerada ao clicar em qualquer ponto */
     .click-burst {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: transparent;
-      border: 2px solid var(--accent-2);
-      pointer-events: none;
-      z-index: 10000;
-      transform: translate(-50%, -50%);
-      animation: burstAnim 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+      position: fixed; /* Fixo na posição do clique */
+      width: 20px; /* Tamanho inicial pequeno */
+      height: 20px; /* Tamanho inicial pequeno */
+      border-radius: 50%; /* Círculo */
+      background: transparent; /* Interior transparente */
+      border: 2px solid var(--accent-2); /* Borda rosa neon */
+      pointer-events: none; /* Sem bloqueio de eventos */
+      z-index: 10000; /* Camada superior */
+      transform: translate(-50%, -50%); /* Centralizado no clique */
+      animation: burstAnim 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; /* Dispara animação de explosão */
     }
 
+    /* Animação da expansão e dissipação do clique */
     @keyframes burstAnim {
       0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-        box-shadow: 0 0 10px var(--accent-2), inset 0 0 10px var(--accent-2);
+        transform: translate(-50%, -50%) scale(1); /* Escala normal no início */
+        opacity: 1; /* Totalmente visível */
+        box-shadow: 0 0 10px var(--accent-2), inset 0 0 10px var(--accent-2); /* Brilho neon interno e externo */
       }
-
       100% {
-        transform: translate(-50%, -50%) scale(4);
-        opacity: 0;
-        box-shadow: 0 0 40px var(--accent-2), inset 0 0 20px var(--accent-2);
+        transform: translate(-50%, -50%) scale(4); /* Quadruplica de tamanho */
+        opacity: 0; /* Desaparece por completo */
+        box-shadow: 0 0 40px var(--accent-2), inset 0 0 20px var(--accent-2); /* Dissipa a luz */
       }
     }
 
-    /* ═══════════════════════════════════════════
-       NAVIGATION
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       BARRA DE NAVEGAÇÃO SUPERIOR (NAVBAR)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Container fixo da barra de navegação no topo da tela */
     .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      padding: 16px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(8, 8, 15, 0.8);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-color);
-      transition: var(--transition);
+      position: fixed; /* Fixo durante toda a rolagem */
+      top: 0; /* Alinhado ao topo */
+      left: 0; /* Alinhado à esquerda */
+      right: 0; /* Alinhado à direita (largura total) */
+      z-index: 1000; /* Camada alta para ficar sobre o conteúdo */
+      padding: 16px 40px; /* Espaçamento interno vertical e horizontal no desktop */
+      display: flex; /* Disposição flexível dos itens internos */
+      align-items: center; /* Alinha verticalmente logo e links no centro */
+      justify-content: space-between; /* Separa o logo à esquerda e links à direita */
+      background: rgba(8, 8, 15, 0.85); /* Fundo escuro com transparência */
+      backdrop-filter: blur(20px); /* Efeito vidro fosco (glassmorphism) */
+      -webkit-backdrop-filter: blur(20px); /* Suporte ao Safari */
+      border-bottom: 1px solid var(--border-color); /* Linha divisória inferior neon */
+      transition: var(--transition); /* Animação suave nas mudanças de tamanho */
     }
 
+    /* Estilo aplicado via JavaScript quando a página for rolada para baixo */
     .navbar.scrolled {
-      padding: 10px 40px;
-      box-shadow: var(--shadow-glow);
+      padding: 10px 40px; /* Reduz altura da barra para economizar espaço de tela */
+      box-shadow: var(--shadow-glow); /* Adiciona sombra luminosa na rolagem */
     }
 
+    /* Estilização do logotipo textual da barra */
     .navbar .logo {
-      font-size: 1.4rem;
-      font-weight: 800;
-      background: var(--gradient-1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
+      font-size: 1.4rem; /* Tamanho do texto do logo */
+      font-weight: 800; /* Peso da fonte extra negrito */
+      background: var(--gradient-1); /* Gradiente lilás para rosa */
+      -webkit-background-clip: text; /* Aplica o gradiente apenas dentro das letras */
+      -webkit-text-fill-color: transparent; /* Torna o texto transparente para revelar o gradiente */
+      letter-spacing: -0.5px; /* Espaçamento compacto entre as letras */
+      text-decoration: none; /* Remove sublinhado se for link */
+      display: inline-flex; /* Mantém alinhado em linha */
+      align-items: center; /* Alinha o texto centralizado */
+      cursor: pointer; /* Cursor de link */
     }
 
+    /* Parte secundária do nome do logo ("Web") */
     .navbar .logo span {
-      font-weight: 400;
-      opacity: 0.7;
+      font-weight: 400; /* Peso normal mais fino para contraste elegante */
+      opacity: 0.7; /* Opacidade sutil */
     }
 
+    /* Lista não ordenada de links de navegação */
     .nav-links {
-      display: flex;
-      gap: 8px;
-      list-style: none;
+      display: flex; /* Links organizados em linha horizontal */
+      gap: 8px; /* Espaçamento de 8px entre cada botão */
+      list-style: none; /* Remove bolinhas padrão de lista */
     }
 
+    /* Estilo individual de cada link de navegação */
     .nav-links a {
-      text-decoration: none;
-      color: var(--text-secondary);
-      padding: 8px 18px;
-      border-radius: 50px;
-      font-size: 0.88rem;
-      font-weight: 500;
-      transition: var(--transition);
-      position: relative;
+      text-decoration: none; /* Remove sublinhado padrão */
+      color: var(--text-secondary); /* Cor cinza clara suave */
+      padding: 8px 18px; /* Preenchimento interno tipo pílula */
+      border-radius: 50px; /* Cantos 100% arredondados */
+      font-size: 0.88rem; /* Tamanho de texto discreto e legível */
+      font-weight: 500; /* Peso médio para boa legibilidade */
+      transition: var(--transition); /* Transição suave em hover */
+      position: relative; /* Contexto para linha ativa */
+      display: inline-block; /* Permite dimensões e paddings */
     }
 
+    /* Efeito de hover e estado ativo do link de navegação */
     .nav-links a:hover,
     .nav-links a.active {
-      color: #fff;
-      background: rgba(124, 92, 252, 0.15);
+      color: #fff; /* Texto fica branco puro */
+      background: rgba(124, 92, 252, 0.15); /* Fundo com brilho lilás translúcido */
     }
 
+    /* Linha indicadora inferior sob o link da seção atualmente ativa */
     .nav-links a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 20px;
-      height: 2px;
-      background: var(--accent-1);
-      border-radius: 2px;
+      content: ''; /* Elemento visual decorativo */
+      position: absolute; /* Posição absoluta na base do link */
+      bottom: 0; /* Alinhado à base */
+      left: 50%; /* Centralizado horizontalmente */
+      transform: translateX(-50%); /* Ajuste de centralização perfeito */
+      width: 20px; /* Largura da pequena linha indicadora */
+      height: 2px; /* Espessura de 2px */
+      background: var(--accent-1); /* Cor lilás neon vibrante */
+      border-radius: 2px; /* Pontas levemente arredondadas */
     }
 
+    /* ═══════════════════════════════════════════════════════════════════════════
+       BOTÃO HAMBÚRGUER E MENU MOBILE RESPONSIVO
+       Permite navegação completa e ergonômica em smartphones e tablets
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Botão disparador do menu mobile (oculto em desktop) */
+    .menu-toggle {
+      display: none; /* Oculto por padrão em telas grandes de computador */
+      flex-direction: column; /* Três barras empilhadas verticalmente */
+      justify-content: space-around; /* Distribuição uniforme das barras */
+      width: 42px; /* Área de toque confortável de 42px */
+      height: 42px; /* Altura de toque de 42px para atender recomendações de acessibilidade */
+      background: rgba(191, 85, 236, 0.1); /* Fundo sutil para destacar a área de toque */
+      border: 1px solid var(--border-color); /* Borda neon suave */
+      border-radius: 10px; /* Cantos arredondados */
+      cursor: pointer; /* Cursor de clique */
+      padding: 10px 8px; /* Preenchimento interno para centralizar as barras */
+      z-index: 1005; /* Fica acima da navbar para garantir que o clique sempre funcione */
+      transition: var(--transition); /* Animação suave ao interagir */
+      -webkit-tap-highlight-color: transparent; /* Remove flash azul padrão do Android no toque */
+    }
+
+    /* Efeito de foco/hover no botão hambúrguer */
+    .menu-toggle:hover,
+    .menu-toggle:focus-visible {
+      background: rgba(191, 85, 236, 0.2); /* Fundo mais brilhante */
+      border-color: var(--accent-1); /* Borda neon acesa */
+      outline: none; /* Remove contorno padrão mantendo acessibilidade */
+    }
+
+    /* Linhas individuais que compõem o ícone de hambúrguer */
+    .menu-toggle .hamburger-bar {
+      width: 100%; /* Largura total da barra */
+      height: 2.5px; /* Espessura visível de 2.5px */
+      background-color: var(--text-primary); /* Cor clara de alto contraste */
+      border-radius: 3px; /* Bordas arredondadas */
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animação suave na transformação em 'X' */
+      transform-origin: center; /* Gira a partir do centro */
+    }
+
+    /* Transformação da primeira barra superior ao abrir o menu (forma a perna do X) */
+    .menu-toggle.active .hamburger-bar:nth-child(1) {
+      transform: translateY(7px) rotate(45deg); /* Desce e gira 45 graus */
+      background-color: var(--accent-2); /* Fica em rosa neon */
+    }
+
+    /* Desaparecimento da barra do meio ao abrir o menu */
+    .menu-toggle.active .hamburger-bar:nth-child(2) {
+      opacity: 0; /* Invisível */
+      transform: scaleX(0); /* Encolhe horizontalmente */
+    }
+
+    /* Transformação da terceira barra inferior ao abrir o menu (forma a outra perna do X) */
+    .menu-toggle.active .hamburger-bar:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg); /* Sobe e gira -45 graus */
+      background-color: var(--accent-2); /* Fica em rosa neon */
+    }
+
+    /* Camada escura que cobre o conteúdo quando o menu mobile está aberto */
+    .nav-backdrop {
+      display: none; /* Oculta quando o menu estiver fechado */
+      position: fixed; /* Fixada em toda a janela */
+      top: 0; /* Alinhada ao topo */
+      left: 0; /* Alinhada à esquerda */
+      width: 100vw; /* 100% da largura visível */
+      height: 100vh; /* 100% da altura visível */
+      background: rgba(0, 0, 0, 0.75); /* Fundo preto 75% opaco */
+      backdrop-filter: blur(8px); /* Desfoque do fundo para foco no menu */
+      -webkit-backdrop-filter: blur(8px); /* Compatibilidade Safari */
+      z-index: 998; /* Fica abaixo apenas do menu mobile */
+      opacity: 0; /* Começa transparente */
+      transition: opacity 0.3s ease; /* Transição suave de opacidade */
+      pointer-events: none; /* Não bloqueia interações quando invisível */
+    }
+
+    /* Estado ativo da camada escura de fundo */
+    .nav-backdrop.active {
+      display: block; /* Visível */
+      opacity: 1; /* Opacidade máxima */
+      pointer-events: auto; /* Captura toques para fechar o menu */
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       BARRA DE PROGRESSO DE ROLAGEM (SCROLL PROGRESS)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Container fixo da barra no topo extremo da janela */
     .progress-bar-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      z-index: 1001;
-      background: rgba(124, 92, 252, 0.1);
+      position: fixed; /* Fixo na janela */
+      top: 0; /* Alinhado ao topo */
+      left: 0; /* Alinhado à esquerda */
+      right: 0; /* Alinhado à direita */
+      height: 3px; /* Espessura de 3px */
+      z-index: 1001; /* Fica acima da navbar */
+      background: rgba(124, 92, 252, 0.1); /* Trilho sutil */
     }
 
+    /* Indicador preenchido que cresce com o scroll */
     .progress-bar {
-      height: 100%;
-      background: var(--gradient-1);
-      width: 0%;
-      transition: width 0.15s linear;
-      border-radius: 0 2px 2px 0;
-      box-shadow: 0 0 10px rgba(124, 92, 252, 0.5);
+      height: 100%; /* Ocupa toda a altura do container de 3px */
+      background: var(--gradient-1); /* Gradiente neon lilás para rosa */
+      width: 0%; /* Inicia zerado e é atualizado dinamicamente via JS */
+      transition: width 0.15s linear; /* Atualização suave */
+      border-radius: 0 2px 2px 0; /* Canto direito arredondado */
+      box-shadow: 0 0 10px rgba(124, 92, 252, 0.5); /* Brilho neon na ponta */
     }
 
-    /* ═══════════════════════════════════════════
-       HERO
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       SEÇÃO DE ABERTURA (HERO)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Bloco de introdução e destaque da aplicação */
     .hero {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 120px 40px 80px;
-      background: var(--gradient-hero);
+      position: relative; /* Contexto de posicionamento */
+      z-index: 1; /* Camada acima do fundo animado */
+      min-height: 100vh; /* Altura de pelo menos 100% da viewport no desktop */
+      display: flex; /* Flexbox para centralização */
+      align-items: center; /* Alinha o conteúdo verticalmente no centro */
+      justify-content: center; /* Alinha o conteúdo horizontalmente no centro */
+      text-align: center; /* Textos centralizados */
+      padding: 120px 40px 80px; /* Espaçamento interno com folga para a navbar */
+      background: var(--gradient-hero); /* Fundo com gradiente suave escuro e púrpura */
     }
 
+    /* Envoltório que limita a largura do conteúdo do Hero */
     .hero-content {
-      max-width: 800px;
+      max-width: 800px; /* Largura máxima confortável para leitura */
+      width: 100%; /* Ocupa 100% até atingir o limite máximo */
+      margin: 0 auto; /* Centraliza horizontalmente */
     }
 
+    /* Emblema/tag de destaque "Tutorial Interativo — 100% Gratuito" */
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 20px;
-      border-radius: 50px;
-      background: rgba(124, 92, 252, 0.1);
-      border: 1px solid rgba(124, 92, 252, 0.25);
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--accent-2);
-      margin-bottom: 32px;
-      animation: fadeInUp 0.8s ease-out;
+      display: inline-flex; /* Alinhamento em linha flexível */
+      align-items: center; /* Centraliza ícone e texto */
+      gap: 8px; /* Espaço entre o ponto e o texto */
+      padding: 8px 20px; /* Preenchimento formato pílula */
+      border-radius: 50px; /* Totalmente arredondado */
+      background: rgba(124, 92, 252, 0.1); /* Fundo roxo suave */
+      border: 1px solid rgba(124, 92, 252, 0.25); /* Borda roxa fina */
+      font-size: 0.85rem; /* Tamanho de texto compacto */
+      font-weight: 500; /* Peso médio */
+      color: var(--accent-2); /* Cor rosa neon */
+      margin-bottom: 32px; /* Margem inferior de separação */
+      animation: fadeInUp 0.8s ease-out; /* Animação de entrada suave de baixo para cima */
+      max-width: 100%; /* Não ultrapassa tela no mobile */
     }
 
+    /* Ponto luminoso pulsante dentro do badge */
     .hero-badge .dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent-4);
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
+      width: 8px; /* Diâmetro de 8px */
+      height: 8px; /* Altura de 8px */
+      background: var(--accent-4); /* Cor rosa viva */
+      border-radius: 50%; /* Círculo perfeito */
+      animation: pulse 2s ease-in-out infinite; /* Pulsação contínua */
+      flex-shrink: 0; /* Não deforma em telas pequenas */
     }
 
+    /* Animação de pulsação do ponto indicador */
     @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1);
+      0%, 100% {
+        opacity: 1; /* Opacidade máxima */
+        transform: scale(1); /* Escala padrão */
       }
-
       50% {
-        opacity: 0.5;
-        transform: scale(0.8);
+        opacity: 0.5; /* Meia opacidade */
+        transform: scale(0.8); /* Reduz levemente */
       }
     }
 
+    /* Título principal da página */
     .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 900;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      letter-spacing: -2px;
-      animation: fadeInUp 0.8s ease-out 0.1s both;
+      font-size: clamp(2.3rem, 6vw, 4.5rem); /* Tamanho fluido responsivo */
+      font-weight: 900; /* Peso extra preto (máximo impacto visual) */
+      line-height: 1.1; /* Altura de linha compacta */
+      margin-bottom: 24px; /* Espaço abaixo do título */
+      letter-spacing: -2px; /* Letras aproximadas para estética moderna */
+      animation: fadeInUp 0.8s ease-out 0.1s both; /* Entrada com pequeno atraso */
+      word-break: break-word; /* Quebra palavras longas se necessário */
     }
 
+    /* Texto com gradiente dentro do título */
     .hero h1 .gradient-text {
-      background: var(--gradient-1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background: var(--gradient-1); /* Gradiente lilás para rosa */
+      -webkit-background-clip: text; /* Clip de texto Webkit */
+      -webkit-text-fill-color: transparent; /* Texto transparente */
+      display: inline-block; /* Mantém bloco em linha */
     }
 
+    /* Subtítulo explicativo abaixo do título principal */
     .hero p {
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto 40px;
-      line-height: 1.8;
-      animation: fadeInUp 0.8s ease-out 0.2s both;
+      font-size: 1.2rem; /* Tamanho confortável para leitura */
+      color: var(--text-secondary); /* Cinza claro elegante */
+      max-width: 600px; /* Largura restrita para não cansar os olhos */
+      margin: 0 auto 40px; /* Centralizado com margem inferior de 40px */
+      line-height: 1.8; /* Espaçamento entre linhas arejado */
+      animation: fadeInUp 0.8s ease-out 0.2s both; /* Entrada animada */
     }
 
+    /* Container dos botões de ação do Hero */
     .hero-buttons {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-      animation: fadeInUp 0.8s ease-out 0.3s both;
+      display: flex; /* Alinha os botões lado a lado no desktop */
+      gap: 16px; /* Espaço de 16px entre os botões */
+      justify-content: center; /* Centraliza os botões */
+      flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+      animation: fadeInUp 0.8s ease-out 0.3s both; /* Entrada com animação */
     }
 
+    /* Estilo base compartilhado por todos os botões da página */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 32px;
-      border-radius: 50px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: var(--transition);
-      font-family: var(--font-main);
+      display: inline-flex; /* Layout flexível inline */
+      align-items: center; /* Alinha ícone e texto verticalmente */
+      justify-content: center; /* Centraliza conteúdo interno */
+      gap: 8px; /* Espaço entre o ícone e o texto */
+      padding: 14px 32px; /* Preenchimento confortável para toque */
+      border-radius: 50px; /* Formato pílula elegante */
+      font-size: 0.95rem; /* Tamanho legível */
+      font-weight: 600; /* Peso semi-negrito */
+      text-decoration: none; /* Remove sublinhado */
+      cursor: pointer; /* Cursor de clique */
+      border: none; /* Remove bordas nativas */
+      transition: var(--transition); /* Transição em todas as propriedades */
+      font-family: var(--font-main); /* Fonte principal */
+      -webkit-tap-highlight-color: transparent; /* Remove flash de clique no mobile */
     }
 
+    /* Botão primário com preenchimento em gradiente neon */
     .btn-primary {
-      background: var(--gradient-1);
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(124, 92, 252, 0.3);
+      background: var(--gradient-1); /* Gradiente lilás para rosa */
+      color: #fff; /* Texto branco */
+      box-shadow: 0 4px 20px rgba(124, 92, 252, 0.3); /* Sombra luminosa */
     }
 
+    /* Efeito de hover no botão primário */
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(255, 42, 157, 0.5);
+      transform: translateY(-2px); /* Elevação suave de 2px */
+      box-shadow: 0 8px 30px rgba(255, 42, 157, 0.5); /* Sombra mais vibrante */
     }
 
+    /* Botão secundário vazado com contorno (outline) */
     .btn-outline {
-      background: transparent;
-      color: var(--text-primary);
-      border: 1px solid var(--border-glow);
+      background: transparent; /* Interior transparente */
+      color: var(--text-primary); /* Texto na cor clara principal */
+      border: 1px solid var(--border-glow); /* Contorno rosa neon */
     }
 
+    /* Efeito de hover no botão secundário */
     .btn-outline:hover {
-      background: rgba(124, 92, 252, 0.1);
-      border-color: var(--accent-1);
-      transform: translateY(-2px);
+      background: rgba(124, 92, 252, 0.1); /* Fundo lilás suave */
+      border-color: var(--accent-1); /* Borda lilás neon */
+      transform: translateY(-2px); /* Elevação suave */
     }
 
+    /* Bloco de métricas e estatísticas do Hero */
     .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      margin-top: 64px;
-      animation: fadeInUp 0.8s ease-out 0.4s both;
+      display: flex; /* Disposição horizontal no desktop */
+      justify-content: center; /* Centraliza as métricas */
+      gap: 48px; /* Espaçamento amplo entre cada métrica */
+      margin-top: 64px; /* Espaço generoso acima */
+      animation: fadeInUp 0.8s ease-out 0.4s both; /* Entrada suave */
+      flex-wrap: wrap; /* Quebra linha se necessário */
     }
 
+    /* Item individual de estatística */
     .hero-stats .stat {
-      text-align: center;
+      text-align: center; /* Centraliza número e texto */
+      min-width: 80px; /* Largura mínima para estabilidade */
     }
 
+    /* Número em destaque na estatística */
     .hero-stats .stat-number {
-      font-size: 2rem;
-      font-weight: 800;
-      background: var(--gradient-1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 2rem; /* Tamanho grande para destaque */
+      font-weight: 800; /* Peso extra negrito */
+      background: var(--gradient-1); /* Gradiente colorido nos números */
+      -webkit-background-clip: text; /* Clip de texto */
+      -webkit-text-fill-color: transparent; /* Revela o gradiente */
+      line-height: 1.2; /* Altura de linha proporcional */
     }
 
+    /* Rótulo descritivo da estatística */
     .hero-stats .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 4px;
+      font-size: 0.85rem; /* Tamanho discreto */
+      color: var(--text-muted); /* Cinza atenuado */
+      margin-top: 4px; /* Espaço entre número e rótulo */
     }
 
+    /* Animação reutilizável de entrada subindo e clareando */
     @keyframes fadeInUp {
       from {
-        opacity: 0;
-        transform: translateY(30px);
+        opacity: 0; /* Começa transparente */
+        transform: translateY(30px); /* Começa 30px abaixo */
       }
-
       to {
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 1; /* Termina totalmente visível */
+        transform: translateY(0); /* Termina na posição exata */
       }
     }
 
-    /* ═══════════════════════════════════════════
-       MAIN CONTENT
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       CONTEÚDO PRINCIPAL (MAIN E SEÇÕES)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Container central da aplicação */
     main {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px;
+      position: relative; /* Contexto de posicionamento */
+      z-index: 1; /* Acima do fundo */
+      max-width: 1100px; /* Largura máxima ideal para monitores */
+      margin: 0 auto; /* Centraliza na tela */
+      padding: 0 24px; /* Espaçamento de segurança lateral */
+      width: 100%; /* Ocupa 100% da largura disponível */
     }
 
+    /* Cada seção de módulo (HTML, CSS, JavaScript) */
     .section {
-      padding: 100px 0 40px;
+      padding: 100px 0 40px; /* Espaço vertical generoso entre módulos */
     }
 
+    /* Cabeçalho de cada seção */
     .section-header {
-      text-align: center;
-      margin-bottom: 64px;
+      text-align: center; /* Centralizado */
+      margin-bottom: 64px; /* Espaço abaixo antes da primeira lição */
     }
 
+    /* Etiqueta colorida do módulo (ex: "Módulo 1") */
     .section-tag {
-      display: inline-block;
-      padding: 6px 16px;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 16px;
+      display: inline-block; /* Formato pílula */
+      padding: 6px 16px; /* Preenchimento interno */
+      border-radius: 50px; /* Totalmente arredondado */
+      font-size: 0.8rem; /* Tamanho compacto */
+      font-weight: 600; /* Peso destacado */
+      text-transform: uppercase; /* Letras maiúsculas */
+      letter-spacing: 1.5px; /* Espaçamento refinado entre letras */
+      margin-bottom: 16px; /* Espaço antes do título */
     }
 
+    /* Tag específica do módulo HTML */
     .tag-html {
-      background: rgba(255, 107, 157, 0.1);
-      color: var(--accent-3);
-      border: 1px solid rgba(255, 107, 157, 0.2);
+      background: rgba(255, 107, 157, 0.1); /* Rosa suave translúcido */
+      color: var(--accent-3); /* Roxo */
+      border: 1px solid rgba(255, 107, 157, 0.2); /* Borda rosa sutil */
     }
 
+    /* Tag específica do módulo CSS */
     .tag-css {
-      background: rgba(0, 212, 255, 0.1);
-      color: var(--accent-2);
-      border: 1px solid rgba(0, 212, 255, 0.2);
+      background: rgba(0, 212, 255, 0.1); /* Azul cyan suave */
+      color: var(--accent-2); /* Rosa neon */
+      border: 1px solid rgba(0, 212, 255, 0.2); /* Borda sutil */
     }
 
+    /* Tag específica do módulo JavaScript */
     .tag-js {
-      background: rgba(0, 232, 143, 0.1);
-      color: var(--accent-4);
-      border: 1px solid rgba(0, 232, 143, 0.2);
+      background: rgba(0, 232, 143, 0.1); /* Verde suave */
+      color: var(--accent-4); /* Rosa choque */
+      border: 1px solid rgba(0, 232, 143, 0.2); /* Borda sutil */
     }
 
+    /* Título h2 de cada módulo */
     .section-header h2 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
+      font-size: 2.5rem; /* Tamanho expressivo */
+      font-weight: 800; /* Peso extra negrito */
+      letter-spacing: -1px; /* Letras compactas */
+      margin-bottom: 16px; /* Espaço antes da descrição */
+      word-break: break-word; /* Evita estouro em telas pequenas */
     }
 
+    /* Descrição em parágrafo do cabeçalho da seção */
     .section-header p {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
+      color: var(--text-secondary); /* Cinza elegante */
+      font-size: 1.1rem; /* Tamanho agradável */
+      max-width: 600px; /* Largura controlada */
+      margin: 0 auto; /* Centralizado */
+      line-height: 1.7; /* Altura de linha confortável */
     }
 
-    /* ═══════════════════════════════════════════
-       LESSON CARDS
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       CARDS DAS LIÇÕES (LESSON CARDS)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Card que engloba a teoria e o editor interativo de cada lição */
     .lesson {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 40px;
-      margin-bottom: 40px;
-      backdrop-filter: blur(10px);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
+      background: var(--bg-card); /* Fundo escuro translúcido */
+      border: 1px solid var(--border-color); /* Borda neon suave */
+      border-radius: var(--radius); /* Cantos arredondados de 16px */
+      padding: 40px; /* Preenchimento interno confortável no desktop */
+      margin-bottom: 40px; /* Distância entre lições consecutivas */
+      backdrop-filter: blur(10px); /* Vidro fosco sutil */
+      -webkit-backdrop-filter: blur(10px); /* Suporte Safari */
+      transition: var(--transition); /* Transição para efeitos de hover */
+      position: relative; /* Contexto para barra decorativa */
+      overflow: hidden; /* Mantém elementos internos contidos */
+      width: 100%; /* Largura total */
     }
 
+    /* Linha colorida luminosa decorativa no topo de cada card */
     .lesson::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      border-radius: var(--radius) var(--radius) 0 0;
+      content: ''; /* Elemento visual decorativo */
+      position: absolute; /* Posição absoluta */
+      top: 0; /* Alinhado ao topo do card */
+      left: 0; /* Alinhado à esquerda */
+      right: 0; /* Alinhado à direita */
+      height: 3px; /* Espessura de 3px */
+      border-radius: var(--radius) var(--radius) 0 0; /* Apenas cantos superiores arredondados */
     }
 
+    /* Linha decorativa para lições de HTML */
     .lesson.html-lesson::before {
-      background: var(--gradient-2);
+      background: var(--gradient-2); /* Gradiente rosa e lilás */
     }
 
+    /* Linha decorativa para lições de CSS */
     .lesson.css-lesson::before {
-      background: linear-gradient(90deg, var(--accent-2), #6366f1);
+      background: linear-gradient(90deg, var(--accent-2), #6366f1); /* Gradiente rosa e índigo */
     }
 
+    /* Linha decorativa para lições de JavaScript */
     .lesson.js-lesson::before {
-      background: var(--gradient-3);
+      background: var(--gradient-3); /* Gradiente lilás e rosa */
     }
 
+    /* Efeito de foco quando o usuário passa o mouse sobre o card */
     .lesson:hover {
-      border-color: var(--border-glow);
-      box-shadow: var(--shadow-glow);
+      border-color: var(--border-glow); /* Borda rosa acesa */
+      box-shadow: var(--shadow-glow); /* Brilho neon difuso ao redor */
     }
 
+    /* Badge com o número da lição (ex: 01, 02) */
     .lesson-number {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 16px;
+      display: inline-flex; /* Layout flexível inline */
+      align-items: center; /* Centralizado verticalmente */
+      justify-content: center; /* Centralizado horizontalmente */
+      width: 36px; /* Largura quadrada */
+      height: 36px; /* Altura quadrada */
+      border-radius: 10px; /* Cantos arredondados */
+      font-size: 0.85rem; /* Tamanho compacto */
+      font-weight: 700; /* Negrito */
+      margin-bottom: 16px; /* Espaço antes do título */
     }
 
+    /* Cores do número para lições de HTML */
     .html-lesson .lesson-number {
-      background: rgba(255, 107, 157, 0.15);
-      color: var(--accent-3);
+      background: rgba(255, 107, 157, 0.15); /* Fundo rosa sutil */
+      color: var(--accent-3); /* Roxo */
     }
 
+    /* Cores do número para lições de CSS */
     .css-lesson .lesson-number {
-      background: rgba(0, 212, 255, 0.15);
-      color: var(--accent-2);
+      background: rgba(0, 212, 255, 0.15); /* Fundo cyan sutil */
+      color: var(--accent-2); /* Rosa neon */
     }
 
+    /* Cores do número para lições de JavaScript */
     .js-lesson .lesson-number {
-      background: rgba(0, 232, 143, 0.15);
-      color: var(--accent-4);
+      background: rgba(0, 232, 143, 0.15); /* Fundo verde sutil */
+      color: var(--accent-4); /* Rosa choque */
     }
 
+    /* Título principal da lição (h3) */
     .lesson h3 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      letter-spacing: -0.5px;
+      font-size: 1.5rem; /* Tamanho proporcional */
+      font-weight: 700; /* Negrito forte */
+      margin-bottom: 16px; /* Espaço antes da explicação */
+      letter-spacing: -0.5px; /* Espaçamento compacto */
+      word-break: break-word; /* Evita quebra indesejada */
     }
 
+    /* Bloco explicativo com texto conceitual da lição */
     .lesson .explanation {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      margin-bottom: 24px;
-      line-height: 1.8;
+      color: var(--text-secondary); /* Cinza suave */
+      font-size: 0.95rem; /* Tamanho confortável */
+      margin-bottom: 24px; /* Espaço antes do playground interativo */
+      line-height: 1.8; /* Leitura agradável */
     }
 
+    /* Trechos de código em linha dentro da explicação (tags <code>) */
     .lesson .explanation code {
-      background: rgba(124, 92, 252, 0.15);
-      color: var(--accent-2);
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-family: var(--font-code);
-      font-size: 0.85rem;
+      background: rgba(124, 92, 252, 0.15); /* Fundo lilás translúcido */
+      color: var(--accent-2); /* Rosa neon para contraste de sintaxe */
+      padding: 2px 8px; /* Preenchimento ao redor do texto */
+      border-radius: 6px; /* Cantos arredondados */
+      font-family: var(--font-code); /* Fonte monoespaçada */
+      font-size: 0.85rem; /* Tamanho alinhado ao texto */
+      word-break: break-word; /* Quebra palavras se o código for longo no mobile */
+      overflow-wrap: anywhere; /* Garante que não quebre o layout no celular */
     }
 
+    /* Destaques em negrito dentro das explicações */
     .lesson .explanation strong {
-      color: var(--text-primary);
+      color: var(--text-primary); /* Branco para alto destaque */
     }
 
+    /* Lista não ordenada de conceitos e tags */
     .concept-list {
-      list-style: none;
-      padding: 0;
-      margin: 16px 0;
+      list-style: none; /* Remove marcadores padrão */
+      padding: 0; /* Sem recuo padrão */
+      margin: 16px 0; /* Espaçamento vertical */
     }
 
+    /* Item individual da lista de conceitos */
     .concept-list li {
-      position: relative;
-      padding: 8px 0 8px 28px;
-      color: var(--text-secondary);
-      font-size: 0.93rem;
+      position: relative; /* Contexto para marcador personalizado */
+      padding: 8px 0 8px 28px; /* Recuo à esquerda para o marcador */
+      color: var(--text-secondary); /* Cor cinza */
+      font-size: 0.93rem; /* Tamanho de leitura */
+      line-height: 1.6; /* Altura de linha */
     }
 
+    /* Marcador em formato de seta estilizada (▸) */
     .concept-list li::before {
-      content: '▸';
-      position: absolute;
-      left: 4px;
-      color: var(--accent-1);
-      font-weight: bold;
+      content: '▸'; /* Caractere de seta elegante */
+      position: absolute; /* Posição absoluta à esquerda */
+      left: 4px; /* Alinhamento na borda esquerda */
+      color: var(--accent-1); /* Lilás neon */
+      font-weight: bold; /* Seta em negrito */
     }
 
+    /* Caixa destacada com dicas práticas (tip box) */
     .tip-box {
-      background: rgba(0, 232, 143, 0.06);
-      border: 1px solid rgba(0, 232, 143, 0.15);
-      border-radius: var(--radius-sm);
-      padding: 16px 20px;
-      margin: 16px 0;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
+      background: rgba(0, 232, 143, 0.06); /* Verde sutil translúcido */
+      border: 1px solid rgba(0, 232, 143, 0.15); /* Borda verde esmeralda fina */
+      border-radius: var(--radius-sm); /* Cantos arredondados de 10px */
+      padding: 16px 20px; /* Preenchimento interno */
+      margin: 16px 0; /* Espaçamento superior e inferior */
+      font-size: 0.9rem; /* Tamanho de texto */
+      color: var(--text-secondary); /* Cor cinza claro */
+      display: flex; /* Layout flexível com ícone */
+      gap: 12px; /* Espaço entre o ícone e o texto */
+      align-items: flex-start; /* Alinha o ícone no topo */
+      word-break: break-word; /* Quebra segura para telas pequenas */
     }
 
+    /* Ícone de lâmpada dentro da caixa de dica */
     .tip-box .tip-icon {
-      font-size: 1.2rem;
-      flex-shrink: 0;
+      font-size: 1.2rem; /* Tamanho destacado */
+      flex-shrink: 0; /* Não encolhe nem achata */
     }
 
-    /* ═══════════════════════════════════════════
-       CODE PLAYGROUND
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       EDITOR INTERATIVO DE CÓDIGO (CODE PLAYGROUND)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Container principal do editor e da pré-visualização */
     .playground {
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      margin-top: 24px;
-      background: var(--bg-editor);
+      border: 1px solid var(--border-color); /* Borda neon lilás */
+      border-radius: var(--radius-sm); /* Cantos arredondados de 10px */
+      overflow: hidden; /* Corta cantos de elementos internos */
+      margin-top: 24px; /* Distância da explicação teórica */
+      background: var(--bg-editor); /* Fundo escuro de editor de código */
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Sombra de profundidade */
+      width: 100%; /* Largura total do card */
     }
 
+    /* Barra de ferramentas superior do editor */
     .playground-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      background: rgba(14, 14, 26, 0.9);
-      border-bottom: 1px solid var(--border-color);
+      display: flex; /* Flexbox para separar abas e botões */
+      align-items: center; /* Alinha verticalmente */
+      justify-content: space-between; /* Abas à esquerda e botões à direita */
+      padding: 10px 16px; /* Preenchimento confortável */
+      background: rgba(14, 14, 26, 0.9); /* Fundo escuro translúcido */
+      border-bottom: 1px solid var(--border-color); /* Linha divisória inferior */
+      flex-wrap: wrap; /* Permite quebrar linha no mobile se faltar espaço */
+      gap: 8px; /* Espaçamento entre abas e botões */
     }
 
+    /* Grupo de abas de linguagens (HTML, CSS, JS) */
     .playground-tabs {
-      display: flex;
-      gap: 4px;
+      display: flex; /* Abas alinhadas horizontalmente */
+      gap: 4px; /* Pequeno espaço entre cada aba */
     }
 
+    /* Botão de aba individual */
     .playground-tab {
-      padding: 5px 14px;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      font-family: var(--font-code);
-      cursor: pointer;
-      background: transparent;
-      color: var(--text-muted);
-      border: none;
-      transition: var(--transition);
+      padding: 6px 14px; /* Preenchimento da aba */
+      border-radius: 6px; /* Cantos arredondados */
+      font-size: 0.78rem; /* Tamanho de texto compacto */
+      font-weight: 600; /* Peso semi-negrito */
+      font-family: var(--font-code); /* Fonte JetBrains Mono */
+      cursor: pointer; /* Cursor de clique */
+      background: transparent; /* Fundo transparente */
+      color: var(--text-muted); /* Cor de texto atenuada */
+      border: none; /* Sem borda nativa */
+      transition: var(--transition); /* Transição suave */
+      -webkit-tap-highlight-color: transparent; /* Sem flash de toque */
     }
 
+    /* Estilo da aba atualmente selecionada */
     .playground-tab.active {
-      background: rgba(124, 92, 252, 0.2);
-      color: var(--accent-2);
+      background: rgba(124, 92, 252, 0.2); /* Fundo lilás sutil */
+      color: var(--accent-2); /* Texto em rosa neon */
     }
 
+    /* Efeito de hover em abas não ativas */
     .playground-tab:hover:not(.active) {
-      color: var(--text-secondary);
+      color: var(--text-secondary); /* Clareia o texto ao passar o cursor */
     }
 
+    /* Grupo de botões de ação (Resetar e Executar) */
     .playground-actions {
-      display: flex;
-      gap: 8px;
+      display: flex; /* Botões dispostos em linha */
+      gap: 8px; /* Espaçamento entre Resetar e Executar */
+      align-items: center; /* Alinhamento central */
     }
 
+    /* Botão "Executar" que compila e atualiza o iframe */
     .btn-run {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 18px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      font-family: var(--font-main);
-      cursor: pointer;
-      border: none;
-      background: var(--gradient-1);
-      color: #fff;
-      transition: var(--transition);
+      display: inline-flex; /* Layout inline flex */
+      align-items: center; /* Centraliza verticalmente ícone e texto */
+      gap: 6px; /* Espaço de 6px entre o símbolo ▶ e a palavra */
+      padding: 6px 18px; /* Preenchimento confortável */
+      border-radius: 8px; /* Cantos arredondados */
+      font-size: 0.8rem; /* Tamanho compacto */
+      font-weight: 600; /* Semi-negrito */
+      font-family: var(--font-main); /* Fonte principal */
+      cursor: pointer; /* Cursor de ponteiro */
+      border: none; /* Sem borda */
+      background: var(--gradient-1); /* Gradiente lilás para rosa */
+      color: #fff; /* Texto branco */
+      transition: var(--transition); /* Animação suave */
+      -webkit-tap-highlight-color: transparent; /* Sem flash azul */
     }
 
+    /* Efeito de hover no botão Executar */
     .btn-run:hover {
-      transform: scale(1.03);
-      box-shadow: 0 4px 15px rgba(255, 42, 157, 0.4);
+      transform: scale(1.03); /* Leve aumento de 3% */
+      box-shadow: 0 4px 15px rgba(255, 42, 157, 0.4); /* Brilho neon rosa */
     }
 
+    /* Efeito de clique ativo no botão Executar */
     .btn-run:active {
-      transform: scale(0.97);
-      box-shadow: 0 0 20px rgba(255, 42, 157, 0.8);
+      transform: scale(0.97); /* Encolhe levemente para sensação de clique */
+      box-shadow: 0 0 20px rgba(255, 42, 157, 0.8); /* Flash de luz */
     }
 
+    /* Botão "Resetar" que restaura o código original */
     .btn-reset {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      font-family: var(--font-main);
-      cursor: pointer;
-      border: 1px solid var(--border-color);
-      background: transparent;
-      color: var(--text-muted);
-      transition: var(--transition);
+      display: inline-flex; /* Layout inline flex */
+      align-items: center; /* Centraliza ícone e texto */
+      gap: 6px; /* Espaçamento interno */
+      padding: 6px 14px; /* Preenchimento */
+      border-radius: 8px; /* Cantos arredondados */
+      font-size: 0.8rem; /* Tamanho */
+      font-weight: 600; /* Semi-negrito */
+      font-family: var(--font-main); /* Fonte */
+      cursor: pointer; /* Cursor de clique */
+      border: 1px solid var(--border-color); /* Borda fina */
+      background: transparent; /* Fundo transparente */
+      color: var(--text-muted); /* Cor discreta */
+      transition: var(--transition); /* Transição suave */
+      -webkit-tap-highlight-color: transparent; /* Sem flash azul */
     }
 
+    /* Efeito de hover no botão Resetar */
     .btn-reset:hover {
-      border-color: var(--accent-3);
-      color: var(--accent-3);
+      border-color: var(--accent-3); /* Borda lilás */
+      color: var(--accent-3); /* Texto lilás */
     }
 
+    /* Corpo do playground (divide editor e visualização) */
     .playground-body {
-      display: flex;
-      min-height: 260px;
+      display: flex; /* Organiza lado a lado no desktop */
+      min-height: 260px; /* Altura mínima consistente */
+      width: 100%; /* Largura total */
     }
 
+    /* Envoltório da área de digitação de código */
     .playground-editor-wrap {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
+      flex: 1; /* Ocupa 50% do espaço no desktop */
+      min-width: 0; /* Previne estouro horizontal de containers flex */
+      display: flex; /* Flex interno */
+      flex-direction: column; /* Coluna interna */
+      background: var(--bg-editor); /* Fundo escuro */
     }
 
+    /* Container específico do editor de uma aba ativa */
     .playground-editor-container {
-      display: none;
-      flex: 1;
+      display: none; /* Escondido por padrão se não estiver ativo */
+      flex: 1; /* Ocupa altura total disponível */
+      min-width: 0; /* Previne overflow */
     }
 
+    /* Exibição quando o container for o ativo */
     .playground-editor-container.active {
-      display: flex;
+      display: flex; /* Flex para alinhar números de linha e textarea */
     }
 
+    /* Coluna lateral esquerda com a numeração das linhas */
     .line-numbers {
-      padding: 16px 0;
-      width: 44px;
-      text-align: right;
-      font-family: var(--font-code);
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      user-select: none;
-      line-height: 1.65;
-      background: rgba(8, 8, 15, 0.5);
-      flex-shrink: 0;
+      padding: 16px 0; /* Espaçamento vertical alinhado ao texto */
+      width: 44px; /* Largura padrão no desktop */
+      text-align: right; /* Números alinhados à direita */
+      font-family: var(--font-code); /* Fonte monoespaçada */
+      font-size: 0.78rem; /* Tamanho compacto */
+      color: var(--text-muted); /* Cor atenuada discreta */
+      user-select: none; /* Impede que o usuário selecione acidentalmente os números */
+      line-height: 1.65; /* Mesma altura de linha da textarea para alinhamento perfeito */
+      background: rgba(8, 8, 15, 0.5); /* Fundo sutilmente escurecido */
+      flex-shrink: 0; /* Não reduz de tamanho */
+      overflow: hidden; /* Rolagem controlada via sincronismo com a textarea */
     }
 
+    /* Cada número de linha individual */
     .line-numbers span {
-      display: block;
-      padding-right: 12px;
+      display: block; /* Cada número em sua própria linha */
+      padding-right: 12px; /* Margem direita para afastar do código */
     }
 
+    /* Campo de texto textarea onde o código é digitado */
     .code-editor {
-      flex: 1;
-      width: 100%;
-      resize: none;
-      background: transparent;
-      border: none;
-      color: var(--text-primary);
-      font-family: var(--font-code);
-      font-size: 0.85rem;
-      line-height: 1.65;
-      padding: 16px;
-      outline: none;
-      tab-size: 2;
-      white-space: pre;
-      overflow-x: auto;
+      flex: 1; /* Ocupa todo o espaço restante do container */
+      width: 100%; /* Largura total */
+      resize: none; /* Remove alça de redimensionamento nativo para layout estável */
+      background: transparent; /* Fundo transparente */
+      border: none; /* Sem borda nativa */
+      color: var(--text-primary); /* Texto em tom claro */
+      font-family: var(--font-code); /* Fonte JetBrains Mono */
+      font-size: 0.85rem; /* Tamanho de código agradável */
+      line-height: 1.65; /* Altura de linha idêntica aos números */
+      padding: 16px; /* Preenchimento interno */
+      outline: none; /* Remove contorno padrão */
+      tab-size: 2; /* 2 espaços para cada toque na tecla Tab */
+      white-space: pre; /* Preserva espaços e quebras exatamente como digitados */
+      overflow-x: auto; /* Permite rolagem horizontal para linhas de código longas */
+      -webkit-overflow-scrolling: touch; /* Rolagem fluida no iOS Safari */
     }
 
+    /* Barra divisória vertical entre o editor e a pré-visualização */
     .playground-divider {
-      width: 1px;
-      background: var(--border-color);
-      position: relative;
+      width: 1px; /* Espessura de 1px */
+      background: var(--border-color); /* Cor da borda neon lilás */
+      position: relative; /* Contexto para o ícone de três pontos */
+      flex-shrink: 0; /* Não deforma */
     }
 
+    /* Ícone decorativo de três pontos centrais na barra divisória */
     .playground-divider::after {
-      content: '⋮';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: var(--text-muted);
-      font-size: 1rem;
-      background: var(--bg-editor);
-      padding: 8px 0;
+      content: '⋮'; /* Ícone de pontos verticais */
+      position: absolute; /* Posição centralizada */
+      top: 50%; /* 50% da altura */
+      left: 50%; /* 50% da largura */
+      transform: translate(-50%, -50%); /* Centralização geométrica perfeita */
+      color: var(--text-muted); /* Cor discreta */
+      font-size: 1rem; /* Tamanho */
+      background: var(--bg-editor); /* Fundo do editor para cobrir a linha atrás */
+      padding: 8px 0; /* Espaço vertical */
     }
 
+    /* Envoltório da área de pré-visualização em tempo real */
     .playground-preview {
-      flex: 1;
-      min-width: 0;
-      position: relative;
+      flex: 1; /* Ocupa os outros 50% do espaço no desktop */
+      min-width: 0; /* Previne estouro */
+      position: relative; /* Contexto para a etiqueta "Resultado" */
+      background: var(--bg-preview); /* Fundo branco padrão */
+      display: flex; /* Flex interno */
+      flex-direction: column; /* Coluna */
     }
 
+    /* Etiqueta flutuante "Resultado" no canto superior direito */
     .preview-label {
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      z-index: 2;
-      background: rgba(14, 14, 26, 0.8);
-      padding: 3px 10px;
-      border-radius: 4px;
+      position: absolute; /* Posição flutuante */
+      top: 8px; /* 8px do topo */
+      right: 12px; /* 12px da direita */
+      font-size: 0.7rem; /* Tamanho mini */
+      font-weight: 600; /* Negrito */
+      color: var(--text-muted); /* Cor atenuada */
+      text-transform: uppercase; /* Maiúsculas */
+      letter-spacing: 1px; /* Espaçamento elegante */
+      z-index: 2; /* Fica acima do iframe */
+      background: rgba(14, 14, 26, 0.85); /* Fundo escuro fosco */
+      padding: 3px 10px; /* Preenchimento */
+      border-radius: 4px; /* Cantos arredondados */
+      pointer-events: none; /* Não bloqueia cliques no iframe */
     }
 
+    /* Iframe onde a página HTML do usuário é renderizada com segurança */
     .preview-frame {
-      width: 100%;
-      height: 100%;
-      min-height: 260px;
-      border: none;
-      background: var(--bg-preview);
-      border-radius: 0;
+      width: 100%; /* Largura total de 100% */
+      height: 100%; /* Altura total de 100% */
+      min-height: 260px; /* Altura mínima consistente */
+      border: none; /* Remove bordas nativas de iframe */
+      background: var(--bg-preview); /* Fundo branco para simulação fiel */
+      border-radius: 0; /* Sem arredondamento interno */
+      display: block; /* Remove folgas de elemento inline */
     }
 
-    /* ═══════════════════════════════════════════
-       SANDBOX SECTION
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       SEÇÃO LIVRE (SANDBOX)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Seção dedicada para experimentação livre */
     .sandbox-section {
-      padding: 100px 0;
+      padding: 100px 0; /* Espaçamento generoso */
     }
 
+    /* Altura ampliada no editor do sandbox */
     .sandbox-playground .playground-body {
-      min-height: 450px;
+      min-height: 450px; /* Altura confortável para projetos maiores */
     }
 
+    /* Altura ampliada no iframe do sandbox */
     .sandbox-playground .preview-frame {
-      min-height: 450px;
+      min-height: 450px; /* Altura equivalente */
     }
 
-    /* ═══════════════════════════════════════════
-       FOOTER
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       RODAPÉ (FOOTER)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Container do rodapé no final da página */
     footer {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 60px 24px;
-      border-top: 1px solid var(--border-color);
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      position: relative; /* Contexto de posicionamento */
+      z-index: 1; /* Acima do fundo */
+      text-align: center; /* Centralizado */
+      padding: 60px 24px; /* Preenchimento superior e inferior */
+      border-top: 1px solid var(--border-color); /* Linha divisória neon superior */
+      color: var(--text-muted); /* Cor discreta de texto */
+      font-size: 0.85rem; /* Tamanho de texto de rodapé */
     }
 
+    /* Cor do coração decorativo no rodapé */
     footer .heart {
-      color: var(--accent-3);
+      color: var(--accent-3); /* Lilás neon */
     }
 
-    /* ═══════════════════════════════════════════
-       ANIMATIONS (scroll reveal)
-    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       BOTÃO FLUTUANTE DE VOLTAR AO TOPO (BACK TO TOP)
+       Garante usabilidade excelente em telas de dispositivos móveis
+    ═══════════════════════════════════════════════════════════════════════════ */
+    .back-to-top {
+      position: fixed; /* Fixado na janela */
+      bottom: 24px; /* 24px da borda inferior */
+      right: 24px; /* 24px da borda direita */
+      width: 48px; /* Diâmetro ergonômico de 48px */
+      height: 48px; /* Altura de 48px */
+      border-radius: 50%; /* Círculo perfeito */
+      background: var(--gradient-1); /* Gradiente lilás e rosa */
+      color: #ffffff; /* Símbolo em branco */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Borda translúcida sutil */
+      font-size: 1.3rem; /* Tamanho da seta ↑ */
+      font-weight: 700; /* Seta em negrito */
+      cursor: pointer; /* Cursor de clique */
+      display: flex; /* Flex para centralização */
+      align-items: center; /* Centraliza verticalmente */
+      justify-content: center; /* Centraliza horizontalmente */
+      z-index: 997; /* Fica acima do conteúdo comum */
+      box-shadow: 0 4px 20px rgba(191, 85, 236, 0.4); /* Brilho neon */
+      opacity: 0; /* Invisível no topo da página */
+      visibility: hidden; /* Desativado da árvore de acessibilidade quando invisível */
+      transform: translateY(20px) scale(0.8); /* Levemente deslocado para baixo */
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animação suave ao surgir */
+      -webkit-tap-highlight-color: transparent; /* Remove flash de toque mobile */
+    }
+
+    /* Estado ativo do botão ao rolar a página para baixo */
+    .back-to-top.visible {
+      opacity: 1; /* 100% visível */
+      visibility: visible; /* Acessível e clicável */
+      transform: translateY(0) scale(1); /* Posição normal */
+    }
+
+    /* Efeito de hover no botão de voltar ao topo */
+    .back-to-top:hover {
+      transform: translateY(-4px) scale(1.05); /* Elevação sutil */
+      box-shadow: 0 8px 30px rgba(255, 42, 157, 0.6); /* Brilho rosa intenso */
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       ANIMAÇÃO DE REVELAÇÃO AO ROLAR A PÁGINA (SCROLL REVEAL)
+    ═══════════════════════════════════════════════════════════════════════════ */
+    /* Estado inicial dos elementos que entram com animação */
     .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+      opacity: 0; /* Começa transparente */
+      transform: translateY(40px); /* Começa 40px abaixo */
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out; /* Transição suave */
     }
 
+    /* Estado ativado pelo IntersectionObserver ao entrar na viewport */
     .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+      opacity: 1; /* Totalmente visível */
+      transform: translateY(0); /* Posição final correta */
     }
 
-    /* ═══════════════════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════════════════ */
-    @media (max-width: 800px) {
+    /* ═══════════════════════════════════════════════════════════════════════════
+       DESIGN RESPONSIVO — MEDIA QUERIES PARA DISPOSITIVOS MÓVEIS
+       Adaptação completa para tablets, smartphones médios e compactos
+    ═══════════════════════════════════════════════════════════════════════════ */
+
+    /* ─── 1. TABLETS E TELAS MÉDIAS (ATÉ 992PX) ─── */
+    @media (max-width: 992px) {
+      /* Reduz paddings laterais da barra de navegação */
       .navbar {
-        padding: 12px 16px;
+        padding: 14px 28px; /* Ajuste moderado de espaçamento */
       }
 
-      .nav-links {
-        display: none;
-      }
-
-      .hero {
-        padding: 100px 20px 60px;
-      }
-
-      .hero h1 {
-        font-size: 2rem;
-        letter-spacing: -1px;
-      }
-
-      .hero p {
-        font-size: 1rem;
-      }
-
+      /* Reduz espaçamento do grid no Hero */
       .hero-stats {
-        gap: 24px;
+        gap: 32px; /* Reduz distância entre as 3 métricas */
+      }
+
+      /* Ajusta espaçamento do conteúdo principal */
+      main {
+        padding: 0 20px; /* Reduz margens de 24px para 20px */
+      }
+    }
+
+    /* ─── 2. SMARTPHONES E TABLETS VERTICAIS (ATÉ 800PX) ─── */
+    @media (max-width: 800px) {
+      /* Exibe o botão disparador do menu hambúrguer */
+      .menu-toggle {
+        display: flex; /* Torna o botão visível e clicável */
+      }
+
+      /* Ajusta a barra de navegação para mobile */
+      .navbar {
+        padding: 12px 18px; /* Padding mais compacto */
+      }
+
+      /* O menu de links se transforma em uma moderna gaveta lateral (drawer) */
+      .nav-links {
+        position: fixed; /* Fixado sobre a tela */
+        top: 0; /* Alinhado ao topo */
+        right: -100%; /* Escondido à direita fora da tela */
+        width: 290px; /* Largura ideal para toque com o polegar */
+        max-width: 85vw; /* Não ultrapassa 85% da largura da tela */
+        height: 100vh; /* Ocupa 100% da altura da tela */
+        background: rgba(10, 10, 18, 0.96); /* Fundo ultra escuro elegante */
+        backdrop-filter: blur(25px); /* Efeito vidro fosco */
+        -webkit-backdrop-filter: blur(25px); /* Suporte Safari */
+        border-left: 1px solid var(--border-color); /* Borda neon na lateral */
+        flex-direction: column; /* Links empilhados verticalmente */
+        padding: 85px 20px 30px; /* Espaço para o cabeçalho superior e botão fechar */
+        gap: 14px; /* Distância confortável entre cada link */
+        box-shadow: -10px 0 35px rgba(0, 0, 0, 0.8); /* Sombra de sobreposição */
+        transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* Animação fluida de deslizamento */
+        z-index: 1001; /* Fica acima da barra normal */
+        display: flex; /* Ativa flexbox vertical */
+      }
+
+      /* Quando a classe 'open' é ativada pelo JS, o menu desliza para a tela */
+      .nav-links.open {
+        right: 0; /* Encaixa na borda direita visível */
+      }
+
+      /* Cada link dentro da gaveta mobile */
+      .nav-links a {
+        display: block; /* Ocupa a largura total da linha */
+        padding: 14px 20px; /* Área de toque confortável (mínimo de 48px de altura) */
+        font-size: 1.05rem; /* Fonte ligeiramente maior para fácil leitura */
+        border-radius: 12px; /* Cantos arredondados modernos */
+        background: rgba(255, 255, 255, 0.03); /* Fundo sutil */
+        border: 1px solid rgba(255, 255, 255, 0.05); /* Borda fina */
+      }
+
+      /* Efeito de toque/hover nos links do menu mobile */
+      .nav-links a:hover,
+      .nav-links a.active {
+        background: rgba(191, 85, 236, 0.18); /* Destaque lilás */
+        border-color: var(--accent-1); /* Borda acesa */
+      }
+
+      /* Remove a barra indicadora inferior antiga no menu mobile */
+      .nav-links a.active::after {
+        display: none; /* Desativa linha inferior que fazia sentido só na barra horizontal */
+      }
+
+      /* Ajustes na Seção Hero para mobile */
+      .hero {
+        padding: 100px 18px 60px; /* Reduz preenchimento superior e inferior */
+        min-height: auto; /* Permite altura automática para telas menores */
+      }
+
+      /* Reduz tamanho do título principal no mobile */
+      .hero h1 {
+        font-size: clamp(2rem, 7vw, 3rem); /* Escala proporcional e legível */
+        letter-spacing: -1px; /* Espaçamento mais compacto */
+      }
+
+      /* Reduz tamanho do subtítulo */
+      .hero p {
+        font-size: 1.05rem; /* Tamanho proporcional */
+        margin-bottom: 32px; /* Margem ajustada */
+      }
+
+      /* Grade de estatísticas adaptada */
+      .hero-stats {
+        display: grid; /* Muda de flex para grid de 3 colunas iguais */
+        grid-template-columns: repeat(3, 1fr); /* 3 colunas idênticas */
+        gap: 16px; /* Espaço uniforme entre os itens */
+        margin-top: 48px; /* Margem superior reduzida */
+      }
+
+      /* Tamanho dos números das estatísticas no mobile */
+      .hero-stats .stat-number {
+        font-size: 1.6rem; /* Tamanho proporcional */
+      }
+
+      /* Espaçamento das seções de módulos */
+      .section {
+        padding: 70px 0 20px; /* Menor distância entre seções no celular */
+      }
+
+      /* Cabeçalho da seção */
+      .section-header {
+        margin-bottom: 40px; /* Margem reduzida */
+      }
+
+      /* Título do módulo */
+      .section-header h2 {
+        font-size: 1.9rem; /* Tamanho de título adequado */
+      }
+
+      /* Card de lição no mobile */
+      .lesson {
+        padding: 24px 18px; /* Reduz padding de 40px para 18px para aproveitar a tela */
+        margin-bottom: 30px; /* Menor distância entre lições */
+        border-radius: 14px; /* Borda proporcional */
+      }
+
+      /* Título da lição */
+      .lesson h3 {
+        font-size: 1.35rem; /* Ajuste de tamanho */
+      }
+
+      /* Explicação teórica */
+      .lesson .explanation {
+        font-size: 0.92rem; /* Texto legível e compacto */
+        margin-bottom: 20px; /* Margem reduzida */
+      }
+
+      /* ─── EMPILHAMENTO DO PLAYGROUND NO MOBILE ─── */
+      /* O corpo do editor e a visualização passam a ser empilhados verticalmente */
+      .playground-body {
+        flex-direction: column; /* Editor em cima, resultado embaixo */
+        min-height: auto; /* Altura flexível */
+      }
+
+      /* Container do editor no mobile */
+      .playground-editor-wrap {
+        width: 100%; /* Largura total */
+      }
+
+      /* Barra de ferramentas do editor */
+      .playground-toolbar {
+        padding: 8px 12px; /* Padding compacto */
+      }
+
+      /* Editor de código (textarea) no mobile */
+      .code-editor {
+        font-size: 0.82rem; /* Tamanho de fonte que cabe mais código por linha */
+        padding: 14px 12px; /* Padding interno */
+        min-height: 180px; /* Altura mínima confortável para ver e editar código */
+        max-height: 280px; /* Altura máxima com scroll para não esticar demais a página */
+      }
+
+      /* Coluna de números de linha mais estreita no mobile */
+      .line-numbers {
+        width: 34px; /* Reduz de 44px para 34px dando 10px a mais para o código */
+        font-size: 0.72rem; /* Fonte menor */
+        padding: 14px 0; /* Padding alinhado ao editor */
+      }
+
+      /* Ajuste nos números */
+      .line-numbers span {
+        padding-right: 8px; /* Margem direita menor */
+      }
+
+      /* Divisor entre editor e preview vira linha horizontal */
+      .playground-divider {
+        width: 100%; /* 100% de largura horizontal */
+        height: 1px; /* 1px de espessura vertical */
+      }
+
+      /* Oculta os três pontos na divisória horizontal */
+      .playground-divider::after {
+        display: none; /* Ocultado para linha limpa */
+      }
+
+      /* Área de visualização (iframe) no mobile */
+      .playground-preview {
+        width: 100%; /* Largura total de 100% */
+        min-height: 220px; /* Altura mínima para visualizar o resultado com clareza */
+      }
+
+      /* Iframe no mobile */
+      .preview-frame {
+        min-height: 220px; /* Altura mínima garantida */
+      }
+
+      /* Sandbox no mobile */
+      .sandbox-section {
+        padding: 70px 0; /* Espaço ajustado */
+      }
+
+      .sandbox-playground .playground-body {
+        min-height: auto; /* Altura flexível */
+      }
+
+      .sandbox-playground .code-editor {
+        min-height: 240px; /* Altura maior para o código do sandbox */
+      }
+
+      .sandbox-playground .preview-frame {
+        min-height: 320px; /* Altura ideal para interagir com o mini-app de teste */
+      }
+    }
+
+    /* ─── 3. SMARTPHONES COMPACTOS (ATÉ 480PX) ─── */
+    @media (max-width: 480px) {
+      /* Padding lateral mínimo seguro para telas estreitas */
+      main {
+        padding: 0 12px; /* Margem segura de 12px */
+      }
+
+      /* Barra de navegação */
+      .navbar {
+        padding: 10px 14px; /* Padding mínimo */
+      }
+
+      /* Logotipo ligeiramente menor */
+      .navbar .logo {
+        font-size: 1.25rem; /* Ajuste para não apertar com o botão do menu */
+      }
+
+      /* Emblema do Hero */
+      .hero-badge {
+        font-size: 0.76rem; /* Fonte menor */
+        padding: 6px 14px; /* Padding reduzido */
+        margin-bottom: 24px; /* Margem inferior reduzida */
+      }
+
+      /* Título do Hero */
+      .hero h1 {
+        font-size: 1.95rem; /* Tamanho proporcional */
+      }
+
+      /* Botões de chamada para ação em largura total (estilo app mobile nativo) */
+      .hero-buttons {
+        flex-direction: column; /* Botões empilhados um sobre o outro */
+        width: 100%; /* Largura de 100% */
+        gap: 12px; /* Espaço entre botões */
+      }
+
+      /* Cada botão ocupa toda a largura disponível */
+      .btn {
+        width: 100%; /* Botão 100% largo */
+        padding: 14px 20px; /* Área de toque generosa */
+        font-size: 0.92rem; /* Fonte legível */
+      }
+
+      /* Estatísticas no celular compacto */
+      .hero-stats {
+        gap: 8px; /* Espaçamento mais enxuto */
       }
 
       .hero-stats .stat-number {
-        font-size: 1.5rem;
+        font-size: 1.4rem; /* Número adaptado */
+      }
+
+      .hero-stats .stat-label {
+        font-size: 0.75rem; /* Rótulo compacto */
+      }
+
+      /* Seção */
+      .section-header h2 {
+        font-size: 1.6rem; /* Título h2 compacto */
+      }
+
+      /* Card da lição */
+      .lesson {
+        padding: 18px 12px; /* Aproveitamento máximo da tela */
+        border-radius: 12px; /* Borda proporcional */
+      }
+
+      /* Caixa de dicas */
+      .tip-box {
+        padding: 12px 14px; /* Padding reduzido */
+        font-size: 0.85rem; /* Fonte compacta */
+      }
+
+      /* Barra de ferramentas do playground quebra linha se necessário */
+      .playground-toolbar {
+        flex-direction: row; /* Mantém em linha */
+        justify-content: space-between; /* Afasta extremidades */
+      }
+
+      /* Botões de ação do playground */
+      .btn-run,
+      .btn-reset {
+        padding: 6px 12px; /* Botões mais compactos */
+        font-size: 0.75rem; /* Fonte mini */
+      }
+
+      /* Botão flutuante de voltar ao topo ajustado para celulares pequenos */
+      .back-to-top {
+        bottom: 16px; /* 16px do rodapé */
+        right: 16px; /* 16px da borda */
+        width: 44px; /* Diâmetro de 44px */
+        height: 44px; /* Altura de 44px */
+        font-size: 1.15rem; /* Tamanho da seta */
+      }
+    }
+
+    /* ─── 4. SMARTPHONES ULTRA-COMPACTOS / FOLDABLES (ATÉ 360PX) ─── */
+    @media (max-width: 360px) {
+      .hero h1 {
+        font-size: 1.7rem; /* Reduz tamanho do título para caber perfeitamente */
+      }
+
+      .hero-stats .stat-number {
+        font-size: 1.25rem; /* Números menores */
       }
 
       .section-header h2 {
-        font-size: 1.8rem;
+        font-size: 1.45rem; /* Título h2 menor */
       }
 
-      .lesson {
-        padding: 24px;
+      .lesson h3 {
+        font-size: 1.18rem; /* Título da lição menor */
       }
+    }
 
-      .playground-body {
-        flex-direction: column;
-      }
-
-      .playground-divider {
-        width: 100%;
-        height: 1px;
-      }
-
-      .playground-divider::after {
-        display: none;
-      }
-
-      .playground-preview {
-        min-height: 200px;
+    /* ─── 5. OTIMIZAÇÃO PARA APARELHOS TOUCH (CELULARES E TABLETS) ─── */
+    /* Desativa efeitos de cursor de mouse em aparelhos sensíveis ao toque */
+    @media (hover: none) and (pointer: coarse) {
+      /* Oculta o cursor brilhante e a onda de explosão de clique em telas touch */
+      .cursor-glow,
+      .click-burst {
+        display: none !important; /* Desativa completamente para economizar bateria e GPU */
       }
     }
   </style>
 </head>
-
 <body>
 
-  <!-- Animated background orbs and fog -->
+  <!-- Elementos de fundo dinâmicos (esferas luminosas e névoa difusa neon) -->
   <div class="bg-orbs">
+    <!-- Primeira esfera luminosa -->
     <div class="orb-wrapper">
       <div class="orb"></div>
     </div>
+    <!-- Segunda esfera luminosa -->
     <div class="orb-wrapper">
       <div class="orb"></div>
     </div>
+    <!-- Terceira esfera luminosa -->
     <div class="orb-wrapper">
       <div class="orb"></div>
     </div>
+    <!-- Container da névoa radial animada -->
     <div class="fog-container">
       <div class="fog"></div>
     </div>
   </div>
 
-  <!-- Progress bar -->
+  <!-- Barra de progresso de leitura no topo da página -->
   <div class="progress-bar-container">
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <!-- Navbar -->
+  <!-- Barra de Navegação Superior Fixa com Suporte Completo a Desktop e Celular -->
   <nav class="navbar" id="navbar">
-    <div class="logo">&lt;/&gt; Aprenda<span>Web</span></div>
-    <ul class="nav-links">
+    <!-- Logotipo da Aplicação com link para o topo -->
+    <a href="#" class="logo">&lt;/&gt; Aprenda<span>Web</span></a>
+
+    <!-- Botão Hambúrguer para Abrir/Fechar o Menu em Smartphones e Tablets -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu de navegação" aria-expanded="false">
+      <!-- 3 barras que se transformam em 'X' quando o menu estiver aberto -->
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+
+    <!-- Lista de Links de Navegação (Menu horizontal no desktop e gaveta deslizante no mobile) -->
+    <ul class="nav-links" id="navLinks">
       <li><a href="#html" class="nav-link">HTML</a></li>
       <li><a href="#css" class="nav-link">CSS</a></li>
       <li><a href="#javascript" class="nav-link">JavaScript</a></li>
@@ -1048,29 +1677,46 @@
     </ul>
   </nav>
 
-  <!-- Hero -->
+  <!-- Camada escura que escurece o fundo ao abrir o menu no celular -->
+  <div class="nav-backdrop" id="navBackdrop"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       SEÇÃO HERO (APRESENTAÇÃO PRINCIPAL)
+  ═══════════════════════════════════════════════════════════════════════════ -->
   <header class="hero">
+    <!-- Envoltório centralizado que limita a largura do conteúdo de abertura -->
     <div class="hero-content">
+      <!-- Emblema de destaque com ponto pulsante animado -->
       <div class="hero-badge">
+        <!-- Ponto indicador luminoso com animação contínua -->
         <span class="dot"></span>
         Tutorial Interativo — 100% Gratuito
       </div>
+      <!-- Título principal com tipografia em gradiente lilás para rosa -->
       <h1>Aprenda a criar<br><span class="gradient-text">para a Web</span></h1>
+      <!-- Parágrafo introdutório convidando o usuário a aprender na prática -->
       <p>Domine HTML, CSS e JavaScript do zero com lições interativas, editores ao vivo e exemplos práticos. Seu código
         roda aqui mesmo, em tempo real.</p>
+      <!-- Botões de chamada para ação (Call to Action) adaptados para celular e desktop -->
       <div class="hero-buttons">
+        <!-- Botão primário com preenchimento em gradiente -->
         <a href="#html" class="btn btn-primary">🚀 Começar Agora</a>
+        <!-- Botão secundário vazado para o ambiente de testes -->
         <a href="#sandbox" class="btn btn-outline">🧪 Abrir Sandbox</a>
       </div>
+      <!-- Bloco com 3 métricas em destaque (grade responsiva no celular) -->
       <div class="hero-stats">
+        <!-- Estatística de lições -->
         <div class="stat">
           <div class="stat-number">18</div>
           <div class="stat-label">Lições</div>
         </div>
+        <!-- Estatística de tecnologias ensinadas -->
         <div class="stat">
           <div class="stat-number">3</div>
           <div class="stat-label">Tecnologias</div>
         </div>
+        <!-- Estatística de prática ilimitada -->
         <div class="stat">
           <div class="stat-number">∞</div>
           <div class="stat-label">Prática</div>
@@ -1930,64 +2576,86 @@ e <em>texto em itálico</em>.</p>
               <div class="playground-editor-container active" data-tab="html">
                 <div class="line-numbers"></div>
                 <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
-  body { font-family: Arial; margin: 0; }
+  /* Define a fonte padrão e remove as margens externas da página */
+  body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
   
+  /* Barra de navegação flexível com alinhamento vertical e horizontal */
   .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-    background: #6c5ce7;
-    color: white;
+    display: flex; /* Ativa o modelo flexbox */
+    justify-content: space-between; /* Espaça o título à esquerda e o menu à direita */
+    align-items: center; /* Centraliza verticalmente o texto e o botão */
+    padding: 12px 20px; /* Preenchimento interno confortável */
+    background: #6c5ce7; /* Cor roxa vibrante de fundo */
+    color: white; /* Texto em branco */
   }
   
+  /* Grade flexível de cards que quebra linha automaticamente */
   .cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 20px;
+    display: flex; /* Organiza os cards lado a lado */
+    flex-wrap: wrap; /* Quebra para a próxima linha quando não houver espaço */
+    gap: 16px; /* Espaço uniforme de 16px entre cada card */
+    padding: 20px; /* Margem interna ao redor da grade de cards */
   }
   
+  /* Estilização individual de cada cartão */
   .card {
-    flex: 1;
-    min-width: 120px;
-    padding: 24px;
-    background: white;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex: 1 1 140px; /* Cresce, encolhe e mantém largura base mínima de 140px */
+    padding: 24px; /* Preenchimento interno generoso */
+    background: white; /* Fundo branco para contraste */
+    border-radius: 12px; /* Cantos arredondados modernos */
+    text-align: center; /* Centraliza emoji, título e texto */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Sombra suave para relevo */
+    transition: transform 0.2s ease; /* Transição para efeito de hover */
   }
-  .card .emoji { font-size: 32px; }
-  .card h4 { color: #2d3436; margin: 8px 0 4px; }
-  .card p { color: #636e72; font-size: 13px; }
   
-  /* MEDIA QUERY */
-  @media (max-width: 400px) {
-    .navbar { flex-direction: column; gap: 8px; }
-    .card { min-width: 100%; }
+  /* Efeito de elevação suave ao passar o cursor sobre o card */
+  .card:hover { transform: translateY(-3px); }
+  
+  /* Ícone emoji em destaque no topo do card */
+  .card .emoji { font-size: 32px; margin-bottom: 8px; }
+  
+  /* Título do card */
+  .card h4 { color: #2d3436; margin: 0 0 6px 0; font-size: 16px; }
+  
+  /* Texto descritivo secundário do card */
+  .card p { color: #636e72; font-size: 13px; margin: 0; }
+  
+  /* MEDIA QUERY: Regras aplicadas quando a tela for menor ou igual a 480px (Smartphones) */
+  @media (max-width: 480px) {
+    /* No celular: empilha o título e o menu da barra de navegação verticalmente */
+    .navbar { flex-direction: column; gap: 8px; text-align: center; }
+    /* No celular: cada card passa a ocupar 100% da largura da tela */
+    .card { flex: 1 1 100%; min-width: 100%; }
+    /* No celular: reduz o espaçamento externo para aproveitar melhor a tela */
+    .cards { padding: 12px; gap: 12px; }
   }
 </style>
 
+<!-- Barra de navegação com logotipo e botão de menu -->
 <div class="navbar">
-  <strong>📱 MeuApp</strong>
+  <strong>📱 MeuApp Responsivo</strong>
   <span>Menu ☰</span>
 </div>
 
+<!-- Container com grade flexível de cards adaptáveis -->
 <div class="cards">
+  <!-- Card 1: Painel de Analytics -->
   <div class="card">
     <div class="emoji">📊</div>
     <h4>Analytics</h4>
-    <p>Veja seus dados</p>
+    <p>Veja seus dados em tempo real</p>
   </div>
+  <!-- Card 2: Central de Mensagens -->
   <div class="card">
     <div class="emoji">💬</div>
     <h4>Mensagens</h4>
-    <p>12 novas</p>
+    <p>12 novas mensagens recebidas</p>
   </div>
+  <!-- Card 3: Configurações do Sistema -->
   <div class="card">
     <div class="emoji">⚙️</div>
     <h4>Config</h4>
-    <p>Personalize</p>
+    <p>Personalize suas preferências</p>
   </div>
 </div></textarea>
               </div>
@@ -2898,163 +3566,295 @@ e <em>texto em itálico</em>.</p>
     </section>
   </main>
 
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       RODAPÉ DA PÁGINA (FOOTER)
+  ═══════════════════════════════════════════════════════════════════════════ -->
   <footer>
+    <!-- Créditos de autoria do projeto -->
     <p>Feito com <span class="heart">♥</span> por Jennifer Ribeiro — Aprenda Web 2026</p>
+    <!-- Subtítulo informativo com as tecnologias ensinadas -->
     <p style="margin-top: 8px; font-size: 0.75rem;">HTML • CSS • JavaScript — Tudo o que você precisa para começar.</p>
   </footer>
 
-  <script>
-    // ═══════════════════════════════════════════
-    // PLAYGROUND ENGINE
-    // ═══════════════════════════════════════════
+  <!-- Botão Flutuante de Voltar ao Topo (Back To Top) para facilitar navegação em dispositivos móveis -->
+  <button class="back-to-top" id="backToTop" aria-label="Voltar ao início da página">↑</button>
 
-    // Store original code for reset
+  <script>
+    // ═══════════════════════════════════════════════════════════════════════════
+    // MOTOR DE EXECUÇÃO DOS PLAYGROUNDS (PLAYGROUND ENGINE)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Objeto para armazenar o código padrão de cada lição para permitir a função 'Resetar'
     const originalCode = {};
 
+    // Função que inicializa todos os editores de código presentes na página
     function initPlaygrounds() {
+      // Itera sobre todos os elementos com a classe .playground
       document.querySelectorAll('.playground').forEach(pg => {
+        // Obtém o identificador único da lição (ex: 'html1', 'css3', 'sandbox')
         const id = pg.dataset.id;
+        // Seleciona a textarea onde o usuário escreve o código
         const editor = pg.querySelector('.code-editor');
 
-        // Store original code
+        // Salva o código inicial original no dicionário para restauração futura
         originalCode[id] = editor.value;
 
-        // Line numbers
+        // Gera a coluna de numeração de linhas com base no conteúdo inicial
         updateLineNumbers(editor);
+        // Atualiza a numeração de linhas sempre que o usuário digitar ou apagar algo
         editor.addEventListener('input', () => updateLineNumbers(editor));
+        // Sincroniza a rolagem vertical da textarea com a coluna de números de linha
         editor.addEventListener('scroll', function () {
+          // Localiza o container de números de linha correspondente
           const lineNums = this.closest('.playground-editor-container').querySelector('.line-numbers');
+          // Aplica o mesmo valor de rolagem da textarea
           lineNums.scrollTop = this.scrollTop;
         });
 
-        // Tab key support
+        // Adiciona suporte a indentação com a tecla Tab e atalho de execução com Ctrl+Enter
         editor.addEventListener('keydown', function (e) {
+          // Trata a tecla Tab para inserir 2 espaços ao invés de mudar de campo
           if (e.key === 'Tab') {
-            e.preventDefault();
-            const start = this.selectionStart;
-            const end = this.selectionEnd;
+            e.preventDefault(); // Impede a ação padrão de mudança de foco
+            const start = this.selectionStart; // Posição inicial do cursor
+            const end = this.selectionEnd; // Posição final da seleção
+            // Insere 2 espaços na posição do cursor
             this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+            // Reposiciona o cursor após os espaços inseridos
             this.selectionStart = this.selectionEnd = start + 2;
           }
-          // Ctrl+Enter to run
+          // Atalho de teclado: Ctrl+Enter (ou Cmd+Enter no Mac) para rodar o código instantaneamente
           if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-            e.preventDefault();
-            runPlayground(id);
+            e.preventDefault(); // Evita quebra de linha extra
+            runPlayground(id); // Executa o código da lição
           }
         });
 
-        // Auto-run on load
+        // Executa automaticamente o código ao carregar a página para exibir o preview inicial
         runPlayground(id);
       });
     }
 
+    // Função que recalcula e renderiza os números de linhas na barra lateral do editor
     function updateLineNumbers(editor) {
+      // Conta quantas quebras de linha existem no texto atual
       const lines = editor.value.split('\n').length;
+      // Localiza a div .line-numbers correspondente dentro do mesmo container
       const lineNums = editor.closest('.playground-editor-container').querySelector('.line-numbers');
+      // Cria elementos <span> com os números de 1 até o total de linhas
       lineNums.innerHTML = Array.from({ length: lines }, (_, i) => `<span>${i + 1}</span>`).join('');
     }
 
+    // Função que compila o código HTML/CSS/JS digitado e o projeta dentro do iframe de preview
     function runPlayground(id) {
+      // Localiza o container do playground pelo atributo data-id
       const pg = document.querySelector(`.playground[data-id="${id}"]`);
+      // Localiza a textarea com o código
       const editor = pg.querySelector('.code-editor');
+      // Localiza o elemento iframe onde o resultado será exibido
       const frame = pg.querySelector('.preview-frame');
 
+      // Obtém o texto do código digitado
       const code = editor.value;
 
+      // Revoga o URL temporário anterior para liberar memória do navegador
       if (frame.dataset.objectUrl) {
         URL.revokeObjectURL(frame.dataset.objectUrl);
       }
+      // Cria um objeto Blob na memória com o código HTML em formato UTF-8
       const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+      // Gera uma URL temporária segura do tipo blob:
       const url = URL.createObjectURL(blob);
+      // Salva a referência da URL no dataset do iframe para limpeza futura
       frame.dataset.objectUrl = url;
+      // Define a origem do iframe para a URL do Blob gerado
       frame.src = url;
 
-      // Flash effect on run button
+      // Efeito visual de clique rápido no botão de execução
       const btn = pg.querySelector('.btn-run');
       if (btn) {
-        btn.style.transform = 'scale(0.95)';
-        setTimeout(() => btn.style.transform = '', 150);
+        btn.style.transform = 'scale(0.95)'; // Efeito de pressionar
+        setTimeout(() => btn.style.transform = '', 150); // Retorna ao tamanho normal após 150ms
       }
     }
 
+    // Função que restaura o código original da lição caso o usuário queira recomeçar
     function resetPlayground(id) {
+      // Localiza o container do playground
       const pg = document.querySelector(`.playground[data-id="${id}"]`);
+      // Localiza a textarea
       const editor = pg.querySelector('.code-editor');
+      // Restaura o valor inicial armazenado na inicialização
       editor.value = originalCode[id];
+      // Recalcula os números de linha
       updateLineNumbers(editor);
+      // Executa o código restaurado no iframe
       runPlayground(id);
     }
 
-    // ═══════════════════════════════════════════
-    // SCROLL PROGRESS
-    // ═══════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════════════
+    // BARRA DE PROGRESSO DE ROLAGEM E EFEITOS DA NAVBAR
+    // ═══════════════════════════════════════════════════════════════════════════
     window.addEventListener('scroll', () => {
+      // Distância percorrida pelo scroll a partir do topo
       const scrollTop = window.scrollY;
+      // Altura total da página subtraída da altura visível da tela
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / docHeight) * 100;
+      // Porcentagem de rolagem calculada entre 0% e 100%
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      // Atualiza a largura da barra de progresso no topo da tela
       document.getElementById('progressBar').style.width = progress + '%';
 
-      // Navbar effect
+      // Ativa classe 'scrolled' na navbar se o usuário rolou mais de 50 pixels
       document.getElementById('navbar').classList.toggle('scrolled', scrollTop > 50);
+
+      // Exibe ou oculta o botão flutuante 'Voltar ao Topo' se o scroll passar de 400 pixels
+      const backToTopBtn = document.getElementById('backToTop');
+      if (backToTopBtn) {
+        backToTopBtn.classList.toggle('visible', scrollTop > 400);
+      }
     });
 
-    // ═══════════════════════════════════════════
-    // NEON CURSOR & CLICK EFFECTS
-    // ═══════════════════════════════════════════
-    const cursorGlow = document.createElement('div');
-    cursorGlow.className = 'cursor-glow';
-    document.body.appendChild(cursorGlow);
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CONTROLE DO MENU MOBILE (HAMBÚRGUER E GAVETA RETRÁTIL)
+    // ═══════════════════════════════════════════════════════════════════════════
+    const menuToggle = document.getElementById('menuToggle'); // Botão com as 3 barras
+    const navLinks = document.getElementById('navLinks'); // Container dos links
+    const navBackdrop = document.getElementById('navBackdrop'); // Fundo escurecido
 
-    document.addEventListener('mousemove', (e) => {
-      // Offset slightly for performance/smoothness, handled by will-change in CSS
-      cursorGlow.style.left = e.clientX + 'px';
-      cursorGlow.style.top = e.clientY + 'px';
+    // Função auxiliar para fechar o menu mobile
+    function closeMobileMenu() {
+      if (menuToggle && navLinks && navBackdrop) {
+        menuToggle.classList.remove('active'); // Retorna o ícone do 'X' para 3 barras
+        navLinks.classList.remove('open'); // Desliza a gaveta para fora da tela
+        navBackdrop.classList.remove('active'); // Oculta o fundo escurecido
+        menuToggle.setAttribute('aria-expanded', 'false'); // Atualiza atributo de acessibilidade
+        document.body.style.overflow = ''; // Restaura a rolagem da página
+      }
+    }
+
+    // Função auxiliar para alternar o estado do menu mobile
+    function toggleMobileMenu() {
+      if (menuToggle && navLinks && navBackdrop) {
+        const isOpen = navLinks.classList.contains('open'); // Verifica se está aberto
+        if (isOpen) {
+          closeMobileMenu(); // Se já estava aberto, fecha
+        } else {
+          menuToggle.classList.add('active'); // Transforma o botão em 'X'
+          navLinks.classList.add('open'); // Abre a gaveta lateral
+          navBackdrop.classList.add('active'); // Ativa o fundo escuro com desfoque
+          menuToggle.setAttribute('aria-expanded', 'true'); // Atualiza acessibilidade
+          document.body.style.overflow = 'hidden'; // Previne rolagem do fundo enquanto o menu estiver aberto
+        }
+      }
+    }
+
+    // Adiciona evento de clique no botão hambúrguer
+    if (menuToggle) {
+      menuToggle.addEventListener('click', toggleMobileMenu);
+    }
+
+    // Fecha o menu ao clicar no fundo escurecido
+    if (navBackdrop) {
+      navBackdrop.addEventListener('click', closeMobileMenu);
+    }
+
+    // Fecha o menu mobile automaticamente ao clicar em qualquer um dos links de navegação
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
     });
 
-    document.addEventListener('click', (e) => {
-      const burst = document.createElement('div');
-      burst.className = 'click-burst';
-      burst.style.left = e.clientX + 'px';
-      burst.style.top = e.clientY + 'px';
-      document.body.appendChild(burst);
-
-      // Clean up animation element
-      setTimeout(() => burst.remove(), 500);
+    // Fecha o menu mobile ao pressionar a tecla 'Escape' no teclado
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMobileMenu();
+      }
     });
 
-    // ═══════════════════════════════════════════
-    // SCROLL REVEAL
-    // ═══════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════════════
+    // BOTÃO VOLTAR AO TOPO (SCROLL SMOOTH)
+    // ═══════════════════════════════════════════════════════════════════════════
+    const backToTopBtn = document.getElementById('backToTop');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', () => {
+        // Rola a página suavemente até o topo extremo (coordenadas x:0, y:0)
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // EFEITOS DE CURSOR NEON E ONDA DE CLIQUE (APENAS DISPOSITIVOS COM MOUSE)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Verifica se o dispositivo possui cursor fino (mouse) para não sobrecarregar celulares touch
+    const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    if (isDesktopPointer) {
+      // Cria o elemento visual de brilho que segue o mouse
+      const cursorGlow = document.createElement('div');
+      cursorGlow.className = 'cursor-glow';
+      document.body.appendChild(cursorGlow);
+
+      // Atualiza a posição do brilho conforme o mouse se move
+      document.addEventListener('mousemove', (e) => {
+        cursorGlow.style.left = e.clientX + 'px';
+        cursorGlow.style.top = e.clientY + 'px';
+      });
+
+      // Cria a onda expansiva colorida ao clicar com o botão do mouse
+      document.addEventListener('click', (e) => {
+        const burst = document.createElement('div');
+        burst.className = 'click-burst';
+        burst.style.left = e.clientX + 'px';
+        burst.style.top = e.clientY + 'px';
+        document.body.appendChild(burst);
+
+        // Remove o elemento do DOM após a conclusão da animação (500ms)
+        setTimeout(() => burst.remove(), 500);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // ANIMAÇÃO DE REVELAÇÃO AO ROLAR (SCROLL REVEAL OBSERVER)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Cria um observador de interseção para detectar quando elementos entram na tela
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
+        // Se o elemento entrou no campo de visão
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          obs.unobserve(entry.target); // Stop observing once visible
+          entry.target.classList.add('visible'); // Adiciona classe para transição suave
+          obs.unobserve(entry.target); // Para de observar o elemento já revelado
         }
       });
     }, { threshold: 0, rootMargin: '50px' });
 
+    // Registra todos os elementos marcados com a classe .reveal
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // ═══════════════════════════════════════════
-    // ACTIVE NAV LINK
-    // ═══════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════════════
+    // DESTAQUE AUTOMÁTICO DO LINK ATIVO NA NAVBAR CONFORME O SCROLL
+    // ═══════════════════════════════════════════════════════════════════════════
     const sections = document.querySelectorAll('section[id]');
     window.addEventListener('scroll', () => {
       let current = '';
+      // Identifica qual seção está atualmente visível na parte superior
       sections.forEach(sec => {
         if (window.scrollY >= sec.offsetTop - 200) {
           current = sec.id;
         }
       });
+      // Alterna a classe 'active' apenas no link correspondente à seção atual
       document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.toggle('active', link.getAttribute('href') === '#' + current);
       });
     });
 
-    // ═══════════════════════════════════════════
-    // INIT
-    // ═══════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════════════
+    // INICIALIZAÇÃO DA APLICAÇÃO
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Dispara a inicialização de todos os playgrounds assim que o DOM estiver carregado
     document.addEventListener('DOMContentLoaded', initPlaygrounds);
   </script>
 
