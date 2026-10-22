@@ -5,13 +5,18 @@
 <head>
   <!-- Define a codificação de caracteres como UTF-8 (suporte completo a acentos, pontuação e emojis) -->
   <meta charset="UTF-8">
-  <!-- Meta tag de viewport essencial para design responsivo: ajusta a largura da página à tela do dispositivo e define o nível de zoom inicial -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Meta tag de viewport: largura do dispositivo, zoom inicial e viewport-fit=cover para respeitar o "notch" (safe areas) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Cor da barra do navegador em celulares (Chrome Android / Safari) combinando com o fundo -->
+  <meta name="theme-color" content="#050505">
   <!-- Descrição do site para mecanismos de busca (SEO) e compartilhamento em redes sociais -->
   <meta name="description"
     content="Aprenda HTML, CSS e JavaScript de forma interativa e moderna. Tutorial completo para iniciantes com editor de código ao vivo.">
   <!-- Título exibido na aba do navegador e nos resultados de busca -->
   <title>Aprenda Web — HTML, CSS &amp; JavaScript</title>
+  <!-- Pré-conexão com os servidores de fontes: reduz a latência do carregamento das fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Importação de fontes modernas do Google Fonts: Inter (para textos) e JetBrains Mono (para código-fonte) -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
@@ -54,8 +59,8 @@
       --text-primary: #f0f0f0;
       /* Cor do texto secundário para explicações e subtítulos */
       --text-secondary: #a0a0a0;
-      /* Cor do texto atenuado para notas, ícones e rodapé */
-      --text-muted: #666666;
+      /* Cor do texto atenuado para notas, ícones e rodapé (clareado para contraste mínimo AA) */
+      --text-muted: #7a7a7a;
       /* Lilás neon: cor de destaque primária da identidade visual */
       --accent-1: #bf55ec;
       /* Rosa neon: cor de destaque secundária para botões e gradientes */
@@ -88,6 +93,15 @@
       --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       /* Família tipográfica monoespaçada para editores e códigos: JetBrains Mono */
       --font-code: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      /* Tamanho da fonte do editor de código */
+      --code-fs: 0.85rem;
+      /* Tamanho da fonte dos números de linha */
+      --code-fs-gutter: 0.78rem;
+      /* Altura de linha ABSOLUTA compartilhada pelo editor e pelos números de linha
+         (antes era 1.65 relativo a fontes diferentes, o que desalinhava a numeração) */
+      --code-lh: 1.4rem;
+      /* Altura do editor + resultado no desktop */
+      --playground-h: 380px;
     }
 
     /* ═══════════════════════════════════════════════════════════════════════════
@@ -97,6 +111,11 @@
     html {
       /* Ativa a rolagem suave ao navegar por links âncora (#) */
       scroll-behavior: smooth;
+      /* Compensa a navbar fixa ao saltar para uma âncora (o título não fica escondido) */
+      scroll-padding-top: 80px;
+      /* Impede o iOS de aumentar o texto sozinho ao girar o aparelho */
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     /* Configuração do corpo da página */
@@ -115,20 +134,30 @@
       width: 100%;
       /* Posição relativa para contexto de elementos fixos */
       position: relative;
+      /* Suaviza a renderização das fontes no macOS/iOS */
+      -webkit-font-smoothing: antialiased;
     }
 
     /* Estilização da seleção de texto pelo usuário */
     ::selection {
-      /* Fundo roxo translúcido ao selecionar texto */
-      background: rgba(124, 92, 252, 0.4);
+      /* Fundo lilás translúcido ao selecionar texto (alinhado à paleta do tema) */
+      background: rgba(191, 85, 236, 0.4);
       /* Cor branca para o texto selecionado */
       color: #fff;
+    }
+
+    /* Indicador de foco visível para navegação por teclado (acessibilidade) */
+    :focus-visible {
+      outline: 2px solid var(--accent-2); /* Contorno rosa neon */
+      outline-offset: 2px; /* Afasta o contorno do elemento */
     }
 
     /* Estilização da barra de rolagem vertical personalizada (Webkit) */
     ::-webkit-scrollbar {
       /* Largura estreita e elegante da barra de rolagem */
       width: 8px;
+      /* Altura da barra horizontal (editores de código) */
+      height: 8px;
     }
 
     /* Estilização do trilho da barra de rolagem */
@@ -151,10 +180,7 @@
     /* Container fixo em tela cheia para as esferas flutuantes */
     .bg-orbs {
       position: fixed; /* Fixo durante a rolagem */
-      top: 0; /* Alinhado ao topo */
-      left: 0; /* Alinhado à esquerda */
-      width: 100%; /* Largura total da tela */
-      height: 100%; /* Altura total da tela */
+      inset: 0; /* Cobre toda a janela (sem 100vw, que soma a barra de rolagem) */
       pointer-events: none; /* Permite cliques nos elementos abaixo sem bloquear */
       z-index: 0; /* Camada mais baixa da página */
       overflow: hidden; /* Oculta partes das esferas que saem da tela */
@@ -163,9 +189,7 @@
     /* Envoltório individual de cada esfera luminosa */
     .bg-orbs .orb-wrapper {
       position: absolute; /* Posição absoluta dentro do container */
-      width: 100%; /* Ocupa 100% da largura */
-      height: 100%; /* Ocupa 100% da altura */
-      transition: transform 0.1s linear; /* Movimento suave */
+      inset: 0; /* Ocupa toda a área do container */
     }
 
     /* Esfera luminosa com desfoque intenso (efeito blur) */
@@ -175,6 +199,7 @@
       filter: blur(100px); /* Desfoque intenso para criar brilho difuso */
       opacity: 0.15; /* Opacidade sutil para não ofuscar o conteúdo */
       animation: orbFloat 20s ease-in-out infinite; /* Animação infinita de flutuação */
+      will-change: transform; /* Move a animação para a GPU (mais fluidez) */
     }
 
     /* Primeira esfera: grande, lilás, no canto superior esquerdo */
@@ -225,10 +250,7 @@
     /* Container de névoa radial sobre as esferas */
     .fog-container {
       position: fixed; /* Fixo na tela */
-      top: 0; /* Alinhado ao topo */
-      left: 0; /* Alinhado à esquerda */
-      width: 100vw; /* 100% da largura da janela */
-      height: 100vh; /* 100% da altura da janela */
+      inset: 0; /* Cobre toda a janela */
       pointer-events: none; /* Não bloqueia cliques */
       z-index: 1; /* Camada logo acima das orbs */
       opacity: 0.7; /* Opacidade sutil */
@@ -250,6 +272,7 @@
       filter: blur(40px); /* Desfoque difuso */
       animation: fogNebula 45s linear infinite; /* Rotação lenta contínua */
       transform-origin: center; /* Ponto de rotação no centro */
+      will-change: transform; /* Animação na GPU */
     }
 
     /* Animação de rotação em 360 graus da névoa */
@@ -274,16 +297,17 @@
     /* Círculo luminoso que segue o ponteiro do mouse */
     .cursor-glow {
       position: fixed; /* Fixo na janela */
+      top: 0; /* Origem no canto superior; a posição é aplicada via transform (GPU) */
+      left: 0; /* Origem no canto esquerdo */
       width: 300px; /* Diâmetro de 300px */
       height: 300px; /* Altura de 300px */
       background: radial-gradient(circle, rgba(191, 85, 236, 0.15) 0%, rgba(191, 85, 236, 0) 70%);
       border-radius: 50%; /* Círculo perfeito */
       pointer-events: none; /* Não interfere com elementos clicáveis */
       z-index: 9999; /* Fica acima de quase tudo */
-      transform: translate(-50%, -50%); /* Centraliza exatamente no ponteiro */
       transition: opacity 0.3s; /* Transição suave de visibilidade */
       opacity: 0; /* Invisível até o primeiro movimento */
-      will-change: left, top; /* Otimização de GPU para renderização de posição */
+      will-change: transform; /* Movimento via transform não força recálculo de layout */
     }
 
     /* Torna o brilho visível quando o mouse passa sobre o body */
@@ -324,12 +348,16 @@
     ═══════════════════════════════════════════════════════════════════════════ */
     /* Container fixo da barra de navegação no topo da tela */
     .navbar {
+      /* Espaçamentos em variáveis: as media queries e o estado .scrolled alteram só o necessário */
+      --nav-py: 16px; /* Espaçamento vertical */
+      --nav-px: 40px; /* Espaçamento horizontal */
       position: fixed; /* Fixo durante toda a rolagem */
       top: 0; /* Alinhado ao topo */
       left: 0; /* Alinhado à esquerda */
       right: 0; /* Alinhado à direita (largura total) */
       z-index: 1000; /* Camada alta para ficar sobre o conteúdo */
-      padding: 16px 40px; /* Espaçamento interno vertical e horizontal no desktop */
+      /* Padding respeita o "notch" de iPhones em modo paisagem (safe areas) */
+      padding: var(--nav-py) max(var(--nav-px), env(safe-area-inset-right)) var(--nav-py) max(var(--nav-px), env(safe-area-inset-left));
       display: flex; /* Disposição flexível dos itens internos */
       align-items: center; /* Alinha verticalmente logo e links no centro */
       justify-content: space-between; /* Separa o logo à esquerda e links à direita */
@@ -337,12 +365,13 @@
       backdrop-filter: blur(20px); /* Efeito vidro fosco (glassmorphism) */
       -webkit-backdrop-filter: blur(20px); /* Suporte ao Safari */
       border-bottom: 1px solid var(--border-color); /* Linha divisória inferior neon */
-      transition: var(--transition); /* Animação suave nas mudanças de tamanho */
+      transition: padding var(--transition), box-shadow var(--transition); /* Anima só o que muda */
     }
 
-    /* Estilo aplicado via JavaScript quando a página for rolada para baixo */
+    /* Estilo aplicado via JavaScript quando a página for rolada para baixo.
+       Antes usava "padding: 10px 40px", que sobrescrevia o padding mobile e apertava a barra no celular */
     .navbar.scrolled {
-      padding: 10px 40px; /* Reduz altura da barra para economizar espaço de tela */
+      --nav-py: 10px; /* Reduz apenas a altura da barra */
       box-shadow: var(--shadow-glow); /* Adiciona sombra luminosa na rolagem */
     }
 
@@ -352,12 +381,14 @@
       font-weight: 800; /* Peso da fonte extra negrito */
       background: var(--gradient-1); /* Gradiente lilás para rosa */
       -webkit-background-clip: text; /* Aplica o gradiente apenas dentro das letras */
+      background-clip: text; /* Versão padrão da propriedade */
       -webkit-text-fill-color: transparent; /* Torna o texto transparente para revelar o gradiente */
       letter-spacing: -0.5px; /* Espaçamento compacto entre as letras */
       text-decoration: none; /* Remove sublinhado se for link */
       display: inline-flex; /* Mantém alinhado em linha */
       align-items: center; /* Alinha o texto centralizado */
       cursor: pointer; /* Cursor de link */
+      white-space: nowrap; /* Nunca quebra o logo em duas linhas */
     }
 
     /* Parte secundária do nome do logo ("Web") */
@@ -390,7 +421,7 @@
     .nav-links a:hover,
     .nav-links a.active {
       color: #fff; /* Texto fica branco puro */
-      background: rgba(124, 92, 252, 0.15); /* Fundo com brilho lilás translúcido */
+      background: rgba(191, 85, 236, 0.15); /* Fundo com brilho lilás translúcido */
     }
 
     /* Linha indicadora inferior sob o link da seção atualmente ativa */
@@ -415,14 +446,15 @@
       display: none; /* Oculto por padrão em telas grandes de computador */
       flex-direction: column; /* Três barras empilhadas verticalmente */
       justify-content: space-around; /* Distribuição uniforme das barras */
-      width: 42px; /* Área de toque confortável de 42px */
-      height: 42px; /* Altura de toque de 42px para atender recomendações de acessibilidade */
+      width: 44px; /* Área de toque de 44px (mínimo recomendado pela Apple/Google) */
+      height: 44px; /* Altura de toque de 44px */
       background: rgba(191, 85, 236, 0.1); /* Fundo sutil para destacar a área de toque */
       border: 1px solid var(--border-color); /* Borda neon suave */
       border-radius: 10px; /* Cantos arredondados */
       cursor: pointer; /* Cursor de clique */
-      padding: 10px 8px; /* Preenchimento interno para centralizar as barras */
+      padding: 11px 9px; /* Preenchimento interno para centralizar as barras */
       z-index: 1005; /* Fica acima da navbar para garantir que o clique sempre funcione */
+      position: relative; /* Necessário para o z-index ter efeito */
       transition: var(--transition); /* Animação suave ao interagir */
       -webkit-tap-highlight-color: transparent; /* Remove flash azul padrão do Android no toque */
     }
@@ -432,7 +464,6 @@
     .menu-toggle:focus-visible {
       background: rgba(191, 85, 236, 0.2); /* Fundo mais brilhante */
       border-color: var(--accent-1); /* Borda neon acesa */
-      outline: none; /* Remove contorno padrão mantendo acessibilidade */
     }
 
     /* Linhas individuais que compõem o ícone de hambúrguer */
@@ -463,27 +494,25 @@
       background-color: var(--accent-2); /* Fica em rosa neon */
     }
 
-    /* Camada escura que cobre o conteúdo quando o menu mobile está aberto */
+    /* Camada escura que cobre o conteúdo quando o menu mobile está aberto.
+       Usa visibility em vez de display:none para que o fade de opacidade funcione */
     .nav-backdrop {
-      display: none; /* Oculta quando o menu estiver fechado */
       position: fixed; /* Fixada em toda a janela */
-      top: 0; /* Alinhada ao topo */
-      left: 0; /* Alinhada à esquerda */
-      width: 100vw; /* 100% da largura visível */
-      height: 100vh; /* 100% da altura visível */
+      inset: 0; /* Cobre toda a janela */
       background: rgba(0, 0, 0, 0.75); /* Fundo preto 75% opaco */
       backdrop-filter: blur(8px); /* Desfoque do fundo para foco no menu */
       -webkit-backdrop-filter: blur(8px); /* Compatibilidade Safari */
       z-index: 998; /* Fica abaixo apenas do menu mobile */
       opacity: 0; /* Começa transparente */
-      transition: opacity 0.3s ease; /* Transição suave de opacidade */
+      visibility: hidden; /* Fora da árvore de interação quando fechado */
+      transition: opacity 0.3s ease, visibility 0.3s ease; /* Transição suave de opacidade */
       pointer-events: none; /* Não bloqueia interações quando invisível */
     }
 
     /* Estado ativo da camada escura de fundo */
     .nav-backdrop.active {
-      display: block; /* Visível */
       opacity: 1; /* Opacidade máxima */
+      visibility: visible; /* Visível */
       pointer-events: auto; /* Captura toques para fechar o menu */
     }
 
@@ -498,17 +527,19 @@
       right: 0; /* Alinhado à direita */
       height: 3px; /* Espessura de 3px */
       z-index: 1001; /* Fica acima da navbar */
-      background: rgba(124, 92, 252, 0.1); /* Trilho sutil */
+      background: rgba(191, 85, 236, 0.1); /* Trilho sutil */
+      pointer-events: none; /* Nunca intercepta toques */
     }
 
-    /* Indicador preenchido que cresce com o scroll */
+    /* Indicador preenchido que cresce com o scroll (via transform: não recalcula layout) */
     .progress-bar {
       height: 100%; /* Ocupa toda a altura do container de 3px */
+      width: 100%; /* Largura total; o progresso é aplicado com scaleX */
       background: var(--gradient-1); /* Gradiente neon lilás para rosa */
-      width: 0%; /* Inicia zerado e é atualizado dinamicamente via JS */
-      transition: width 0.15s linear; /* Atualização suave */
-      border-radius: 0 2px 2px 0; /* Canto direito arredondado */
-      box-shadow: 0 0 10px rgba(124, 92, 252, 0.5); /* Brilho neon na ponta */
+      transform: scaleX(0); /* Inicia zerado e é atualizado dinamicamente via JS */
+      transform-origin: left center; /* Cresce da esquerda para a direita */
+      box-shadow: 0 0 10px rgba(191, 85, 236, 0.5); /* Brilho neon na ponta */
+      will-change: transform; /* Atualização na GPU */
     }
 
     /* ═══════════════════════════════════════════════════════════════════════════
@@ -518,7 +549,8 @@
     .hero {
       position: relative; /* Contexto de posicionamento */
       z-index: 1; /* Camada acima do fundo animado */
-      min-height: 100vh; /* Altura de pelo menos 100% da viewport no desktop */
+      min-height: 100vh; /* Fallback para navegadores antigos */
+      min-height: 100svh; /* Altura real visível no celular (sem pular quando a barra do navegador some) */
       display: flex; /* Flexbox para centralização */
       align-items: center; /* Alinha o conteúdo verticalmente no centro */
       justify-content: center; /* Alinha o conteúdo horizontalmente no centro */
@@ -541,8 +573,8 @@
       gap: 8px; /* Espaço entre o ponto e o texto */
       padding: 8px 20px; /* Preenchimento formato pílula */
       border-radius: 50px; /* Totalmente arredondado */
-      background: rgba(124, 92, 252, 0.1); /* Fundo roxo suave */
-      border: 1px solid rgba(124, 92, 252, 0.25); /* Borda roxa fina */
+      background: rgba(191, 85, 236, 0.1); /* Fundo lilás suave */
+      border: 1px solid rgba(191, 85, 236, 0.25); /* Borda lilás fina */
       font-size: 0.85rem; /* Tamanho de texto compacto */
       font-weight: 500; /* Peso médio */
       color: var(--accent-2); /* Cor rosa neon */
@@ -581,13 +613,14 @@
       margin-bottom: 24px; /* Espaço abaixo do título */
       letter-spacing: -2px; /* Letras aproximadas para estética moderna */
       animation: fadeInUp 0.8s ease-out 0.1s both; /* Entrada com pequeno atraso */
-      word-break: break-word; /* Quebra palavras longas se necessário */
+      overflow-wrap: break-word; /* Quebra palavras longas se necessário */
     }
 
     /* Texto com gradiente dentro do título */
     .hero h1 .gradient-text {
       background: var(--gradient-1); /* Gradiente lilás para rosa */
       -webkit-background-clip: text; /* Clip de texto Webkit */
+      background-clip: text; /* Versão padrão */
       -webkit-text-fill-color: transparent; /* Texto transparente */
       display: inline-block; /* Mantém bloco em linha */
     }
@@ -633,7 +666,7 @@
     .btn-primary {
       background: var(--gradient-1); /* Gradiente lilás para rosa */
       color: #fff; /* Texto branco */
-      box-shadow: 0 4px 20px rgba(124, 92, 252, 0.3); /* Sombra luminosa */
+      box-shadow: 0 4px 20px rgba(191, 85, 236, 0.3); /* Sombra luminosa */
     }
 
     /* Efeito de hover no botão primário */
@@ -651,7 +684,7 @@
 
     /* Efeito de hover no botão secundário */
     .btn-outline:hover {
-      background: rgba(124, 92, 252, 0.1); /* Fundo lilás suave */
+      background: rgba(191, 85, 236, 0.1); /* Fundo lilás suave */
       border-color: var(--accent-1); /* Borda lilás neon */
       transform: translateY(-2px); /* Elevação suave */
     }
@@ -678,6 +711,7 @@
       font-weight: 800; /* Peso extra negrito */
       background: var(--gradient-1); /* Gradiente colorido nos números */
       -webkit-background-clip: text; /* Clip de texto */
+      background-clip: text; /* Versão padrão */
       -webkit-text-fill-color: transparent; /* Revela o gradiente */
       line-height: 1.2; /* Altura de linha proporcional */
     }
@@ -739,23 +773,30 @@
 
     /* Tag específica do módulo HTML */
     .tag-html {
-      background: rgba(255, 107, 157, 0.1); /* Rosa suave translúcido */
-      color: var(--accent-3); /* Roxo */
-      border: 1px solid rgba(255, 107, 157, 0.2); /* Borda rosa sutil */
+      background: rgba(155, 89, 182, 0.12); /* Roxo suave translúcido */
+      color: #c58ae0; /* Roxo clareado para contraste legível */
+      border: 1px solid rgba(155, 89, 182, 0.3); /* Borda roxa sutil */
     }
 
     /* Tag específica do módulo CSS */
     .tag-css {
-      background: rgba(0, 212, 255, 0.1); /* Azul cyan suave */
+      background: rgba(255, 42, 157, 0.1); /* Rosa suave translúcido */
       color: var(--accent-2); /* Rosa neon */
-      border: 1px solid rgba(0, 212, 255, 0.2); /* Borda sutil */
+      border: 1px solid rgba(255, 42, 157, 0.25); /* Borda sutil */
     }
 
     /* Tag específica do módulo JavaScript */
     .tag-js {
-      background: rgba(0, 232, 143, 0.1); /* Verde suave */
+      background: rgba(255, 0, 127, 0.1); /* Magenta suave */
       color: var(--accent-4); /* Rosa choque */
-      border: 1px solid rgba(0, 232, 143, 0.2); /* Borda sutil */
+      border: 1px solid rgba(255, 0, 127, 0.25); /* Borda sutil */
+    }
+
+    /* Tag da seção Sandbox (antes era um style inline com a cor antiga) */
+    .tag-sandbox {
+      background: rgba(191, 85, 236, 0.1); /* Lilás suave */
+      color: var(--accent-1); /* Lilás neon */
+      border: 1px solid rgba(191, 85, 236, 0.25); /* Borda sutil */
     }
 
     /* Título h2 de cada módulo */
@@ -764,7 +805,7 @@
       font-weight: 800; /* Peso extra negrito */
       letter-spacing: -1px; /* Letras compactas */
       margin-bottom: 16px; /* Espaço antes da descrição */
-      word-break: break-word; /* Evita estouro em telas pequenas */
+      overflow-wrap: break-word; /* Evita estouro em telas pequenas */
     }
 
     /* Descrição em parágrafo do cabeçalho da seção */
@@ -788,7 +829,7 @@
       margin-bottom: 40px; /* Distância entre lições consecutivas */
       backdrop-filter: blur(10px); /* Vidro fosco sutil */
       -webkit-backdrop-filter: blur(10px); /* Suporte Safari */
-      transition: var(--transition); /* Transição para efeitos de hover */
+      transition: border-color var(--transition), box-shadow var(--transition), opacity 0.7s ease-out, transform 0.7s ease-out; /* Hover + revelação */
       position: relative; /* Contexto para barra decorativa */
       overflow: hidden; /* Mantém elementos internos contidos */
       width: 100%; /* Largura total */
@@ -826,6 +867,16 @@
       box-shadow: var(--shadow-glow); /* Brilho neon difuso ao redor */
     }
 
+    /* Card do Sandbox com borda em gradiente.
+       Antes usava border-image, que ignora border-radius e deixava os cantos quadrados */
+    .lesson.sandbox-card,
+    .lesson.sandbox-card:hover {
+      border: 1px solid transparent; /* Borda transparente revela o gradiente abaixo */
+      background:
+        linear-gradient(#0c0c0c, #0c0c0c) padding-box, /* Preenchimento interno sólido */
+        linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3)) border-box; /* Gradiente na borda */
+    }
+
     /* Badge com o número da lição (ex: 01, 02) */
     .lesson-number {
       display: inline-flex; /* Layout flexível inline */
@@ -841,19 +892,19 @@
 
     /* Cores do número para lições de HTML */
     .html-lesson .lesson-number {
-      background: rgba(255, 107, 157, 0.15); /* Fundo rosa sutil */
-      color: var(--accent-3); /* Roxo */
+      background: rgba(155, 89, 182, 0.18); /* Fundo roxo sutil */
+      color: #c58ae0; /* Roxo clareado */
     }
 
     /* Cores do número para lições de CSS */
     .css-lesson .lesson-number {
-      background: rgba(0, 212, 255, 0.15); /* Fundo cyan sutil */
+      background: rgba(255, 42, 157, 0.15); /* Fundo rosa sutil */
       color: var(--accent-2); /* Rosa neon */
     }
 
     /* Cores do número para lições de JavaScript */
     .js-lesson .lesson-number {
-      background: rgba(0, 232, 143, 0.15); /* Fundo verde sutil */
+      background: rgba(255, 0, 127, 0.15); /* Fundo magenta sutil */
       color: var(--accent-4); /* Rosa choque */
     }
 
@@ -863,7 +914,7 @@
       font-weight: 700; /* Negrito forte */
       margin-bottom: 16px; /* Espaço antes da explicação */
       letter-spacing: -0.5px; /* Espaçamento compacto */
-      word-break: break-word; /* Evita quebra indesejada */
+      overflow-wrap: break-word; /* Evita quebra indesejada */
     }
 
     /* Bloco explicativo com texto conceitual da lição */
@@ -876,13 +927,12 @@
 
     /* Trechos de código em linha dentro da explicação (tags <code>) */
     .lesson .explanation code {
-      background: rgba(124, 92, 252, 0.15); /* Fundo lilás translúcido */
+      background: rgba(191, 85, 236, 0.15); /* Fundo lilás translúcido */
       color: var(--accent-2); /* Rosa neon para contraste de sintaxe */
       padding: 2px 8px; /* Preenchimento ao redor do texto */
       border-radius: 6px; /* Cantos arredondados */
       font-family: var(--font-code); /* Fonte monoespaçada */
       font-size: 0.85rem; /* Tamanho alinhado ao texto */
-      word-break: break-word; /* Quebra palavras se o código for longo no mobile */
       overflow-wrap: anywhere; /* Garante que não quebre o layout no celular */
     }
 
@@ -928,7 +978,7 @@
       display: flex; /* Layout flexível com ícone */
       gap: 12px; /* Espaço entre o ícone e o texto */
       align-items: flex-start; /* Alinha o ícone no topo */
-      word-break: break-word; /* Quebra segura para telas pequenas */
+      overflow-wrap: break-word; /* Quebra segura para telas pequenas */
     }
 
     /* Ícone de lâmpada dentro da caixa de dica */
@@ -967,6 +1017,7 @@
     .playground-tabs {
       display: flex; /* Abas alinhadas horizontalmente */
       gap: 4px; /* Pequeno espaço entre cada aba */
+      min-width: 0; /* Permite encolher sem estourar */
     }
 
     /* Botão de aba individual */
@@ -976,23 +1027,19 @@
       font-size: 0.78rem; /* Tamanho de texto compacto */
       font-weight: 600; /* Peso semi-negrito */
       font-family: var(--font-code); /* Fonte JetBrains Mono */
-      cursor: pointer; /* Cursor de clique */
+      cursor: default; /* Aba única: não é clicável */
       background: transparent; /* Fundo transparente */
       color: var(--text-muted); /* Cor de texto atenuada */
       border: none; /* Sem borda nativa */
       transition: var(--transition); /* Transição suave */
+      white-space: nowrap; /* Rótulo em uma única linha */
       -webkit-tap-highlight-color: transparent; /* Sem flash de toque */
     }
 
     /* Estilo da aba atualmente selecionada */
     .playground-tab.active {
-      background: rgba(124, 92, 252, 0.2); /* Fundo lilás sutil */
+      background: rgba(191, 85, 236, 0.2); /* Fundo lilás sutil */
       color: var(--accent-2); /* Texto em rosa neon */
-    }
-
-    /* Efeito de hover em abas não ativas */
-    .playground-tab:hover:not(.active) {
-      color: var(--text-secondary); /* Clareia o texto ao passar o cursor */
     }
 
     /* Grupo de botões de ação (Resetar e Executar) */
@@ -1000,6 +1047,7 @@
       display: flex; /* Botões dispostos em linha */
       gap: 8px; /* Espaçamento entre Resetar e Executar */
       align-items: center; /* Alinhamento central */
+      margin-left: auto; /* Sempre encostado à direita, mesmo quando a barra quebra linha */
     }
 
     /* Botão "Executar" que compila e atualiza o iframe */
@@ -1008,6 +1056,7 @@
       align-items: center; /* Centraliza verticalmente ícone e texto */
       gap: 6px; /* Espaço de 6px entre o símbolo ▶ e a palavra */
       padding: 6px 18px; /* Preenchimento confortável */
+      min-height: 34px; /* Altura mínima de toque */
       border-radius: 8px; /* Cantos arredondados */
       font-size: 0.8rem; /* Tamanho compacto */
       font-weight: 600; /* Semi-negrito */
@@ -1018,6 +1067,7 @@
       color: #fff; /* Texto branco */
       transition: var(--transition); /* Animação suave */
       -webkit-tap-highlight-color: transparent; /* Sem flash azul */
+      touch-action: manipulation; /* Remove o atraso de toque duplo no mobile */
     }
 
     /* Efeito de hover no botão Executar */
@@ -1026,8 +1076,9 @@
       box-shadow: 0 4px 15px rgba(255, 42, 157, 0.4); /* Brilho neon rosa */
     }
 
-    /* Efeito de clique ativo no botão Executar */
-    .btn-run:active {
+    /* Efeito de clique ativo no botão Executar (também usado via JS ao executar) */
+    .btn-run:active,
+    .btn-run.pressed {
       transform: scale(0.97); /* Encolhe levemente para sensação de clique */
       box-shadow: 0 0 20px rgba(255, 42, 157, 0.8); /* Flash de luz */
     }
@@ -1038,6 +1089,7 @@
       align-items: center; /* Centraliza ícone e texto */
       gap: 6px; /* Espaçamento interno */
       padding: 6px 14px; /* Preenchimento */
+      min-height: 34px; /* Altura mínima de toque */
       border-radius: 8px; /* Cantos arredondados */
       font-size: 0.8rem; /* Tamanho */
       font-weight: 600; /* Semi-negrito */
@@ -1045,28 +1097,31 @@
       cursor: pointer; /* Cursor de clique */
       border: 1px solid var(--border-color); /* Borda fina */
       background: transparent; /* Fundo transparente */
-      color: var(--text-muted); /* Cor discreta */
+      color: var(--text-secondary); /* Cor legível */
       transition: var(--transition); /* Transição suave */
       -webkit-tap-highlight-color: transparent; /* Sem flash azul */
+      touch-action: manipulation; /* Remove o atraso de toque duplo no mobile */
     }
 
     /* Efeito de hover no botão Resetar */
     .btn-reset:hover {
-      border-color: var(--accent-3); /* Borda lilás */
-      color: var(--accent-3); /* Texto lilás */
+      border-color: var(--accent-1); /* Borda lilás */
+      color: var(--accent-1); /* Texto lilás */
     }
 
-    /* Corpo do playground (divide editor e visualização) */
+    /* Corpo do playground (divide editor e visualização).
+       Altura FIXA: antes a coluna de números crescia com o código e esticava o card inteiro */
     .playground-body {
       display: flex; /* Organiza lado a lado no desktop */
-      min-height: 260px; /* Altura mínima consistente */
+      height: var(--playground-h); /* Altura consistente; o editor rola internamente */
       width: 100%; /* Largura total */
     }
 
-    /* Envoltório da área de digitação de código */
+    /* Envoltório da área de digitação de código (largura ajustável pela divisória) */
     .playground-editor-wrap {
-      flex: 1; /* Ocupa 50% do espaço no desktop */
+      flex: 0 0 var(--split, 50%); /* Proporção controlada pela variável --split (arrastar a divisória) */
       min-width: 0; /* Previne estouro horizontal de containers flex */
+      min-height: 0; /* Permite rolar dentro do flex */
       display: flex; /* Flex interno */
       flex-direction: column; /* Coluna interna */
       background: var(--bg-editor); /* Fundo escuro */
@@ -1077,6 +1132,7 @@
       display: none; /* Escondido por padrão se não estiver ativo */
       flex: 1; /* Ocupa altura total disponível */
       min-width: 0; /* Previne overflow */
+      min-height: 0; /* Permite que a textarea role em vez de crescer */
     }
 
     /* Exibição quando o container for o ativo */
@@ -1086,14 +1142,16 @@
 
     /* Coluna lateral esquerda com a numeração das linhas */
     .line-numbers {
-      padding: 16px 0; /* Espaçamento vertical alinhado ao texto */
+      /* padding inferior extra compensa a barra de rolagem horizontal da textarea,
+         mantendo a numeração alinhada mesmo no fim do código */
+      padding: 16px 0 48px;
       width: 44px; /* Largura padrão no desktop */
       text-align: right; /* Números alinhados à direita */
       font-family: var(--font-code); /* Fonte monoespaçada */
-      font-size: 0.78rem; /* Tamanho compacto */
+      font-size: var(--code-fs-gutter); /* Tamanho compacto */
       color: var(--text-muted); /* Cor atenuada discreta */
       user-select: none; /* Impede que o usuário selecione acidentalmente os números */
-      line-height: 1.65; /* Mesma altura de linha da textarea para alinhamento perfeito */
+      line-height: var(--code-lh); /* MESMA altura de linha absoluta da textarea */
       background: rgba(8, 8, 15, 0.5); /* Fundo sutilmente escurecido */
       flex-shrink: 0; /* Não reduz de tamanho */
       overflow: hidden; /* Rolagem controlada via sincronismo com a textarea */
@@ -1109,27 +1167,55 @@
     .code-editor {
       flex: 1; /* Ocupa todo o espaço restante do container */
       width: 100%; /* Largura total */
+      min-width: 0; /* Não estoura o container */
       resize: none; /* Remove alça de redimensionamento nativo para layout estável */
       background: transparent; /* Fundo transparente */
       border: none; /* Sem borda nativa */
       color: var(--text-primary); /* Texto em tom claro */
       font-family: var(--font-code); /* Fonte JetBrains Mono */
-      font-size: 0.85rem; /* Tamanho de código agradável */
-      line-height: 1.65; /* Altura de linha idêntica aos números */
+      font-size: var(--code-fs); /* Tamanho de código agradável */
+      line-height: var(--code-lh); /* Altura de linha idêntica aos números */
       padding: 16px; /* Preenchimento interno */
-      outline: none; /* Remove contorno padrão */
+      outline: none; /* Remove contorno padrão (o foco é indicado no container) */
       tab-size: 2; /* 2 espaços para cada toque na tecla Tab */
       white-space: pre; /* Preserva espaços e quebras exatamente como digitados */
-      overflow-x: auto; /* Permite rolagem horizontal para linhas de código longas */
-      -webkit-overflow-scrolling: touch; /* Rolagem fluida no iOS Safari */
+      overflow: auto; /* Rolagem vertical e horizontal para códigos longos */
+      caret-color: var(--accent-2); /* Cursor de digitação rosa neon, fácil de achar */
     }
 
-    /* Barra divisória vertical entre o editor e a pré-visualização */
+    /* Indica o foco no editor com uma borda interna sutil */
+    .playground-editor-container:focus-within {
+      box-shadow: inset 0 0 0 1px rgba(255, 42, 157, 0.35); /* Contorno rosa discreto */
+    }
+
+    /* Barra divisória vertical entre o editor e a pré-visualização (arrastável no desktop) */
     .playground-divider {
-      width: 1px; /* Espessura de 1px */
+      flex: 0 0 10px; /* Área de agarre de 10px */
+      background: var(--bg-editor); /* Mesmo fundo do editor */
+      position: relative; /* Contexto para a linha e o ícone */
+      cursor: col-resize; /* Indica que pode ser arrastada */
+      touch-action: none; /* Arrastar não rola a página */
+    }
+
+    /* Linha fina visível no centro da divisória */
+    .playground-divider::before {
+      content: ''; /* Elemento decorativo */
+      position: absolute; /* Centralizado */
+      top: 0; /* Altura total */
+      bottom: 0; /* Altura total */
+      left: 50%; /* Centro */
+      width: 1px; /* Linha fina */
+      transform: translateX(-50%); /* Centralização perfeita */
       background: var(--border-color); /* Cor da borda neon lilás */
-      position: relative; /* Contexto para o ícone de três pontos */
-      flex-shrink: 0; /* Não deforma */
+      transition: background 0.2s, width 0.2s; /* Destaque suave */
+    }
+
+    /* Destaque da divisória durante hover, foco ou arraste */
+    .playground-divider:hover::before,
+    .playground-divider:focus-visible::before,
+    .playground-body.resizing .playground-divider::before {
+      background: var(--accent-2); /* Rosa neon */
+      width: 3px; /* Linha mais grossa */
     }
 
     /* Ícone decorativo de três pontos centrais na barra divisória */
@@ -1143,12 +1229,24 @@
       font-size: 1rem; /* Tamanho */
       background: var(--bg-editor); /* Fundo do editor para cobrir a linha atrás */
       padding: 8px 0; /* Espaço vertical */
+      line-height: 1; /* Compacto */
+    }
+
+    /* Durante o arraste: sem seleção de texto e iframe não "rouba" o ponteiro */
+    .playground-body.resizing {
+      user-select: none; /* Evita selecionar texto ao arrastar */
+      cursor: col-resize; /* Mantém o cursor de redimensionar */
+    }
+
+    .playground-body.resizing .preview-frame {
+      pointer-events: none; /* O iframe não captura eventos durante o arraste */
     }
 
     /* Envoltório da área de pré-visualização em tempo real */
     .playground-preview {
-      flex: 1; /* Ocupa os outros 50% do espaço no desktop */
+      flex: 1 1 0; /* Ocupa o espaço restante */
       min-width: 0; /* Previne estouro */
+      min-height: 0; /* Previne estouro vertical */
       position: relative; /* Contexto para a etiqueta "Resultado" */
       background: var(--bg-preview); /* Fundo branco padrão */
       display: flex; /* Flex interno */
@@ -1162,7 +1260,7 @@
       right: 12px; /* 12px da direita */
       font-size: 0.7rem; /* Tamanho mini */
       font-weight: 600; /* Negrito */
-      color: var(--text-muted); /* Cor atenuada */
+      color: #b0b0b0; /* Cor clara legível sobre o fundo escuro */
       text-transform: uppercase; /* Maiúsculas */
       letter-spacing: 1px; /* Espaçamento elegante */
       z-index: 2; /* Fica acima do iframe */
@@ -1174,12 +1272,11 @@
 
     /* Iframe onde a página HTML do usuário é renderizada com segurança */
     .preview-frame {
+      flex: 1; /* Ocupa toda a altura do painel */
       width: 100%; /* Largura total de 100% */
       height: 100%; /* Altura total de 100% */
-      min-height: 260px; /* Altura mínima consistente */
       border: none; /* Remove bordas nativas de iframe */
       background: var(--bg-preview); /* Fundo branco para simulação fiel */
-      border-radius: 0; /* Sem arredondamento interno */
       display: block; /* Remove folgas de elemento inline */
     }
 
@@ -1192,13 +1289,8 @@
     }
 
     /* Altura ampliada no editor do sandbox */
-    .sandbox-playground .playground-body {
-      min-height: 450px; /* Altura confortável para projetos maiores */
-    }
-
-    /* Altura ampliada no iframe do sandbox */
-    .sandbox-playground .preview-frame {
-      min-height: 450px; /* Altura equivalente */
+    .sandbox-playground {
+      --playground-h: 520px; /* Altura confortável para projetos maiores */
     }
 
     /* ═══════════════════════════════════════════════════════════════════════════
@@ -1209,7 +1301,7 @@
       position: relative; /* Contexto de posicionamento */
       z-index: 1; /* Acima do fundo */
       text-align: center; /* Centralizado */
-      padding: 60px 24px; /* Preenchimento superior e inferior */
+      padding: 60px 24px calc(60px + env(safe-area-inset-bottom)); /* Preenchimento + área segura inferior */
       border-top: 1px solid var(--border-color); /* Linha divisória neon superior */
       color: var(--text-muted); /* Cor discreta de texto */
       font-size: 0.85rem; /* Tamanho de texto de rodapé */
@@ -1226,8 +1318,8 @@
     ═══════════════════════════════════════════════════════════════════════════ */
     .back-to-top {
       position: fixed; /* Fixado na janela */
-      bottom: 24px; /* 24px da borda inferior */
-      right: 24px; /* 24px da borda direita */
+      bottom: calc(24px + env(safe-area-inset-bottom)); /* 24px da borda inferior + área segura (iPhone) */
+      right: calc(24px + env(safe-area-inset-right)); /* 24px da borda direita + área segura */
       width: 48px; /* Diâmetro ergonômico de 48px */
       height: 48px; /* Altura de 48px */
       border-radius: 50%; /* Círculo perfeito */
@@ -1257,7 +1349,7 @@
     }
 
     /* Efeito de hover no botão de voltar ao topo */
-    .back-to-top:hover {
+    .back-to-top.visible:hover {
       transform: translateY(-4px) scale(1.05); /* Elevação sutil */
       box-shadow: 0 8px 30px rgba(255, 42, 157, 0.6); /* Brilho rosa intenso */
     }
@@ -1270,6 +1362,11 @@
       opacity: 0; /* Começa transparente */
       transform: translateY(40px); /* Começa 40px abaixo */
       transition: opacity 0.7s ease-out, transform 0.7s ease-out; /* Transição suave */
+    }
+
+    /* Os cards de lição já declaram a transição completa (hover + revelação) */
+    .lesson.reveal {
+      transition: border-color var(--transition), box-shadow var(--transition), opacity 0.7s ease-out, transform 0.7s ease-out;
     }
 
     /* Estado ativado pelo IntersectionObserver ao entrar na viewport */
@@ -1287,7 +1384,8 @@
     @media (max-width: 992px) {
       /* Reduz paddings laterais da barra de navegação */
       .navbar {
-        padding: 14px 28px; /* Ajuste moderado de espaçamento */
+        --nav-px: 28px; /* Ajuste moderado de espaçamento */
+        --nav-py: 14px;
       }
 
       /* Reduz espaçamento do grid no Hero */
@@ -1299,9 +1397,65 @@
       main {
         padding: 0 20px; /* Reduz margens de 24px para 20px */
       }
+
+      /* Cards com menos padding para dar espaço ao editor */
+      .lesson {
+        padding: 32px 28px;
+      }
     }
 
-    /* ─── 2. SMARTPHONES E TABLETS VERTICAIS (ATÉ 800PX) ─── */
+    /* ─── 2. EMPILHAMENTO DO PLAYGROUND (ATÉ 900PX) ───
+       Lado a lado, editor e resultado ficariam com menos de ~400px cada: empilhamos antes */
+    @media (max-width: 900px) {
+      /* O corpo do editor e a visualização passam a ser empilhados verticalmente */
+      .playground-body {
+        flex-direction: column; /* Editor em cima, resultado embaixo */
+        height: auto; /* Altura definida pelos painéis */
+      }
+
+      /* Container do editor com altura própria (a divisória não se aplica aqui) */
+      .playground-editor-wrap {
+        flex: 0 0 auto; /* Ignora a proporção --split */
+        height: 300px; /* Altura confortável para ver e editar código */
+      }
+
+      /* Divisor entre editor e preview vira linha horizontal não arrastável */
+      .playground-divider {
+        flex: 0 0 1px; /* 1px de espessura */
+        width: 100%; /* 100% de largura horizontal */
+        cursor: default; /* Sem cursor de redimensionar */
+        pointer-events: none; /* Não arrastável no modo empilhado */
+      }
+
+      .playground-divider::before {
+        width: 100%; /* Linha horizontal */
+        height: 1px;
+        left: 0;
+        transform: none;
+      }
+
+      /* Oculta os três pontos na divisória horizontal */
+      .playground-divider::after {
+        display: none; /* Ocultado para linha limpa */
+      }
+
+      /* Área de visualização (iframe) no modo empilhado */
+      .playground-preview {
+        flex: 0 0 auto; /* Altura própria */
+        height: 340px; /* Altura para visualizar o resultado com clareza */
+      }
+
+      /* Sandbox: painéis mais altos */
+      .sandbox-playground .playground-editor-wrap {
+        height: 360px;
+      }
+
+      .sandbox-playground .playground-preview {
+        height: 420px;
+      }
+    }
+
+    /* ─── 3. SMARTPHONES E TABLETS VERTICAIS (ATÉ 800PX) ─── */
     @media (max-width: 800px) {
       /* Exibe o botão disparador do menu hambúrguer */
       .menu-toggle {
@@ -1310,33 +1464,39 @@
 
       /* Ajusta a barra de navegação para mobile */
       .navbar {
-        padding: 12px 18px; /* Padding mais compacto */
+        --nav-px: 18px; /* Padding mais compacto */
+        --nav-py: 12px;
       }
 
-      /* O menu de links se transforma em uma moderna gaveta lateral (drawer) */
+      /* O menu de links se transforma em uma moderna gaveta lateral (drawer).
+         Usa transform (GPU) e visibility: links escondidos não recebem foco do teclado */
       .nav-links {
         position: fixed; /* Fixado sobre a tela */
         top: 0; /* Alinhado ao topo */
-        right: -100%; /* Escondido à direita fora da tela */
+        right: 0; /* Ancorado à direita */
         width: 290px; /* Largura ideal para toque com o polegar */
         max-width: 85vw; /* Não ultrapassa 85% da largura da tela */
-        height: 100vh; /* Ocupa 100% da altura da tela */
-        background: rgba(10, 10, 18, 0.96); /* Fundo ultra escuro elegante */
-        backdrop-filter: blur(25px); /* Efeito vidro fosco */
-        -webkit-backdrop-filter: blur(25px); /* Suporte Safari */
+        height: 100vh; /* Fallback */
+        height: 100dvh; /* Altura real da tela no celular (considera barras do navegador) */
+        background: rgba(10, 10, 18, 0.97); /* Fundo ultra escuro elegante */
         border-left: 1px solid var(--border-color); /* Borda neon na lateral */
         flex-direction: column; /* Links empilhados verticalmente */
-        padding: 85px 20px 30px; /* Espaço para o cabeçalho superior e botão fechar */
+        padding: 85px 20px calc(30px + env(safe-area-inset-bottom)); /* Espaço para o cabeçalho e área segura */
         gap: 14px; /* Distância confortável entre cada link */
         box-shadow: -10px 0 35px rgba(0, 0, 0, 0.8); /* Sombra de sobreposição */
-        transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* Animação fluida de deslizamento */
+        transform: translateX(105%); /* Escondido à direita fora da tela */
+        visibility: hidden; /* Inacessível enquanto fechado */
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s; /* Deslizamento fluido */
         z-index: 1001; /* Fica acima da barra normal */
         display: flex; /* Ativa flexbox vertical */
+        overflow-y: auto; /* Rola se a tela for muito baixa (celular deitado) */
+        overscroll-behavior: contain; /* Rolar o menu não rola a página atrás */
       }
 
       /* Quando a classe 'open' é ativada pelo JS, o menu desliza para a tela */
       .nav-links.open {
-        right: 0; /* Encaixa na borda direita visível */
+        transform: translateX(0); /* Encaixa na borda direita visível */
+        visibility: visible; /* Acessível */
       }
 
       /* Cada link dentro da gaveta mobile */
@@ -1387,6 +1547,11 @@
         margin-top: 48px; /* Margem superior reduzida */
       }
 
+      /* Permite que as colunas encolham em telas estreitas */
+      .hero-stats .stat {
+        min-width: 0;
+      }
+
       /* Tamanho dos números das estatísticas no mobile */
       .hero-stats .stat-number {
         font-size: 1.6rem; /* Tamanho proporcional */
@@ -1407,11 +1572,14 @@
         font-size: 1.9rem; /* Tamanho de título adequado */
       }
 
-      /* Card de lição no mobile */
+      /* Card de lição no mobile: sem backdrop-filter (muito custoso na GPU de celulares) */
       .lesson {
         padding: 24px 18px; /* Reduz padding de 40px para 18px para aproveitar a tela */
         margin-bottom: 30px; /* Menor distância entre lições */
         border-radius: 14px; /* Borda proporcional */
+        backdrop-filter: none; /* Desliga o desfoque por performance */
+        -webkit-backdrop-filter: none;
+        background: rgba(15, 15, 15, 0.92); /* Fundo mais opaco compensa a falta do blur */
       }
 
       /* Título da lição */
@@ -1425,18 +1593,6 @@
         margin-bottom: 20px; /* Margem reduzida */
       }
 
-      /* ─── EMPILHAMENTO DO PLAYGROUND NO MOBILE ─── */
-      /* O corpo do editor e a visualização passam a ser empilhados verticalmente */
-      .playground-body {
-        flex-direction: column; /* Editor em cima, resultado embaixo */
-        min-height: auto; /* Altura flexível */
-      }
-
-      /* Container do editor no mobile */
-      .playground-editor-wrap {
-        width: 100%; /* Largura total */
-      }
-
       /* Barra de ferramentas do editor */
       .playground-toolbar {
         padding: 8px 12px; /* Padding compacto */
@@ -1444,17 +1600,14 @@
 
       /* Editor de código (textarea) no mobile */
       .code-editor {
-        font-size: 0.82rem; /* Tamanho de fonte que cabe mais código por linha */
         padding: 14px 12px; /* Padding interno */
-        min-height: 180px; /* Altura mínima confortável para ver e editar código */
-        max-height: 280px; /* Altura máxima com scroll para não esticar demais a página */
       }
 
       /* Coluna de números de linha mais estreita no mobile */
       .line-numbers {
         width: 34px; /* Reduz de 44px para 34px dando 10px a mais para o código */
-        font-size: 0.72rem; /* Fonte menor */
-        padding: 14px 0; /* Padding alinhado ao editor */
+        --code-fs-gutter: 0.72rem; /* Fonte menor (a altura de linha continua igual) */
+        padding: 14px 0 48px; /* Padding alinhado ao editor */
       }
 
       /* Ajuste nos números */
@@ -1462,47 +1615,37 @@
         padding-right: 8px; /* Margem direita menor */
       }
 
-      /* Divisor entre editor e preview vira linha horizontal */
-      .playground-divider {
-        width: 100%; /* 100% de largura horizontal */
-        height: 1px; /* 1px de espessura vertical */
-      }
-
-      /* Oculta os três pontos na divisória horizontal */
-      .playground-divider::after {
-        display: none; /* Ocultado para linha limpa */
-      }
-
-      /* Área de visualização (iframe) no mobile */
-      .playground-preview {
-        width: 100%; /* Largura total de 100% */
-        min-height: 220px; /* Altura mínima para visualizar o resultado com clareza */
-      }
-
-      /* Iframe no mobile */
-      .preview-frame {
-        min-height: 220px; /* Altura mínima garantida */
-      }
-
       /* Sandbox no mobile */
       .sandbox-section {
         padding: 70px 0; /* Espaço ajustado */
       }
 
-      .sandbox-playground .playground-body {
-        min-height: auto; /* Altura flexível */
+      /* Fundo animado mais leve no celular: névoa desligada e esferas menores */
+      .fog-container {
+        display: none; /* A névoa girando com blur é o efeito mais pesado da página */
       }
 
-      .sandbox-playground .code-editor {
-        min-height: 240px; /* Altura maior para o código do sandbox */
+      .bg-orbs .orb {
+        filter: blur(70px); /* Desfoque menor = menos trabalho de GPU */
       }
 
-      .sandbox-playground .preview-frame {
-        min-height: 320px; /* Altura ideal para interagir com o mini-app de teste */
+      .bg-orbs .orb-wrapper:nth-child(1) .orb {
+        width: 340px;
+        height: 340px;
+      }
+
+      .bg-orbs .orb-wrapper:nth-child(2) .orb {
+        width: 300px;
+        height: 300px;
+      }
+
+      .bg-orbs .orb-wrapper:nth-child(3) .orb {
+        width: 260px;
+        height: 260px;
       }
     }
 
-    /* ─── 3. SMARTPHONES COMPACTOS (ATÉ 480PX) ─── */
+    /* ─── 4. SMARTPHONES COMPACTOS (ATÉ 480PX) ─── */
     @media (max-width: 480px) {
       /* Padding lateral mínimo seguro para telas estreitas */
       main {
@@ -1511,7 +1654,8 @@
 
       /* Barra de navegação */
       .navbar {
-        padding: 10px 14px; /* Padding mínimo */
+        --nav-px: 14px; /* Padding mínimo */
+        --nav-py: 10px;
       }
 
       /* Logotipo ligeiramente menor */
@@ -1575,12 +1719,6 @@
         font-size: 0.85rem; /* Fonte compacta */
       }
 
-      /* Barra de ferramentas do playground quebra linha se necessário */
-      .playground-toolbar {
-        flex-direction: row; /* Mantém em linha */
-        justify-content: space-between; /* Afasta extremidades */
-      }
-
       /* Botões de ação do playground */
       .btn-run,
       .btn-reset {
@@ -1588,17 +1726,28 @@
         font-size: 0.75rem; /* Fonte mini */
       }
 
+      /* Rótulo da aba menor para caber junto com os botões */
+      .playground-tab {
+        padding: 6px 8px;
+        font-size: 0.72rem;
+      }
+
+      /* Editor e resultado um pouco mais baixos para caber na tela */
+      .playground-editor-wrap {
+        height: 260px;
+      }
+
       /* Botão flutuante de voltar ao topo ajustado para celulares pequenos */
       .back-to-top {
-        bottom: 16px; /* 16px do rodapé */
-        right: 16px; /* 16px da borda */
+        bottom: calc(16px + env(safe-area-inset-bottom)); /* 16px do rodapé */
+        right: calc(16px + env(safe-area-inset-right)); /* 16px da borda */
         width: 44px; /* Diâmetro de 44px */
         height: 44px; /* Altura de 44px */
         font-size: 1.15rem; /* Tamanho da seta */
       }
     }
 
-    /* ─── 4. SMARTPHONES ULTRA-COMPACTOS / FOLDABLES (ATÉ 360PX) ─── */
+    /* ─── 5. SMARTPHONES ULTRA-COMPACTOS / FOLDABLES (ATÉ 360PX) ─── */
     @media (max-width: 360px) {
       .hero h1 {
         font-size: 1.7rem; /* Reduz tamanho do título para caber perfeitamente */
@@ -1615,15 +1764,70 @@
       .lesson h3 {
         font-size: 1.18rem; /* Título da lição menor */
       }
+
+      /* O rótulo da aba some para os botões caberem em uma linha */
+      .playground-tabs {
+        display: none;
+      }
     }
 
-    /* ─── 5. OTIMIZAÇÃO PARA APARELHOS TOUCH (CELULARES E TABLETS) ─── */
-    /* Desativa efeitos de cursor de mouse em aparelhos sensíveis ao toque */
+    /* ─── 6. CELULAR DEITADO (PAISAGEM COM POUCA ALTURA) ─── */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .hero {
+        min-height: auto; /* Não força uma tela inteira de altura */
+        padding-top: 90px;
+      }
+
+      /* Painéis do editor mais baixos para caber na tela */
+      .playground-editor-wrap,
+      .sandbox-playground .playground-editor-wrap {
+        height: 220px;
+      }
+
+      .playground-preview,
+      .sandbox-playground .playground-preview {
+        height: 260px;
+      }
+    }
+
+    /* ─── 7. OTIMIZAÇÃO PARA APARELHOS TOUCH (CELULARES E TABLETS) ─── */
     @media (hover: none) and (pointer: coarse) {
       /* Oculta o cursor brilhante e a onda de explosão de clique em telas touch */
       .cursor-glow,
       .click-burst {
         display: none !important; /* Desativa completamente para economizar bateria e GPU */
+      }
+
+      /* Fonte de 16px no editor: abaixo disso o iOS dá zoom automático ao tocar no campo */
+      :root {
+        --code-fs: 16px;
+        --code-lh: 1.5rem; /* Altura de linha proporcional (continua igual nos números) */
+      }
+
+      /* Evita o efeito "hover grudado" depois de tocar em um card */
+      .lesson:hover {
+        border-color: var(--border-color);
+        box-shadow: none;
+      }
+    }
+
+    /* ─── 8. ACESSIBILIDADE: USUÁRIOS QUE PREFEREM MENOS MOVIMENTO ─── */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto; /* Saltos diretos em vez de rolagem suave */
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important; /* Praticamente desliga animações */
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important; /* E transições */
+      }
+
+      .reveal {
+        opacity: 1; /* Conteúdo aparece direto */
+        transform: none;
       }
     }
   </style>
@@ -1631,7 +1835,7 @@
 <body>
 
   <!-- Elementos de fundo dinâmicos (esferas luminosas e névoa difusa neon) -->
-  <div class="bg-orbs">
+  <div class="bg-orbs" aria-hidden="true">
     <!-- Primeira esfera luminosa -->
     <div class="orb-wrapper">
       <div class="orb"></div>
@@ -1651,17 +1855,18 @@
   </div>
 
   <!-- Barra de progresso de leitura no topo da página -->
-  <div class="progress-bar-container">
+  <div class="progress-bar-container" aria-hidden="true">
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
   <!-- Barra de Navegação Superior Fixa com Suporte Completo a Desktop e Celular -->
-  <nav class="navbar" id="navbar">
+  <nav class="navbar" id="navbar" aria-label="Navegação principal">
     <!-- Logotipo da Aplicação com link para o topo -->
     <a href="#" class="logo">&lt;/&gt; Aprenda<span>Web</span></a>
 
     <!-- Botão Hambúrguer para Abrir/Fechar o Menu em Smartphones e Tablets -->
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu de navegação" aria-expanded="false">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu de navegação" aria-expanded="false"
+      aria-controls="navLinks">
       <!-- 3 barras que se transformam em 'X' quando o menu estiver aberto -->
       <span class="hamburger-bar"></span>
       <span class="hamburger-bar"></span>
@@ -1788,7 +1993,8 @@
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -1829,7 +2035,7 @@
 <h3>Seção menor</h3>
 
 <p>Este é um parágrafo normal.</p>
-<p>Este tem <strong>texto em negrito</strong> 
+<p>Este tem <strong>texto em negrito</strong>
 e <em>texto em itálico</em>.</p>
 
 <p>Linha 1<br>Linha 2 (com quebra)</p>
@@ -1841,7 +2047,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -1884,7 +2091,7 @@ e <em>texto em itálico</em>.</p>
 <p>Visite o <a href="https://google.com" target="_blank">Google</a></p>
 
 <h2>🖼️ Imagens</h2>
-<img src="https://picsum.photos/300/150" alt="Foto aleatória" width="300">
+<img src="https://picsum.photos/300/150" alt="Foto aleatória" width="300" style="max-width: 100%; height: auto;">
 
 <h2>📋 Lista Não-Ordenada</h2>
 <ul>
@@ -1904,7 +2111,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -1944,10 +2152,10 @@ e <em>texto em itálico</em>.</p>
 <form>
   <label for="nome">Nome:</label><br>
   <input type="text" id="nome" placeholder="Seu nome"><br><br>
-  
+
   <label for="email">Email:</label><br>
   <input type="email" id="email" placeholder="seu@email.com"><br><br>
-  
+
   <label for="senha">Senha:</label><br>
   <input type="password" id="senha" placeholder="••••••"><br><br>
 
@@ -1969,7 +2177,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2040,7 +2249,7 @@ e <em>texto em itálico</em>.</p>
 <main style="padding:10px;">
   <article>
     <h3>Sobre Tags Semânticas</h3>
-    <p>Tags semânticas ajudam o Google a 
+    <p>Tags semânticas ajudam o Google a
     entender o conteúdo da sua página!</p>
   </article>
 </main>
@@ -2052,7 +2261,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2112,7 +2322,7 @@ e <em>texto em itálico</em>.</p>
     color: #6c5ce7;
     font-family: Arial, sans-serif;
   }
-  
+
   /* Seletor de CLASSE */
   .destaque {
     background-color: #ffeaa7;
@@ -2120,7 +2330,7 @@ e <em>texto em itálico</em>.</p>
     border-radius: 8px;
     color: #2d3436;
   }
-  
+
   /* Seletor de ID */
   #especial {
     color: #e17055;
@@ -2140,7 +2350,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2175,31 +2386,32 @@ e <em>texto em itálico</em>.</p>
                 <div class="line-numbers"></div>
                 <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
   body { font-family: Arial, sans-serif; padding: 20px; }
-  
+
   .caixa {
     /* CONTENT */
     width: 250px;
-    
+    max-width: 100%;
+
     /* PADDING - espaço interno */
     padding: 20px;
-    
+
     /* BORDER - borda */
     border: 3px solid #6c5ce7;
-    
+
     /* MARGIN - espaço externo */
     margin: 20px;
-    
+
     background: #dfe6e9;
     border-radius: 12px;
     text-align: center;
   }
-  
+
   .sem-padding {
     padding: 0;
     background: #fab1a0;
     border-color: #e17055;
   }
-  
+
   .muito-padding {
     padding: 40px;
     background: #55efc4;
@@ -2227,7 +2439,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2265,7 +2478,7 @@ e <em>texto em itálico</em>.</p>
                 <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
   body { font-family: Arial; padding: 20px; }
   h3 { color: #2d3436; margin: 16px 0 8px; }
-  
+
   .container {
     display: flex;
     gap: 12px;
@@ -2274,7 +2487,7 @@ e <em>texto em itálico</em>.</p>
     border-radius: 12px;
     margin-bottom: 16px;
   }
-  
+
   .item {
     background: #6c5ce7;
     color: white;
@@ -2283,16 +2496,16 @@ e <em>texto em itálico</em>.</p>
     font-weight: bold;
     text-align: center;
   }
-  
+
   .centro {
     justify-content: center;
     align-items: center;
   }
-  
+
   .espaco {
     justify-content: space-between;
   }
-  
+
   .vertical {
     flex-direction: column;
     align-items: center;
@@ -2324,7 +2537,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2360,7 +2574,7 @@ e <em>texto em itálico</em>.</p>
                 <div class="line-numbers"></div>
                 <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
   body { font-family: Arial; padding: 20px; background: #2d3436; }
-  
+
   .card {
     padding: 24px;
     border-radius: 16px;
@@ -2369,29 +2583,29 @@ e <em>texto em itálico</em>.</p>
     font-weight: bold;
     text-align: center;
   }
-  
+
   .gradiente1 {
     background: linear-gradient(135deg, #6c5ce7, #a29bfe);
     box-shadow: 0 8px 32px rgba(108, 92, 231, 0.4);
   }
-  
+
   .gradiente2 {
     background: linear-gradient(135deg, #fd79a8, #e17055);
     box-shadow: 0 8px 32px rgba(253, 121, 168, 0.4);
   }
-  
+
   .gradiente3 {
     background: linear-gradient(135deg, #00cec9, #0984e3);
     box-shadow: 0 8px 32px rgba(0, 206, 201, 0.4);
   }
-  
+
   .glass {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
-  
+
   .titulo-sombra {
     font-size: 28px;
     color: white;
@@ -2421,7 +2635,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2441,7 +2656,8 @@ e <em>texto em itálico</em>.</p>
           </ul>
           <div class="tip-box">
             <span class="tip-icon">💡</span>
-            <span>Passe o mouse sobre os elementos no resultado para ver as transições em ação!</span>
+            <span>Passe o mouse (ou toque, no celular) sobre os elementos no resultado para ver as transições em
+              ação!</span>
           </div>
         </div>
         <div class="playground" data-id="css5">
@@ -2459,9 +2675,9 @@ e <em>texto em itálico</em>.</p>
               <div class="playground-editor-container active" data-tab="html">
                 <div class="line-numbers"></div>
                 <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
-  body { 
-    font-family: Arial; 
-    padding: 20px; 
+  body {
+    font-family: Arial;
+    padding: 20px;
     background: #2d3436;
     display: flex;
     flex-direction: column;
@@ -2469,7 +2685,7 @@ e <em>texto em itálico</em>.</p>
     gap: 20px;
   }
   p { color: #dfe6e9; margin-bottom: 8px; text-align: center; }
-  
+
   /* TRANSIÇÃO no hover */
   .botao {
     padding: 14px 32px;
@@ -2486,7 +2702,7 @@ e <em>texto em itálico</em>.</p>
     transform: scale(1.1);
     box-shadow: 0 10px 30px rgba(108,92,231,0.5);
   }
-  
+
   /* ANIMAÇÃO contínua */
   @keyframes flutuar {
     0%, 100% { transform: translateY(0); }
@@ -2496,7 +2712,7 @@ e <em>texto em itálico</em>.</p>
     font-size: 48px;
     animation: flutuar 2s ease-in-out infinite;
   }
-  
+
   /* ANIMAÇÃO de rotação */
   @keyframes girar {
     from { transform: rotate(0deg); }
@@ -2510,7 +2726,7 @@ e <em>texto em itálico</em>.</p>
     border-radius: 50%;
     animation: girar 1s linear infinite;
   }
-  
+
   /* PULSE */
   @keyframes pulsar {
     0%, 100% { transform: scale(1); opacity: 1; }
@@ -2536,7 +2752,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2557,8 +2774,9 @@ e <em>texto em itálico</em>.</p>
           </ul>
           <div class="tip-box">
             <span class="tip-icon">💡</span>
-            <span>Redimensione a janela de resultado para ver a media query em ação! Em telas menores, o layout muda
-              automaticamente.</span>
+            <span>No computador, arraste a divisória <strong>⋮</strong> entre o código e o resultado para deixar o
+              resultado estreito (menos de 480px) e veja a media query em ação! No celular, o layout já aparece na
+              versão mobile.</span>
           </div>
         </div>
         <div class="playground" data-id="css6">
@@ -2578,7 +2796,7 @@ e <em>texto em itálico</em>.</p>
                 <textarea class="code-editor" data-lang="html" spellcheck="false"><style>
   /* Define a fonte padrão e remove as margens externas da página */
   body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
-  
+
   /* Barra de navegação flexível com alinhamento vertical e horizontal */
   .navbar {
     display: flex; /* Ativa o modelo flexbox */
@@ -2588,7 +2806,7 @@ e <em>texto em itálico</em>.</p>
     background: #6c5ce7; /* Cor roxa vibrante de fundo */
     color: white; /* Texto em branco */
   }
-  
+
   /* Grade flexível de cards que quebra linha automaticamente */
   .cards {
     display: flex; /* Organiza os cards lado a lado */
@@ -2596,7 +2814,7 @@ e <em>texto em itálico</em>.</p>
     gap: 16px; /* Espaço uniforme de 16px entre cada card */
     padding: 20px; /* Margem interna ao redor da grade de cards */
   }
-  
+
   /* Estilização individual de cada cartão */
   .card {
     flex: 1 1 140px; /* Cresce, encolhe e mantém largura base mínima de 140px */
@@ -2607,19 +2825,19 @@ e <em>texto em itálico</em>.</p>
     box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Sombra suave para relevo */
     transition: transform 0.2s ease; /* Transição para efeito de hover */
   }
-  
+
   /* Efeito de elevação suave ao passar o cursor sobre o card */
   .card:hover { transform: translateY(-3px); }
-  
+
   /* Ícone emoji em destaque no topo do card */
   .card .emoji { font-size: 32px; margin-bottom: 8px; }
-  
+
   /* Título do card */
   .card h4 { color: #2d3436; margin: 0 0 6px 0; font-size: 16px; }
-  
+
   /* Texto descritivo secundário do card */
   .card p { color: #636e72; font-size: 13px; margin: 0; }
-  
+
   /* MEDIA QUERY: Regras aplicadas quando a tela for menor ou igual a 480px (Smartphones) */
   @media (max-width: 480px) {
     /* No celular: empilha o título e o menu da barra de navegação verticalmente */
@@ -2663,7 +2881,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2697,8 +2916,9 @@ e <em>texto em itálico</em>.</p>
           </ul>
           <div class="tip-box">
             <span class="tip-icon">💡</span>
-            <span>Usamos <code>document.write()</code> nos exemplos para mostrar texto na página. Em projetos reais,
-              preferimos manipular o DOM (próximas lições!).</span>
+            <span>Usamos uma pequena função <code>escrever()</code> nos exemplos para mostrar texto na página. Ela
+              altera o <code>innerHTML</code> de um elemento — manipulação do DOM, que você verá em detalhes nas próximas
+              lições!</span>
           </div>
         </div>
         <div class="playground" data-id="js1">
@@ -2755,7 +2975,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2819,6 +3040,15 @@ e <em>texto em itálico</em>.</p>
 
   escrever("---");
 
+  // ═══ WHILE LOOP ═══
+  let tentativas = 3;
+  while (tentativas > 0) {
+    escrever("🔁 Tentativas restantes: " + tentativas);
+    tentativas--;
+  }
+
+  escrever("---");
+
   // ═══ LOOP COM ARRAY ═══
   let frutas = ["🍎 Maçã", "🍌 Banana", "🍇 Uva", "🍊 Laranja"];
   escrever("🛒 Lista de compras:");
@@ -2831,7 +3061,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2847,7 +3078,7 @@ e <em>texto em itálico</em>.</p>
           <ul class="concept-list">
             <li><code>function nome(params) { }</code> — Declara uma função</li>
             <li><code>return</code> — Retorna um valor da função</li>
-            <li><strong>Arrow function</strong>: <code>const soma = (a, b) => a + b</code> — Sintaxe moderna e curta
+            <li><strong>Arrow function</strong>: <code>const soma = (a, b) =&gt; a + b</code> — Sintaxe moderna e curta
             </li>
             <li>Funções podem ser passadas como argumento para outras funções!</li>
           </ul>
@@ -2914,7 +3145,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -2969,7 +3201,7 @@ e <em>texto em itálico</em>.</p>
   .rosa { background: #fd79a8; color: white; }
   #contador { font-size: 48px; text-align: center; margin: 20px; }
   #nome-display { color: #6c5ce7; font-size: 24px; font-weight: bold; margin: 10px 0; }
-  input { padding: 8px 12px; font-size: 14px; border: 2px solid #dfe6e9; border-radius: 8px; width: 200px; }
+  input { padding: 8px 12px; font-size: 16px; border: 2px solid #dfe6e9; border-radius: 8px; width: 200px; max-width: 100%; }
 </style>
 
 <h3>🖱️ Eventos de Clique</h3>
@@ -3029,7 +3261,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -3050,6 +3283,12 @@ e <em>texto em itálico</em>.</p>
             <li><code>document.createElement()</code> — Cria um novo elemento</li>
             <li><code>.appendChild()</code> — Adiciona um elemento filho</li>
           </ul>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <span>Para exibir texto digitado pelo usuário, prefira <code>.textContent</code>: com
+              <code>.innerHTML</code>, um texto como <code>&lt;b&gt;oi&lt;/b&gt;</code> seria interpretado como
+              HTML.</span>
+          </div>
         </div>
         <div class="playground" data-id="js5">
           <div class="playground-toolbar">
@@ -3084,7 +3323,7 @@ e <em>texto em itálico</em>.</p>
     transition: all 0.3s;
   }
   .item:hover { background: #e8e8ff; transform: translateX(5px); }
-  input { padding: 8px 12px; border: 2px solid #dfe6e9; border-radius: 8px; width: 200px; }
+  input { padding: 8px 12px; font-size: 16px; border: 2px solid #dfe6e9; border-radius: 8px; width: 200px; max-width: 100%; }
   #titulo { transition: all 0.3s; }
 </style>
 
@@ -3109,10 +3348,18 @@ e <em>texto em itálico</em>.</p>
     tarefas.forEach((tarefa, i) => {
       let div = document.createElement('div');
       div.className = 'item';
-      div.innerHTML = `
-        <span>${tarefa}</span>
-        <button class="remove" onclick="remover(${i})">✕</button>
-      `;
+
+      // textContent exibe o texto exatamente como foi digitado
+      let texto = document.createElement('span');
+      texto.textContent = tarefa;
+
+      let botao = document.createElement('button');
+      botao.className = 'remove';
+      botao.textContent = '✕';
+      botao.onclick = () => remover(i);
+
+      div.appendChild(texto);
+      div.appendChild(botao);
       lista.appendChild(div);
     });
 
@@ -3122,8 +3369,9 @@ e <em>texto em itálico</em>.</p>
 
   function adicionarTarefa() {
     let input = document.getElementById('novaTarefa');
-    if (input.value.trim()) {
-      tarefas.push(input.value);
+    let valor = input.value.trim();
+    if (valor) {
+      tarefas.push(valor);
       input.value = '';
       renderizar();
     }
@@ -3141,7 +3389,7 @@ e <em>texto em itálico</em>.</p>
 
   // Permitir Enter no input
   document.getElementById('novaTarefa')
-    .addEventListener('keypress', (e) => {
+    .addEventListener('keydown', (e) => {
       if (e.key === 'Enter') adicionarTarefa();
     });
 
@@ -3152,7 +3400,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -3239,11 +3488,17 @@ e <em>texto em itálico</em>.</p>
     </div>
   `;
 
-  // ═══ JSON ═══
+  // ═══ JSON.stringify: objeto → texto ═══
   let json = JSON.stringify(pessoa, null, 2);
   saida.innerHTML += `
     <h3>📄 Objeto como JSON:</h3>
     <pre>${json}</pre>
+  `;
+
+  // ═══ JSON.parse: texto → objeto ═══
+  let copia = JSON.parse(json);
+  saida.innerHTML += `
+    <p>🔄 Lido de volta com JSON.parse: <strong>${copia.nome}</strong> mora em ${copia.endereco.cidade}</p>
   `;
 
   // ═══ ARRAY DE OBJETOS ═══
@@ -3266,7 +3521,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -3306,6 +3562,7 @@ e <em>texto em itálico</em>.</p>
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 12px;
     background: linear-gradient(135deg, #0c0c1d, #1a0a2e);
     font-family: 'Segoe UI', Arial, sans-serif;
   }
@@ -3314,14 +3571,15 @@ e <em>texto em itálico</em>.</p>
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 24px;
-    padding: 24px;
+    padding: 20px;
     width: 280px;
+    max-width: 100%;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
   .display {
     background: rgba(0,0,0,0.3);
     border-radius: 16px;
-    padding: 20px;
+    padding: 16px 20px;
     text-align: right;
     margin-bottom: 16px;
     min-height: 80px;
@@ -3346,7 +3604,7 @@ e <em>texto em itálico</em>.</p>
     gap: 10px;
   }
   .botoes button {
-    padding: 16px;
+    padding: 14px 0;
     border: none;
     border-radius: 14px;
     font-size: 18px;
@@ -3355,6 +3613,7 @@ e <em>texto em itálico</em>.</p>
     transition: all 0.2s;
     background: rgba(255,255,255,0.08);
     color: white;
+    touch-action: manipulation;
   }
   .botoes button:hover {
     background: rgba(255,255,255,0.15);
@@ -3418,7 +3677,7 @@ e <em>texto em itálico</em>.</p>
   }
 
   function digito(d) {
-    if (resetar) { displayAtual = ''; resetar = false; }
+    if (resetar) { displayAtual = '0'; resetar = false; }
     if (d === '.' && displayAtual.includes('.')) return;
     if (displayAtual === '0' && d !== '.') displayAtual = d;
     else displayAtual += d;
@@ -3426,7 +3685,16 @@ e <em>texto em itálico</em>.</p>
   }
 
   function operacao(o) {
+    if (displayAtual === 'Erro') return;
+    // Apertou outro operador logo em seguida: só troca o operador
+    if (op && resetar) {
+      displayAnterior = displayAnterior.slice(0, -1) + o;
+      op = o;
+      atualizar();
+      return;
+    }
     if (op) calcular();
+    if (displayAtual === 'Erro') return;
     displayAnterior = displayAtual + ' ' + o;
     op = o;
     resetar = true;
@@ -3442,7 +3710,9 @@ e <em>texto em itálico</em>.</p>
     if (op === '-') r = a - b;
     if (op === '*') r = a * b;
     if (op === '/') r = b !== 0 ? a / b : 'Erro';
-    if (op === '%') r = a % b;
+    if (op === '%') r = b !== 0 ? a % b : 'Erro';
+    // Arredonda para evitar resultados como 0.1 + 0.2 = 0.30000000000000004
+    if (typeof r === 'number') r = parseFloat(r.toPrecision(12));
     displayAnterior = '';
     displayAtual = r.toString();
     op = '';
@@ -3454,20 +3724,32 @@ e <em>texto em itálico</em>.</p>
     displayAtual = '0';
     displayAnterior = '';
     op = '';
+    resetar = false;
     atualizar();
   }
 
   function apagar() {
-    displayAtual = displayAtual.slice(0, -1) || '0';
+    if (resetar || displayAtual === 'Erro') { displayAtual = '0'; resetar = false; }
+    else displayAtual = displayAtual.slice(0, -1) || '0';
     atualizar();
   }
+
+  // Bônus: use o teclado do computador!
+  document.addEventListener('keydown', (e) => {
+    if (/^[0-9.]$/.test(e.key)) digito(e.key);
+    else if (['+', '-', '*', '/', '%'].includes(e.key)) operacao(e.key);
+    else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); calcular(); }
+    else if (e.key === 'Backspace') apagar();
+    else if (e.key === 'Escape') limpar();
+  });
 </script></textarea>
               </div>
             </div>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -3479,15 +3761,13 @@ e <em>texto em itálico</em>.</p>
   ═══════════════════════════════════════ -->
     <section class="sandbox-section" id="sandbox">
       <div class="section-header reveal">
-        <span class="section-tag"
-          style="background: rgba(124, 92, 252, 0.1); color: var(--accent-1); border: 1px solid rgba(124, 92, 252, 0.2);">Playground</span>
+        <span class="section-tag tag-sandbox">Playground</span>
         <h2>🧪 Sandbox Livre</h2>
         <p>Escreva o que quiser! Combine HTML, CSS e JavaScript livremente. Seu laboratório pessoal para experimentar.
         </p>
       </div>
 
-      <div class="lesson reveal"
-        style="border-image: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3)) 1; border-width: 1px; border-style: solid; background: var(--bg-card);">
+      <div class="lesson sandbox-card reveal">
         <div class="playground sandbox-playground" data-id="sandbox">
           <div class="playground-toolbar">
             <div class="playground-tabs">
@@ -3505,6 +3785,7 @@ e <em>texto em itálico</em>.</p>
                 <textarea class="code-editor" data-lang="html" spellcheck="false"><!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   /* Escreva seu CSS aqui! */
   body {
@@ -3513,13 +3794,16 @@ e <em>texto em itálico</em>.</p>
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
     min-height: 100vh;
     margin: 0;
+    padding: 16px;
+    box-sizing: border-box;
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
   }
   h1 {
-    font-size: 48px;
+    font-size: clamp(32px, 10vw, 48px);
     margin-bottom: 16px;
     animation: bounce 1s ease infinite;
   }
@@ -3558,7 +3842,8 @@ e <em>texto em itálico</em>.</p>
             <div class="playground-divider"></div>
             <div class="playground-preview">
               <span class="preview-label">Resultado</span>
-              <iframe class="preview-frame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+              <iframe class="preview-frame" title="Resultado do código"
+                sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
             </div>
           </div>
         </div>
@@ -3587,8 +3872,24 @@ e <em>texto em itálico</em>.</p>
     // Objeto para armazenar o código padrão de cada lição para permitir a função 'Resetar'
     const originalCode = {};
 
+    // Media query que indica quando editor e resultado estão empilhados (sem divisória arrastável)
+    const stackedQuery = window.matchMedia('(max-width: 900px)');
+
     // Função que inicializa todos os editores de código presentes na página
     function initPlaygrounds() {
+      // Executa cada playground só quando ele se aproxima da tela (antes, os 19 iframes rodavam
+      // todos de uma vez no carregamento, travando celulares)
+      const lazyRunner = 'IntersectionObserver' in window
+        ? new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              runPlayground(entry.target.dataset.id); // Primeira execução
+              obs.unobserve(entry.target); // Não precisa observar mais
+            }
+          });
+        }, { rootMargin: '400px 0px' })
+        : null;
+
       // Itera sobre todos os elementos com a classe .playground
       document.querySelectorAll('.playground').forEach(pg => {
         // Obtém o identificador único da lição (ex: 'html1', 'css3', 'sandbox')
@@ -3598,6 +3899,12 @@ e <em>texto em itálico</em>.</p>
 
         // Salva o código inicial original no dicionário para restauração futura
         originalCode[id] = editor.value;
+
+        // Teclados de celular: sem letra maiúscula automática, autocorreção ou sugestões no código
+        editor.setAttribute('autocapitalize', 'off');
+        editor.setAttribute('autocomplete', 'off');
+        editor.setAttribute('autocorrect', 'off');
+        editor.setAttribute('aria-label', 'Editor de código');
 
         // Gera a coluna de numeração de linhas com base no conteúdo inicial
         updateLineNumbers(editor);
@@ -3609,40 +3916,73 @@ e <em>texto em itálico</em>.</p>
           const lineNums = this.closest('.playground-editor-container').querySelector('.line-numbers');
           // Aplica o mesmo valor de rolagem da textarea
           lineNums.scrollTop = this.scrollTop;
-        });
+        }, { passive: true });
 
-        // Adiciona suporte a indentação com a tecla Tab e atalho de execução com Ctrl+Enter
+        // Tab (indentação), Enter (mantém a indentação), Ctrl+Enter (executar) e Esc (sair do editor)
         editor.addEventListener('keydown', function (e) {
           // Trata a tecla Tab para inserir 2 espaços ao invés de mudar de campo
-          if (e.key === 'Tab') {
+          if (e.key === 'Tab' && !e.shiftKey) {
             e.preventDefault(); // Impede a ação padrão de mudança de foco
-            const start = this.selectionStart; // Posição inicial do cursor
-            const end = this.selectionEnd; // Posição final da seleção
-            // Insere 2 espaços na posição do cursor
-            this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
-            // Reposiciona o cursor após os espaços inseridos
-            this.selectionStart = this.selectionEnd = start + 2;
+            insertText(this, '  '); // Insere 2 espaços preservando o Ctrl+Z
+            return;
           }
           // Atalho de teclado: Ctrl+Enter (ou Cmd+Enter no Mac) para rodar o código instantaneamente
           if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault(); // Evita quebra de linha extra
             runPlayground(id); // Executa o código da lição
+            return;
+          }
+          // Enter simples: nova linha com a mesma indentação da linha atual
+          if (e.key === 'Enter' && !e.shiftKey && !e.altKey && !e.isComposing) {
+            const lineStart = this.value.lastIndexOf('\n', this.selectionStart - 1) + 1; // Início da linha
+            const indent = this.value.slice(lineStart).match(/^[ \t]*/)[0]; // Espaços do começo da linha
+            if (indent) {
+              e.preventDefault();
+              insertText(this, '\n' + indent);
+            }
+            return;
+          }
+          // Esc tira o foco do editor: quem navega pelo teclado não fica "preso" pela tecla Tab
+          if (e.key === 'Escape') {
+            this.blur();
           }
         });
 
-        // Executa automaticamente o código ao carregar a página para exibir o preview inicial
-        runPlayground(id);
+        // Ativa a divisória arrastável entre editor e resultado
+        initDivider(pg);
+
+        // Agenda a primeira execução (ou executa já, se o navegador não tiver IntersectionObserver)
+        if (lazyRunner) {
+          lazyRunner.observe(pg);
+        } else {
+          runPlayground(id);
+        }
       });
+    }
+
+    // Insere texto na posição do cursor mantendo o histórico de desfazer (Ctrl+Z)
+    function insertText(editor, text) {
+      // execCommand preserva o desfazer; se não for suportado, usa setRangeText
+      const ok = document.execCommand && document.execCommand('insertText', false, text);
+      if (!ok) {
+        editor.setRangeText(text, editor.selectionStart, editor.selectionEnd, 'end');
+        editor.dispatchEvent(new Event('input')); // Atualiza os números de linha
+      }
     }
 
     // Função que recalcula e renderiza os números de linhas na barra lateral do editor
     function updateLineNumbers(editor) {
       // Conta quantas quebras de linha existem no texto atual
-      const lines = editor.value.split('\n').length;
+      const lines = (editor.value.match(/\n/g) || []).length + 1;
       // Localiza a div .line-numbers correspondente dentro do mesmo container
       const lineNums = editor.closest('.playground-editor-container').querySelector('.line-numbers');
-      // Cria elementos <span> com os números de 1 até o total de linhas
-      lineNums.innerHTML = Array.from({ length: lines }, (_, i) => `<span>${i + 1}</span>`).join('');
+      // Só recria os números quando a quantidade de linhas muda (evita trabalho a cada tecla)
+      if (lineNums.childElementCount !== lines) {
+        // Cria elementos <span> com os números de 1 até o total de linhas
+        lineNums.innerHTML = Array.from({ length: lines }, (_, i) => `<span>${i + 1}</span>`).join('');
+      }
+      // Mantém a rolagem sincronizada após a mudança
+      lineNums.scrollTop = editor.scrollTop;
     }
 
     // Função que compila o código HTML/CSS/JS digitado e o projeta dentro do iframe de preview
@@ -3654,27 +3994,16 @@ e <em>texto em itálico</em>.</p>
       // Localiza o elemento iframe onde o resultado será exibido
       const frame = pg.querySelector('.preview-frame');
 
-      // Obtém o texto do código digitado
-      const code = editor.value;
-
-      // Revoga o URL temporário anterior para liberar memória do navegador
-      if (frame.dataset.objectUrl) {
-        URL.revokeObjectURL(frame.dataset.objectUrl);
-      }
-      // Cria um objeto Blob na memória com o código HTML em formato UTF-8
-      const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
-      // Gera uma URL temporária segura do tipo blob:
-      const url = URL.createObjectURL(blob);
-      // Salva a referência da URL no dataset do iframe para limpeza futura
-      frame.dataset.objectUrl = url;
-      // Define a origem do iframe para a URL do Blob gerado
-      frame.src = url;
+      // Usa srcdoc em um iframe isolado (sem allow-same-origin).
+      // Antes: Blob URL + allow-same-origin permitia que o código do aluno acessasse
+      // e alterasse a página principal via window.parent.
+      frame.srcdoc = editor.value;
 
       // Efeito visual de clique rápido no botão de execução
       const btn = pg.querySelector('.btn-run');
       if (btn) {
-        btn.style.transform = 'scale(0.95)'; // Efeito de pressionar
-        setTimeout(() => btn.style.transform = '', 150); // Retorna ao tamanho normal após 150ms
+        btn.classList.add('pressed'); // Efeito de pressionar
+        setTimeout(() => btn.classList.remove('pressed'), 150); // Retorna ao tamanho normal após 150ms
       }
     }
 
@@ -3686,6 +4015,9 @@ e <em>texto em itálico</em>.</p>
       const editor = pg.querySelector('.code-editor');
       // Restaura o valor inicial armazenado na inicialização
       editor.value = originalCode[id];
+      // Volta a rolagem para o topo do código
+      editor.scrollTop = 0;
+      editor.scrollLeft = 0;
       // Recalcula os números de linha
       updateLineNumbers(editor);
       // Executa o código restaurado no iframe
@@ -3693,27 +4025,138 @@ e <em>texto em itálico</em>.</p>
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
-    // BARRA DE PROGRESSO DE ROLAGEM E EFEITOS DA NAVBAR
+    // DIVISÓRIA ARRASTÁVEL ENTRE EDITOR E RESULTADO (DESKTOP)
+    // Mouse, caneta ou toque (Pointer Events), setas do teclado e duplo clique para resetar
     // ═══════════════════════════════════════════════════════════════════════════
-    window.addEventListener('scroll', () => {
+    function initDivider(pg) {
+      const body = pg.querySelector('.playground-body');
+      const divider = pg.querySelector('.playground-divider');
+      if (!body || !divider) return;
+
+      // Acessibilidade: a divisória vira um separador focável
+      divider.setAttribute('role', 'separator');
+      divider.setAttribute('aria-orientation', 'vertical');
+      divider.setAttribute('aria-label', 'Redimensionar editor e resultado (setas esquerda/direita)');
+      divider.setAttribute('aria-valuemin', '20');
+      divider.setAttribute('aria-valuemax', '80');
+      divider.setAttribute('aria-valuenow', '50');
+      divider.tabIndex = 0;
+
+      // Aplica a proporção (em %) limitada entre 20% e 80%
+      const setSplit = pct => {
+        const value = Math.min(80, Math.max(20, pct));
+        body.style.setProperty('--split', value + '%');
+        divider.setAttribute('aria-valuenow', String(Math.round(value)));
+      };
+      // Lê a proporção atual
+      const getSplit = () => parseFloat(body.style.getPropertyValue('--split')) || 50;
+
+      divider.addEventListener('pointerdown', e => {
+        if (stackedQuery.matches || e.button !== 0) return; // Sem arraste no modo empilhado
+        e.preventDefault();
+        divider.setPointerCapture(e.pointerId); // Continua recebendo eventos mesmo fora da divisória
+        body.classList.add('resizing');
+        const rect = body.getBoundingClientRect();
+
+        let frameRequested = false;
+        let lastX = e.clientX;
+        // Atualiza no máximo uma vez por quadro (requestAnimationFrame) para fluidez
+        const onMove = ev => {
+          lastX = ev.clientX;
+          if (frameRequested) return;
+          frameRequested = true;
+          requestAnimationFrame(() => {
+            setSplit(((lastX - rect.left) / rect.width) * 100);
+            frameRequested = false;
+          });
+        };
+        const onUp = () => {
+          body.classList.remove('resizing');
+          divider.removeEventListener('pointermove', onMove);
+          divider.removeEventListener('pointerup', onUp);
+          divider.removeEventListener('pointercancel', onUp);
+        };
+        divider.addEventListener('pointermove', onMove);
+        divider.addEventListener('pointerup', onUp);
+        divider.addEventListener('pointercancel', onUp);
+      });
+
+      // Setas do teclado movem a divisória em passos de 5%
+      divider.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); setSplit(getSplit() - 5); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); setSplit(getSplit() + 5); }
+        if (e.key === 'Home') { e.preventDefault(); setSplit(50); }
+      });
+
+      // Duplo clique restaura a divisão 50/50
+      divider.addEventListener('dblclick', () => setSplit(50));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // BARRA DE PROGRESSO DE ROLAGEM, EFEITOS DA NAVBAR E LINK ATIVO
+    // Um único listener "passive", limitado a uma execução por quadro (requestAnimationFrame)
+    // ═══════════════════════════════════════════════════════════════════════════
+    const navbar = document.getElementById('navbar');
+    const progressBar = document.getElementById('progressBar');
+    const backToTopBtn = document.getElementById('backToTop');
+    const sections = document.querySelectorAll('section[id]');
+    const navLinkEls = document.querySelectorAll('.nav-link');
+    let scrollTicking = false;
+
+    function onScroll() {
       // Distância percorrida pelo scroll a partir do topo
       const scrollTop = window.scrollY;
       // Altura total da página subtraída da altura visível da tela
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      // Porcentagem de rolagem calculada entre 0% e 100%
-      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      // Atualiza a largura da barra de progresso no topo da tela
-      document.getElementById('progressBar').style.width = progress + '%';
+      // Fração de rolagem calculada entre 0 e 1
+      const progress = docHeight > 0 ? Math.min(1, scrollTop / docHeight) : 0;
+      // Atualiza a barra de progresso via transform (sem recálculo de layout)
+      progressBar.style.transform = `scaleX(${progress})`;
 
       // Ativa classe 'scrolled' na navbar se o usuário rolou mais de 50 pixels
-      document.getElementById('navbar').classList.toggle('scrolled', scrollTop > 50);
+      navbar.classList.toggle('scrolled', scrollTop > 50);
 
       // Exibe ou oculta o botão flutuante 'Voltar ao Topo' se o scroll passar de 400 pixels
-      const backToTopBtn = document.getElementById('backToTop');
-      if (backToTopBtn) {
-        backToTopBtn.classList.toggle('visible', scrollTop > 400);
+      backToTopBtn.classList.toggle('visible', scrollTop > 400);
+
+      // Identifica qual seção está atualmente visível na parte superior.
+      // Antes usava offsetTop, que é relativo ao <main> (position: relative) e não à página,
+      // fazendo o link ativo mudar cerca de uma tela antes da hora.
+      let current = '';
+      sections.forEach(sec => {
+        if (sec.getBoundingClientRect().top <= 200) {
+          current = sec.id;
+        }
+      });
+      // No fim da página, a última seção é a ativa (mesmo que não chegue ao topo)
+      if (docHeight > 0 && scrollTop >= docHeight - 2 && sections.length) {
+        current = sections[sections.length - 1].id;
       }
-    });
+      // Alterna a classe 'active' apenas no link correspondente à seção atual
+      navLinkEls.forEach(link => {
+        const isActive = link.getAttribute('href') === '#' + current;
+        link.classList.toggle('active', isActive);
+        if (isActive) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+
+      scrollTicking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!scrollTicking) {
+        scrollTicking = true;
+        requestAnimationFrame(onScroll);
+      }
+    }, { passive: true });
+
+    // Recalcula ao girar o celular ou redimensionar a janela
+    window.addEventListener('resize', () => {
+      if (!scrollTicking) {
+        scrollTicking = true;
+        requestAnimationFrame(onScroll);
+      }
+    }, { passive: true });
 
     // ═══════════════════════════════════════════════════════════════════════════
     // CONTROLE DO MENU MOBILE (HAMBÚRGUER E GAVETA RETRÁTIL)
@@ -3724,84 +4167,94 @@ e <em>texto em itálico</em>.</p>
 
     // Função auxiliar para fechar o menu mobile
     function closeMobileMenu() {
-      if (menuToggle && navLinks && navBackdrop) {
-        menuToggle.classList.remove('active'); // Retorna o ícone do 'X' para 3 barras
-        navLinks.classList.remove('open'); // Desliza a gaveta para fora da tela
-        navBackdrop.classList.remove('active'); // Oculta o fundo escurecido
-        menuToggle.setAttribute('aria-expanded', 'false'); // Atualiza atributo de acessibilidade
-        document.body.style.overflow = ''; // Restaura a rolagem da página
-      }
+      if (!navLinks.classList.contains('open')) return; // Já está fechado
+      menuToggle.classList.remove('active'); // Retorna o ícone do 'X' para 3 barras
+      navLinks.classList.remove('open'); // Desliza a gaveta para fora da tela
+      navBackdrop.classList.remove('active'); // Oculta o fundo escurecido
+      menuToggle.setAttribute('aria-expanded', 'false'); // Atualiza atributo de acessibilidade
+      menuToggle.setAttribute('aria-label', 'Abrir menu de navegação');
+      document.body.style.overflow = ''; // Restaura a rolagem da página
     }
 
-    // Função auxiliar para alternar o estado do menu mobile
-    function toggleMobileMenu() {
-      if (menuToggle && navLinks && navBackdrop) {
-        const isOpen = navLinks.classList.contains('open'); // Verifica se está aberto
-        if (isOpen) {
-          closeMobileMenu(); // Se já estava aberto, fecha
-        } else {
-          menuToggle.classList.add('active'); // Transforma o botão em 'X'
-          navLinks.classList.add('open'); // Abre a gaveta lateral
-          navBackdrop.classList.add('active'); // Ativa o fundo escuro com desfoque
-          menuToggle.setAttribute('aria-expanded', 'true'); // Atualiza acessibilidade
-          document.body.style.overflow = 'hidden'; // Previne rolagem do fundo enquanto o menu estiver aberto
-        }
-      }
+    // Função auxiliar para abrir o menu mobile
+    function openMobileMenu() {
+      menuToggle.classList.add('active'); // Transforma o botão em 'X'
+      navLinks.classList.add('open'); // Abre a gaveta lateral
+      navBackdrop.classList.add('active'); // Ativa o fundo escuro com desfoque
+      menuToggle.setAttribute('aria-expanded', 'true'); // Atualiza acessibilidade
+      menuToggle.setAttribute('aria-label', 'Fechar menu de navegação');
+      document.body.style.overflow = 'hidden'; // Previne rolagem do fundo enquanto o menu estiver aberto
     }
 
     // Adiciona evento de clique no botão hambúrguer
-    if (menuToggle) {
-      menuToggle.addEventListener('click', toggleMobileMenu);
-    }
+    menuToggle.addEventListener('click', () => {
+      if (navLinks.classList.contains('open')) closeMobileMenu();
+      else openMobileMenu();
+    });
 
     // Fecha o menu ao clicar no fundo escurecido
-    if (navBackdrop) {
-      navBackdrop.addEventListener('click', closeMobileMenu);
-    }
+    navBackdrop.addEventListener('click', closeMobileMenu);
 
     // Fecha o menu mobile automaticamente ao clicar em qualquer um dos links de navegação
-    document.querySelectorAll('.nav-link').forEach(link => {
+    navLinkEls.forEach(link => {
       link.addEventListener('click', closeMobileMenu);
     });
 
-    // Fecha o menu mobile ao pressionar a tecla 'Escape' no teclado
+    // Fecha o menu mobile ao pressionar a tecla 'Escape' e devolve o foco ao botão
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && navLinks.classList.contains('open')) {
         closeMobileMenu();
+        menuToggle.focus();
       }
     });
+
+    // Se a tela crescer para o layout desktop com o menu aberto (girar o tablet, redimensionar a janela),
+    // fecha o menu. Antes, a página ficava travada sem rolagem (body com overflow: hidden).
+    const desktopNavQuery = window.matchMedia('(min-width: 801px)');
+    const onNavBreakpoint = e => { if (e.matches) closeMobileMenu(); };
+    if (desktopNavQuery.addEventListener) desktopNavQuery.addEventListener('change', onNavBreakpoint);
+    else desktopNavQuery.addListener(onNavBreakpoint); // Safari antigo
 
     // ═══════════════════════════════════════════════════════════════════════════
     // BOTÃO VOLTAR AO TOPO (SCROLL SMOOTH)
     // ═══════════════════════════════════════════════════════════════════════════
-    const backToTopBtn = document.getElementById('backToTop');
-    if (backToTopBtn) {
-      backToTopBtn.addEventListener('click', () => {
-        // Rola a página suavemente até o topo extremo (coordenadas x:0, y:0)
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+    backToTopBtn.addEventListener('click', () => {
+      // Rola a página suavemente até o topo extremo (respeita "reduzir movimento")
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({
+        top: 0,
+        behavior: reduceMotion ? 'auto' : 'smooth'
       });
-    }
+    });
 
     // ═══════════════════════════════════════════════════════════════════════════
     // EFEITOS DE CURSOR NEON E ONDA DE CLIQUE (APENAS DISPOSITIVOS COM MOUSE)
     // ═══════════════════════════════════════════════════════════════════════════
     // Verifica se o dispositivo possui cursor fino (mouse) para não sobrecarregar celulares touch
     const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (isDesktopPointer) {
+    if (isDesktopPointer && !prefersReducedMotion) {
       // Cria o elemento visual de brilho que segue o mouse
       const cursorGlow = document.createElement('div');
       cursorGlow.className = 'cursor-glow';
+      cursorGlow.setAttribute('aria-hidden', 'true');
       document.body.appendChild(cursorGlow);
 
-      // Atualiza a posição do brilho conforme o mouse se move
+      // Atualiza a posição do brilho no máximo uma vez por quadro, via transform (GPU)
+      let mouseX = 0;
+      let mouseY = 0;
+      let glowTicking = false;
       document.addEventListener('mousemove', (e) => {
-        cursorGlow.style.left = e.clientX + 'px';
-        cursorGlow.style.top = e.clientY + 'px';
-      });
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (glowTicking) return;
+        glowTicking = true;
+        requestAnimationFrame(() => {
+          cursorGlow.style.transform = `translate3d(${mouseX - 150}px, ${mouseY - 150}px, 0)`;
+          glowTicking = false;
+        });
+      }, { passive: true });
 
       // Cria a onda expansiva colorida ao clicar com o botão do mouse
       document.addEventListener('click', (e) => {
@@ -3811,51 +4264,49 @@ e <em>texto em itálico</em>.</p>
         burst.style.top = e.clientY + 'px';
         document.body.appendChild(burst);
 
-        // Remove o elemento do DOM após a conclusão da animação (500ms)
-        setTimeout(() => burst.remove(), 500);
+        // Remove o elemento do DOM após a conclusão da animação
+        burst.addEventListener('animationend', () => burst.remove());
+        setTimeout(() => burst.remove(), 600); // Garantia caso a animação não dispare
       });
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
     // ANIMAÇÃO DE REVELAÇÃO AO ROLAR (SCROLL REVEAL OBSERVER)
     // ═══════════════════════════════════════════════════════════════════════════
-    // Cria um observador de interseção para detectar quando elementos entram na tela
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        // Se o elemento entrou no campo de visão
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible'); // Adiciona classe para transição suave
-          obs.unobserve(entry.target); // Para de observar o elemento já revelado
-        }
-      });
-    }, { threshold: 0, rootMargin: '50px' });
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      // Cria um observador de interseção para detectar quando elementos entram na tela
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          // Se o elemento entrou no campo de visão
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible'); // Adiciona classe para transição suave
+            obs.unobserve(entry.target); // Para de observar o elemento já revelado
+          }
+        });
+      }, { threshold: 0, rootMargin: '0px 0px 50px 0px' });
 
-    // Registra todos os elementos marcados com a classe .reveal
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // DESTAQUE AUTOMÁTICO DO LINK ATIVO NA NAVBAR CONFORME O SCROLL
-    // ═══════════════════════════════════════════════════════════════════════════
-    const sections = document.querySelectorAll('section[id]');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      // Identifica qual seção está atualmente visível na parte superior
-      sections.forEach(sec => {
-        if (window.scrollY >= sec.offsetTop - 200) {
-          current = sec.id;
-        }
-      });
-      // Alterna a classe 'active' apenas no link correspondente à seção atual
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
-      });
-    });
+      // Registra todos os elementos marcados com a classe .reveal
+      revealEls.forEach(el => observer.observe(el));
+    } else {
+      // Navegadores sem suporte: mostra tudo imediatamente (antes o conteúdo ficaria invisível)
+      revealEls.forEach(el => el.classList.add('visible'));
+    }
 
     // ═══════════════════════════════════════════════════════════════════════════
     // INICIALIZAÇÃO DA APLICAÇÃO
     // ═══════════════════════════════════════════════════════════════════════════
-    // Dispara a inicialização de todos os playgrounds assim que o DOM estiver carregado
-    document.addEventListener('DOMContentLoaded', initPlaygrounds);
+    function initApp() {
+      initPlaygrounds(); // Prepara todos os editores
+      onScroll(); // Estado correto da navbar/progresso ao recarregar a página no meio
+    }
+
+    // Dispara a inicialização assim que o DOM estiver carregado (ou imediatamente, se já estiver)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
   </script>
 
 </body>
